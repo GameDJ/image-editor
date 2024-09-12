@@ -1,4 +1,3 @@
-
 import sys
 import tkinter as tk
 import numpy as np
@@ -101,8 +100,25 @@ def gui(history: History):
     tk_image = ImageTk.PhotoImage(image)
 
     # create a label to hold the image
-    img_preview = tk.Label(window, image=tk_image)
+    img_preview = tk.Label(window, image=tk_image, borderwidth=0)
     # give the widget to the packer (geometry manager)
+
+    ################### testing mouse-press, mouse-release, and click-and-drag ####################
+
+    def clicked(event):
+        print("clicked at", event.x, event.y)
+    img_preview.bind("<ButtonPress-1>", clicked)
+    
+    def released(event):
+        print("\nreleased at", event.x, event.y)
+    img_preview.bind("<ButtonRelease-1>", released)
+    
+    def drag_handler(event):
+        print(f"({event.x}, {event.y})")
+    img_preview.bind("<B1-Motion>", drag_handler)
+    
+    ###############################################################################################
+    
     img_preview.pack()
     
     def update_img_preview(label: tk.Label):
