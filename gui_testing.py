@@ -9,7 +9,7 @@ def render_gui():
     # initialize toplevel tkinter widget
     window = tk.Tk()
     window.title("tkinter testing")
-    window.geometry('400x300') 
+    window.geometry('200x400') 
     
     button = ttk.Button(text="ttk Button", command=hello_world)
     button.pack()
@@ -34,6 +34,8 @@ def render_gui():
     
     ######### OptionMenu ########
     
+    label = tk.Label(window, text="OptionMenu:")
+    label.pack( side = tk.TOP)
     # Create the list of options 
     options_list = ["Option 1", "Option 2", "Option 3", "Option 4"] 
     
@@ -52,6 +54,8 @@ def render_gui():
     
     ####### ListBox #######
     
+    label = tk.Label(window, text="ListBox:")
+    label.pack( side = tk.TOP)
     list_box = tk.Listbox(window)
     list_box.insert(1, "Python")
     list_box.insert(2, "Perl")
@@ -65,16 +69,18 @@ def render_gui():
     
     ####### Scale (slider) #######
     
+    label = tk.Label(window, text="Scale:")
+    label.pack( side = tk.TOP)
     sliderVal = tk.IntVar()
     scale = tk.Scale(window, variable=sliderVal, orient="horizontal", from_=1, to=5)
     scale.pack(anchor="center")
     
     ####### text Entry #######
     
-    entry_label = tk.Label(window, text="User Name")
-    entry_label.pack( side = tk.LEFT)
+    label = tk.Label(window, text="Entry:")
+    label.pack( side = tk.TOP)
     entry = tk.Entry(window, bd =5)
-    entry.pack(side = tk.LEFT)
+    entry.pack(side = tk.TOP)
     
     # render the window
     window.mainloop()
