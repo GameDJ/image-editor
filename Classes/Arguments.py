@@ -2,8 +2,8 @@ import Color
 
 class Arguments:
     """Build a dictionary of arguments to be passed to Edit subclasses"""
-    args = {}
     def __init__(self, image = None) -> None:
+        self.args = {}
         if image:
             self.args["image"] = image
             
