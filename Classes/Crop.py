@@ -1,3 +1,6 @@
+#This Class will crop an image to within the specified dimensions
+
+
 import cv2
 import numpy as np
 import Edit
