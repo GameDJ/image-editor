@@ -1,3 +1,5 @@
+#This class edits the size of the image it receives as a parameter
+
 import cv2
 import numpy as np
 import Edit

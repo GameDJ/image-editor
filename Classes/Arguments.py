@@ -1,21 +1,31 @@
+import Color
+
 class Arguments:
-    def __init__(self, image):
+    """Build a dictionary of arguments to be passed to Edit subclasses"""
+    def __init__(self, image = None) -> None:
         self.args = {}
-        self.args["image"] = image
-        
-    def add_selection(self, selection):
+        if image:
+            self.args["image"] = image
+            
+    def add_selection(self, selection) -> None:
         self.args["image"] = selection
     
-    # still want to explore other options for these
-    # also they'll eventually be enums and stuff
-    def add_filter(self, filter_name):
+    # eventually these will prob be enums and stuff
+    def add_filter(self, filter_name: str) -> None:
+        """Name of filter to apply"""
         self.args["filter"] = filter_name
-    def add_shape(self, shape_name):
+    def add_amount(self, amount: float) -> None:
+        """An amount, usually to inform a filter strength"""
+        self.args["amount"] = amount
+            
+    def add_shape(self, shape_name: str) -> None:
+        """Name of the chosen shape"""
         self.args["shape"] = shape_name
-    def add_color(self, color):
+    def add_color(self, color: Color) -> None:
+        """A Color object, usually to inform a shape's color"""
         self.args["color"] = color
 
-    def get_args(self):
+    def get_args(self) -> None:
         return self.args
     
     
