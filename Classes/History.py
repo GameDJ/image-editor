@@ -2,6 +2,8 @@ import numpy as np
 import HistoryEntry as Entry
 
 class History:
+    """Class to keep track of the edit history of an Image."""
+    
     def __init__(self):
         self.array_history = []
         self.index = -1
