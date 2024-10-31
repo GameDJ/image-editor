@@ -5,6 +5,8 @@ import History
 # anyone should feel free to fill in or change stuff as needed
 
 class RequestHandler:
+    """Handles all requests."""
+    
     his = History()
     
     def _initialize_image(self):
@@ -23,6 +25,7 @@ class RequestHandler:
             self.his.redo()
     
     def _create_history_entry(self):
+        # self.his += (image_array, "edit desc")      ?
         return
     
     def _get_color_information(self):
