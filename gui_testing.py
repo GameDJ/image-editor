@@ -4,6 +4,9 @@ from tkinter import ttk
 def hello_world():
     print("Hello world!")
 
+def hello_button():
+    button = ttk.Button(text="ttk Button", command=hello_world)
+    button.pack()
 
 def render_gui():
     # initialize toplevel tkinter widget
@@ -11,12 +14,15 @@ def render_gui():
     window.title("tkinter testing")
     window.geometry('200x400') 
     
-    button = ttk.Button(text="ttk Button", command=hello_world)
-    button.pack()
+    # button = ttk.Button(text="ttk Button", command=hello_world)
+    # button = hello_button()
+    # button.pack()
+    hello_button()
     
     ######## Menu ########
     
     menubar = tk.Menu(window, title="Menubar")
+    
     filemenu = tk.Menu(menubar, tearoff=0)
     filemenu.add_command(label="Open", command=hello_world)
     filemenu.add_command(label="Save", command=hello_world)
