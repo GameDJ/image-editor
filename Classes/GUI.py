@@ -8,6 +8,17 @@ from RequestHandler import RequestHandler
 from ArgumentType import ArgumentType
 from Arguments import Arguments
 
+from enum import Enum, auto
+class ImageMode(Enum):
+    NONE = auto()
+    SELECT = auto()
+    EYEDROP = auto()
+    SHAPE = auto()
+
+class Defaults(Enum):
+    BUTTON_RELIEF = "raised"
+    BUTTON_TOGGLED_RELIEF = "solid"
+
 def printy(text, *args):
     print("printy", text, *args)
     
@@ -20,18 +31,42 @@ if __name__ == "__main__":
     
     handler = RequestHandler()
     
+    # image mode refers to when and for what purpose the image preview is clickable
+    current_image_mode = ImageMode.NONE
+    def change_image_mode(new_mode: ImageMode):
+        """Change the image mode and reset the visual state of the button previously in use, if any"""
+        global current_image_mode
+        print("current image mode:", current_image_mode)
+        if current_image_mode == ImageMode.SELECT:
+            toggle_select_off()
+        elif current_image_mode == ImageMode.EYEDROP:
+            toggle_eyedropper_off()
+        elif current_image_mode == ImageMode.SHAPE:
+            toggle_drawing_off()
+        if current_image_mode == new_mode:
+            # if the same mode was selected, toggle it off
+            # (the other toggle off functions were handled above)
+            current_image_mode = ImageMode.NONE
+        else:
+            # set new mode
+            current_image_mode = new_mode
+            if new_mode == ImageMode.SELECT:
+                toggle_select_on()
+            elif new_mode == ImageMode.EYEDROP:
+                toggle_eyedropper_on()
+            elif new_mode == ImageMode.SHAPE:
+                toggle_drawing_on()
+        print("new image mode:", current_image_mode)
+            
+    
     ### MENU BAR ###
     menubar = tk.Menu(window, title="Menubar")
-    
-    # index of NEXT history item
-    hist_len = 0
         
     def create_canvas():
         if handler.is_active_image():
             discard_image = messagebox.askyesno(message="Are you sure you want to discard the current image?")
             if not discard_image: 
                 return
-        global the_image_array, hist_len
         
         width = simpledialog.askinteger("Canvas width", "Enter width:")
         if not width:
@@ -50,9 +85,6 @@ if __name__ == "__main__":
         handler.initialize_image(the_image_array)
         refresh_image()
         # activate_savebtn()
-        # hist_len +=1
-        # history_listbox.insert(hist_len, "Create canvas")
-        # history_ui_add_item("Create canvas")
         refresh_history()
     
     def load_file():
@@ -60,7 +92,7 @@ if __name__ == "__main__":
             discard_image = messagebox.askyesno(message="Are you sure you want to discard the current image?")
             if not discard_image: 
                 return
-        global loaded_file_name, the_image_array, hist_len
+        global loaded_file_name
         loaded_file_name = filedialog.askopenfilename(title="Select a file")
         if not loaded_file_name:
             messagebox.showerror(title="Operation cancelled", message="Failed to load image")
@@ -74,30 +106,19 @@ if __name__ == "__main__":
         handler.initialize_image(the_image_array)
         refresh_image()
         # activate_savebtn()
-        # hist_len +=1
-        # history_listbox.insert(hist_len, "Load file")
-        # history_ui_add_item("Load file")
         refresh_history()
         
     def save_file():
         if handler.is_active_image() is not None:
             path = filedialog.asksaveasfilename(title="Save as:", initialfile=loaded_file_name, defaultextension=".png", filetypes=[("PNG", "*.png"), ("JPEG", "*.jpg")])
-            image = Image.fromarray(the_image_array)
+            image = Image.fromarray(handler.get_current_actual_image())
             if image.mode != "RGB":
                 image = image.convert("RGB")
             image.save(path)
             # should check to see if the file exists now, to verify it saved
         else:
             messagebox.showerror(title="Error", message="No image loaded")
-    
-    # FILE MENU
-    # filemenu = tk.Menu(menubar, tearoff=0)
-    # filemenu.add_command(label="Create blank canvas", command=lambda: create_canvas())
-    # filemenu.add_command(label="Load", command=lambda: load_file())
-    # filemenu.add_command(label="Save as", command=lambda: save_file(), state="disabled")
-    # menubar.add_cascade(label="File", menu=filemenu)
-    
-    # EDIT MENU
+        
     def filter_action(filter):
         args = Arguments()
         args.add_filter(filter)
@@ -110,21 +131,8 @@ if __name__ == "__main__":
                 args.add_shape(selected_shape)
         # handler will add image and selection to args before passing it to the edit class
         handler.edit(args)
-        # update the history list on the ui
-        # history_ui_add_item(FilterInfo[filter]["text"])
         refresh_history()
         refresh_image()
-        
-    # editmenu = tk.Menu(menubar, tearoff=0)
-    # for filter in FilterInfo:
-    #     editmenu.add_command(label=FilterInfo[filter]["text"], command=lambda filter=filter: filter_action(filter))
-    # menubar.add_cascade(label="Edit", menu=editmenu)
-    
-    # HISTORY MENU
-    # historymenu = tk.Menu(menubar, tearoff=0)
-    # historymenu.add_command(label="Undo", command=lambda: printy("undo"))
-    # historymenu.add_command(label="Redo", command=lambda: printy("redo"))
-    # menubar.add_cascade(label="History", menu=historymenu)
     
     def help_message(title: str, text: str):
         messagebox.showinfo(title=title, message=text)
@@ -182,19 +190,6 @@ if __name__ == "__main__":
     menu_storage = {menubar: {}}
     for submenu in menu_structure:
         generate_menu(menubar, menu_storage[menubar], submenu, menu_structure[submenu])
-    # direct version
-    # helpmenu = tk.Menu(menubar, tearoff=0)
-    # menubar.add_cascade(label="Help", menu=helpmenu)
-    # usage_helpmenu = tk.Menu(helpmenu, tearoff=0)
-    # helpmenu.add_cascade(label="Usage", menu=usage_helpmenu)
-    # file_usage_helpmenu = tk.Menu(usage_helpmenu, tearoff=0)
-    # usage_helpmenu.add_cascade(label="File menu", menu=file_usage_helpmenu)
-    # file_usage_helpmenu.add_command(label="Create blank canvas", command=lambda: help_message("Create blank canvas", "placeholder"))
-    # file_usage_helpmenu.add_command(label="Load image", command=lambda: help_message("Load image", "placeholder"))
-    # file_usage_helpmenu.add_command(label="Save as", command=lambda: help_message("Save as", "placeholder"))
-    # helpmenu.add_command(label="About", command=lambda: help_message("SIMPLE v1.0.0", "SIMPLE: Simple IMage Processor for Lazy Editors\n\nContributors:\n\tAddison Casner\n\tDerek Jennings\n\tQuinn Pulley\n\tWill Verplaetse"))
-
-    
     
     ### IMAGE PREVIEW ###
     image_frame = tk.Frame(window, width=400, height=300, background="#000000", borderwidth=1)
@@ -210,15 +205,7 @@ if __name__ == "__main__":
     img_preview.place(in_=image_frame, anchor="c", relx=.5, rely=.5)
     
     loaded_file_name = "image.png"
-    the_image_array: np.ndarray = np.empty((0,0))
-    
-    def update_img_preview():
-        new_image = Image.fromarray(the_image_array)
-        new_tk_image = ImageTk.PhotoImage(new_image)
-        # update the image label
-        img_preview.config(image=new_tk_image)
-        # prevent garbage collector from deleting image?
-        img_preview.image = new_tk_image
+
     
     #### RIGHTSIDE FRAME ####
     rightside_frame = tk.Frame(window, highlightthickness=1, highlightbackground="black")
@@ -234,22 +221,19 @@ if __name__ == "__main__":
     
     history_btn_frame = tk.Frame(history_frame)
     history_btn_frame.pack(side=tk.TOP)
-    def history_ui_remove_item():
-        history_listbox.delete(tk.END)
-        history_listbox.activate(tk.END)
-        history_listbox.focus()
-    def history_ui_add_item(desc: str):
-        history_listbox.insert(tk.END, desc)
-        history_listbox.activate(tk.END)
-        history_listbox.focus()
         
     def refresh_history():
+        """Regenerate the history list based on the history given by RequestHandler"""
+        # clear the current entries (in the UI)
         history_listbox.delete(0, tk.END)
+        # repopulate the listbox
         entry_descs = handler.history_descriptions()
         for entry_desc in entry_descs:
             history_listbox.insert(tk.END, entry_desc[1])
+        # underline the currently selected history entry
         history_listbox.activate(handler.get_history_index())
         history_listbox.focus()
+        # determine whether undo and redo are clickable given the current state
         if handler.get_history_index() <= 0:
             # first entry is selected; no more undo
             undo_btn.config(state="disabled")
@@ -262,20 +246,25 @@ if __name__ == "__main__":
             redo_btn.config(state="active")
             
     def refresh_image():
-        global the_image_array
-        the_image_array = handler.get_current_image()
-        update_img_preview()
+        """Regenerate the image preview from the render image provided by RequestHandler"""
+        new_image = Image.fromarray(handler.get_render_image_array())
+        new_tk_image = ImageTk.PhotoImage(new_image)
+        # update the image label
+        img_preview.config(image=new_tk_image)
+        # prevent garbage collector from deleting image?
+        img_preview.image = new_tk_image
     
     def history_undo():
         # update data
         handler.history_undo()
-        ## update ui: image preview and history listbox
+        # update ui
         refresh_image()
         refresh_history()
     def history_redo():
         handler.history_redo()
         refresh_image()
         refresh_history()
+        
     undo_btn = tk.Button(history_btn_frame, text="Undo", command=lambda: history_undo(), state="disabled")
     undo_btn.grid(column=0, row=0)
     redo_btn = tk.Button(history_btn_frame, text="Redo", command=lambda: history_redo(), state="disabled")
@@ -283,16 +272,19 @@ if __name__ == "__main__":
     
     history_listbox = tk.Listbox(history_frame)
     history_listbox.pack(padx=1, pady=1)
-    def onselct(event):
-        print(event)
-    history_listbox.bind("<<ListboxSelect>>", onselct)
+    def history_clicked(_):
+        """Set the history index based on a mouse click"""
+        if len(history_listbox.curselection()) > 0:
+            handler.history_set_index(history_listbox.curselection()[0])
+            refresh_history()
+            refresh_image()
+    history_listbox.bind("<<ListboxSelect>>", history_clicked)
     
     ##
     separator = ttk.Separator(rightside_frame, orient="horizontal")
     separator.grid(row=2, column=0, columnspan=1, rowspan=1, sticky="nsew")
     
     ## SELECTION MENU ##
-    # selection_frame = tk.Frame(rightside_frame, highlightthickness=1, highlightbackground="green")
     selection_frame = tk.Frame(rightside_frame)
     selection_frame.grid(row=3, rowspan=2, column=0, padx=1, pady=1, sticky="nsew")
     
@@ -302,24 +294,18 @@ if __name__ == "__main__":
     selection_btn_frame = tk.Frame(selection_frame)
     selection_btn_frame.pack(side=tk.TOP)
     
-    selecting = False
+    # gonna replace this with a check in handler for if selection exists
     clear_sel_state = "disabled"
-    
-    def clear_sel_btn_state():
-        clear_sel_btn.config(state=clear_sel_state)
         
-    def toggle_select():
-        global selecting, clear_sel_state
-        if not selecting:
-            selecting = True
-            selection_button.config(relief="solid")
-            clear_sel_state = "active"
-        else:
-            selecting = False
-            selection_button.config(relief="raised")
-        clear_sel_btn_state()
+    def toggle_select_on():
+        selection_button.config(relief=Defaults.BUTTON_TOGGLED_RELIEF.value)
+        global clear_sel_state
+        clear_sel_state = "active"
+    def toggle_select_off():
+        selection_button.config(relief=Defaults.BUTTON_RELIEF.value)
+        clear_sel_btn.config(state=clear_sel_state)
     
-    selection_button = tk.Button(selection_btn_frame, text="Select", command=toggle_select)
+    selection_button = tk.Button(selection_btn_frame, text="Select", command=lambda:change_image_mode(ImageMode.SELECT))
     selection_button.pack(side=tk.LEFT)
     
     # clear selection button
@@ -328,7 +314,7 @@ if __name__ == "__main__":
         sel_coord_1.config(text="No selection")
         sel_coord_2.config(text="")
         clear_sel_state = "disabled"
-        clear_sel_btn_state()
+        clear_sel_btn.config(state=clear_sel_state)
     
     clear_sel_btn = tk.Button(selection_btn_frame, text="Clear", command=clear_selection, state="disabled")
     clear_sel_btn.pack(side=tk.LEFT)
@@ -362,17 +348,12 @@ if __name__ == "__main__":
     draw_inner_frame = tk.Frame(draw_menu_frame)
     draw_inner_frame.pack(side = tk.TOP)
     
-    drawing = False
-    
-    def toggle_drawing():
-        global drawing
-        drawing = not drawing
-        if drawing:
-            draw_btn.config(relief="solid")
-        else:
-            draw_btn.config(relief="raised")
+    def toggle_drawing_on():
+        draw_btn.config(relief=Defaults.BUTTON_TOGGLED_RELIEF.value)
+    def toggle_drawing_off():
+        draw_btn.config(relief=Defaults.BUTTON_RELIEF.value)
             
-    draw_btn = tk.Button(draw_inner_frame, text="Draw", command=toggle_drawing)
+    draw_btn = tk.Button(draw_inner_frame, text="Draw", command=lambda:change_image_mode(ImageMode.SHAPE))
     draw_btn.pack(side=tk.LEFT)
     
     options_list = ["Pen", "Rectangle"]
@@ -401,8 +382,10 @@ if __name__ == "__main__":
     def change_color():
         global cur_color
         color = colorchooser.askcolor(title="Choose color", initialcolor=convert_color_to_hex(cur_color))
-        cur_color = color[0]
-        update_color()
+        if all(color):
+            print(color)
+            cur_color = color[0]
+            update_color()
     
     def update_color():
         color_preview.config(background=convert_color_to_hex(cur_color))
@@ -416,28 +399,24 @@ if __name__ == "__main__":
     update_color()
     
     # eyedropper
-    eyedropper_enabled = False
     
     def select_pixel_color(event):
-        global the_image_array, cur_color
-        cur_color = the_image_array[event.y][event.x]
+        global cur_color
+        cur_color = handler.get_color_at_pixel(event.x, event.y)
         update_color()
+            
+    def toggle_eyedropper_on():
+        bindings["select_pixel_color"] = img_preview.bind("<ButtonPress-1>", select_pixel_color)
+        eyedropper_btn.config(relief=Defaults.BUTTON_TOGGLED_RELIEF.value)
+    def toggle_eyedropper_off():
+        img_preview.unbind("<begin_selection-1>", bindings["select_pixel_color"])
+        bindings.pop("select_pixel_color")
+        eyedropper_btn.config(relief=Defaults.BUTTON_RELIEF.value)
     
-    def toggle_eyedropper():
-        global eyedropper_enabled
-        eyedropper_enabled = not eyedropper_enabled
-        if eyedropper_enabled:
-            bindings["select_pixel_color"] = img_preview.bind("<ButtonPress-1>", select_pixel_color)
-            eyedropper_btn.config(relief="solid")
-        else:
-            img_preview.unbind("<begin_selection-1>", bindings["select_pixel_color"])
-            bindings.pop("select_pixel_color")
-            eyedropper_btn.config(relief="raised")
-    
-    # eyedropper_btn = tk.Button(color_menu_frame, text="Eyedropper", command=toggle_eyedropper, relief="raised")
+    # eyedropper_btn = tk.Button(color_menu_frame, text="Eyedropper", command=toggle_eyedropper, relief=Defaults.BUTTON_RELIEF.value)
     # eyedrop_img = tk.PhotoImage(file=r"C:\\Users\\derek\\OneDrive\\Documents\\2024_Fall\\IT326\\icons8-color-dropper-24.png")
     eyedrop_img = tk.PhotoImage(file=os.path.join(os.path.dirname(__file__), r"..\assets\icons8-color-dropper-24.png"))
-    eyedropper_btn = tk.Button(color_inner_frame, command=toggle_eyedropper, relief="raised", image=eyedrop_img)
+    eyedropper_btn = tk.Button(color_inner_frame, command=lambda:change_image_mode(ImageMode.EYEDROP), relief=Defaults.BUTTON_RELIEF.value, image=eyedrop_img)
     # eyedropper_btn.pack(side=tk.TOP)
     eyedropper_btn.grid(row=0, column=3, padx=3)
     
@@ -458,21 +437,17 @@ if __name__ == "__main__":
     zoom_level = 1.0
     
     def zoom_change(delta: int):
-        global zoom_level
-        zoom_level += delta
-        if zoom_level == 0:
-            zoom_level += delta
+        zoom_level = handler.zoom_change(delta)
         if zoom_level < 0:
-            # eg. "1/2x", "1/4x", "1/8x"
             zoom_level_label.config(text=f"1/{2**(int(zoom_level)*-1)}x")
         else:
-            # eg. "1x", "2x", "3x"
             zoom_level_label.config(text=f"{int(zoom_level)}x")
+        
     
     zoom_out_btn = tk.Button(zoom_inner_frame, text="-", command=lambda: zoom_change(-1), image=fakeimage, compound="c", width=20, height=20)
     zoom_out_btn.pack(side=tk.LEFT, padx=1)
     
-    zoom_level_label = tk.Label(zoom_inner_frame, text=f"{int(zoom_level)}x")
+    zoom_level_label = tk.Label(zoom_inner_frame, text=f"1x")
     zoom_level_label.pack(side=tk.LEFT, padx=3)
     
     zoom_in_btn = tk.Button(zoom_inner_frame, text="+", command=lambda: zoom_change(1), image=fakeimage, compound="c", width=20, height=20)

@@ -3,7 +3,9 @@ from Arguments import Arguments
 from ArgumentType import ArgumentType as AT
 from FilterType import FilterType, FilterInfo
 from Filters import Filters
+from Selection import Selection
 from typing import Callable
+import numpy as np
 
 # this is a very rough framework since i have no idea what kind of information
 # will be passed around here/is required for the various operations
@@ -20,10 +22,14 @@ class RequestHandler:
     
     def initialize_image(self, image):
         self._create_history_entry(image, "Create image")
+        self.zoom_level = 1
         return
     
     def export_image(self):
         return
+    
+    def make_selection(self, start_coord, end_coord):
+        self.selection = Selection(start_coord, end_coord)
     
     def edit(self, args: Arguments):
         args.add_image(self.hist.get_current_img())
@@ -37,12 +43,14 @@ class RequestHandler:
     #     elif request == "redo":
     #         self.hist.redo()
     
-    def get_current_image(self):
+    def get_current_actual_image(self):
         return self.hist.get_current_img()
     def history_undo(self):
         self.hist.undo()
     def history_redo(self):
         self.hist.redo()
+    def history_set_index(self, index: int):
+        self.hist.set_index(index)
     
     def _create_history_entry(self, image_array, desc: str):
         self.hist.add_record(image_array, desc)
@@ -50,8 +58,15 @@ class RequestHandler:
     def history_descriptions(self) -> list[tuple[int, str]]:
         return self.hist.get_entry_descriptions()
     
-    def get_color_information(self):
-        return
+    def zoom_change(self, delta: int) -> int:
+        self.zoom_level += delta
+        if self.zoom_level == 0:
+            self.zoom_level += delta        
+        return self.zoom_level
+        
+    def get_zoom_level(self) -> int:
+        if hasattr(self, self.zoom_level):
+            return self.zoom_level
     
     def is_active_image(self) -> bool:
         """Returns True if history has a current image"""
@@ -59,6 +74,21 @@ class RequestHandler:
     
     def get_history_index(self) -> int:
         return self.hist.get_index()
+    
+    def get_render_image_array(self) -> np.ndarray:
+        cur_img = self.hist.get_current_img()
+        if self.zoom_level != 1:
+            # scale based on zoom
+            #
+            pass
+        if hasattr(self, "selection"):
+            # need to change the selection bounds based on zoom...
+            # copy selection and scale/transform it appropriately
+            #
+            cur_img = self.selection.draw_selection(cur_img)
+        return cur_img
+    def get_color_at_pixel(self, x: int, y: int) -> tuple[int, int, int]:
+        return self.get_current_actual_image()[y][x]
     
     # def process_request(self, request):
     #     # idk how this is gonna get the information to determine which method to call so assuming string rn

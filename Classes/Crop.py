@@ -1,15 +1,18 @@
 #This Class will crop an image to within the specified dimensions
 
-
 import cv2
 import numpy as np
-import Edit
+from Edit import Edit
+from Arguments import Arguments
+from ArgumentType import ArgumentType as AT
 
 class Crop(Edit):
-  def __init_(self):
-    super.__init__()
-
-  def edit(self, args, image):
-    super().edit
-    image = image[args["top_left_corner"][0]: args["bottom_right_corner"][0], args["top_left_corner"][1] : args["bottom_right_corner"][1]]
+  @staticmethod
+  def edit(args: Arguments):
+    image = args.get_args[AT.IMAGE]
+    if AT.SELECTION in args:
+      bbox = args.get_args[AT.SELECTION].get_bbox()
+    else:
+      bbox = (0, 0, image.shape[0]-1, image.shape[1]-1)
+    image = image[bbox[0]:bbox[2], bbox[1]:bbox[3]]
     return image

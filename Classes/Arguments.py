@@ -1,4 +1,5 @@
 from ArgumentType import ArgumentType as AT
+from Selection import Selection
 
 class Arguments:
     """Build a dictionary of arguments to be passed to Edit subclasses"""
@@ -13,7 +14,7 @@ class Arguments:
         self.args[AT.IMAGE] = image
         return not key_already_existed
             
-    def add_selection(self, selection) -> None:
+    def add_selection(self, selection: Selection) -> None:
         """Coordinates of selection"""
         self.args[AT.SELECTION] = selection
     
