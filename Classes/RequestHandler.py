@@ -72,7 +72,7 @@ class RequestHandler:
         """Returns True if history has a current image"""
         return (self.hist.get_current_img() is not None)
     
-    def get_history_index(self) -> int:
+    def history_get_index(self) -> int:
         return self.hist.get_index()
     
     def get_render_image_array(self) -> np.ndarray:

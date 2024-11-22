@@ -7,6 +7,7 @@ from FilterType import FilterType, FilterInfo
 from RequestHandler import RequestHandler
 from ArgumentType import ArgumentType
 from Arguments import Arguments
+from History_GUI import History_GUI
 
 from enum import Enum, auto
 class ImageMode(Enum):
@@ -14,10 +15,6 @@ class ImageMode(Enum):
     SELECT = auto()
     EYEDROP = auto()
     SHAPE = auto()
-
-class Defaults(Enum):
-    BUTTON_RELIEF = "raised"
-    BUTTON_TOGGLED_RELIEF = "solid"
 
 def printy(text, *args):
     print("printy", text, *args)
@@ -27,6 +24,13 @@ if __name__ == "__main__":
     window.title("Helo vorld")
     window.geometry('800x560')
     
+    class Defaults(Enum):
+        BUTTON_RELIEF = "raised"
+        BUTTON_TOGGLED_RELIEF = "solid"
+        FONT = font.Font(size=12, underline=False, slant="italic")
+        SEPARATOR_CNF = {"column":0, "columnspan":1, "rowspan":1, "sticky":"nsew"}
+    
+    # for storing bindings under a unique key
     bindings = {}
     
     handler = RequestHandler()
@@ -85,7 +89,7 @@ if __name__ == "__main__":
         handler.initialize_image(the_image_array)
         refresh_image()
         # activate_savebtn()
-        refresh_history()
+        history_gui.refresh_history()
     
     def load_file():
         if handler.is_active_image():
@@ -106,7 +110,7 @@ if __name__ == "__main__":
         handler.initialize_image(the_image_array)
         refresh_image()
         # activate_savebtn()
-        refresh_history()
+        history_gui.refresh_history()
         
     def save_file():
         if handler.is_active_image() is not None:
@@ -131,7 +135,7 @@ if __name__ == "__main__":
                 args.add_shape(selected_shape)
         # handler will add image and selection to args before passing it to the edit class
         handler.edit(args)
-        refresh_history()
+        history_gui.refresh_history()
         refresh_image()
     
     def help_message(title: str, text: str):
@@ -205,46 +209,7 @@ if __name__ == "__main__":
     img_preview.place(in_=image_frame, anchor="c", relx=.5, rely=.5)
     
     loaded_file_name = "image.png"
-
     
-    #### RIGHTSIDE FRAME ####
-    rightside_frame = tk.Frame(window, highlightthickness=1, highlightbackground="black")
-    rightside_frame.grid(row=0, column=3, padx=3, pady=3, sticky="nsew")
-    
-    ## HISTORY MENU ##
-    # history_frame = tk.Frame(rightside_frame, highlightthickness=1, highlightbackground="brown")
-    history_frame = tk.Frame(rightside_frame)
-    history_frame.grid(row=0, rowspan=2, padx=1, pady=1)
-    
-    label = tk.Label(history_frame, text="History", font=font.Font(size=12, underline=False, slant="italic"))
-    label.pack(side = tk.TOP)
-    
-    history_btn_frame = tk.Frame(history_frame)
-    history_btn_frame.pack(side=tk.TOP)
-        
-    def refresh_history():
-        """Regenerate the history list based on the history given by RequestHandler"""
-        # clear the current entries (in the UI)
-        history_listbox.delete(0, tk.END)
-        # repopulate the listbox
-        entry_descs = handler.history_descriptions()
-        for entry_desc in entry_descs:
-            history_listbox.insert(tk.END, entry_desc[1])
-        # underline the currently selected history entry
-        history_listbox.activate(handler.get_history_index())
-        history_listbox.focus()
-        # determine whether undo and redo are clickable given the current state
-        if handler.get_history_index() <= 0:
-            # first entry is selected; no more undo
-            undo_btn.config(state="disabled")
-        else:
-            undo_btn.config(state="active")
-        if handler.get_history_index() >= len(entry_descs)-1:
-            # latest entry is selected; can't redo
-            redo_btn.config(state="disabled")
-        else:
-            redo_btn.config(state="active")
-            
     def refresh_image():
         """Regenerate the image preview from the render image provided by RequestHandler"""
         new_image = Image.fromarray(handler.get_render_image_array())
@@ -253,36 +218,32 @@ if __name__ == "__main__":
         img_preview.config(image=new_tk_image)
         # prevent garbage collector from deleting image?
         img_preview.image = new_tk_image
+
     
-    def history_undo():
-        # update data
-        handler.history_undo()
-        # update ui
-        refresh_image()
-        refresh_history()
-    def history_redo():
-        handler.history_redo()
-        refresh_image()
-        refresh_history()
-        
-    undo_btn = tk.Button(history_btn_frame, text="Undo", command=lambda: history_undo(), state="disabled")
-    undo_btn.grid(column=0, row=0)
-    redo_btn = tk.Button(history_btn_frame, text="Redo", command=lambda: history_redo(), state="disabled")
-    redo_btn.grid(column=1, row=0)
+    #### RIGHTSIDE FRAME ####
+    rightside_frame = tk.Frame(window, highlightthickness=1, highlightbackground="black")
+    rightside_frame.grid(row=0, column=3, padx=3, pady=3, sticky="nsew")
     
-    history_listbox = tk.Listbox(history_frame)
-    history_listbox.pack(padx=1, pady=1)
-    def history_clicked(_):
-        """Set the history index based on a mouse click"""
-        if len(history_listbox.curselection()) > 0:
-            handler.history_set_index(history_listbox.curselection()[0])
-            refresh_history()
-            refresh_image()
-    history_listbox.bind("<<ListboxSelect>>", history_clicked)
+    ## HISTORY MENU ##
+    history_gui = History_GUI(
+        rightside_frame, 
+        Defaults.FONT, 
+        handler.history_undo, 
+        handler.history_redo,
+        handler.history_get_index,
+        handler.history_set_index,
+        handler.history_descriptions,
+        refresh_image
+    )
+    history_gui.frame.grid(row=0, rowspan=2, padx=1, pady=1)
+    
+    bindings["<Control-z>"] = window.bind("<Control-z>", history_gui.undo)
+    bindings["<Control-y>"] = window.bind("<Control-y>", history_gui.redo)
+    bindings["<Control-Shift-Z>"] = window.bind("<Control-Shift-Z>", history_gui.redo)
     
     ##
     separator = ttk.Separator(rightside_frame, orient="horizontal")
-    separator.grid(row=2, column=0, columnspan=1, rowspan=1, sticky="nsew")
+    separator.grid(cnf=Defaults.SEPARATOR_CNF.value, row=2)
     
     ## SELECTION MENU ##
     selection_frame = tk.Frame(rightside_frame)
@@ -335,7 +296,8 @@ if __name__ == "__main__":
     
     ##
     separator = ttk.Separator(rightside_frame, orient="horizontal")
-    separator.grid(row=6, column=0, columnspan=1, rowspan=1, sticky="nsew")
+    # separator.grid(row=6, column=0, columnspan=1, rowspan=1, sticky="nsew")
+    separator.grid(cnf=Defaults.SEPARATOR_CNF.value, row=6)
     
     ## DRAW MENU ##
     # draw_menu_frame = tk.Frame(rightside_frame, highlightthickness=1, highlightbackground="blue")
@@ -422,7 +384,8 @@ if __name__ == "__main__":
     
     ##
     separator = ttk.Separator(rightside_frame, orient="horizontal")
-    separator.grid(row=12, column=0, columnspan=1, rowspan=1, sticky="nsew")
+    # separator.grid(row=12, column=0, columnspan=1, rowspan=1, sticky="nsew")
+    separator.grid(cnf=Defaults.SEPARATOR_CNF.value, row=12)
     
     ## ZOOM MENU ##
     zoom_frame = tk.Frame(rightside_frame)
@@ -455,7 +418,8 @@ if __name__ == "__main__":
     
     ##
     separator = ttk.Separator(rightside_frame, orient="horizontal")
-    separator.grid(row=15, column=0, columnspan=1, rowspan=1, sticky="nsew")
+    # separator.grid(row=15, column=0, columnspan=1, rowspan=1, sticky="nsew")
+    separator.grid(cnf=Defaults.SEPARATOR_CNF.value, row=15)
     
     
     window.config(menu=menubar)
