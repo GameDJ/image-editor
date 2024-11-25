@@ -31,7 +31,7 @@ class Selection_GUI(tk.Frame):
         # Select & Clear buttons
         self.select_btn = tk.Button(self.btn_frame, text="Select", command=self._gui_change_image_mode)
         self.select_btn.grid(column=0, row=0)
-        self.clear_btn = tk.Button(self.btn_frame, text="Clear", command=self._clear_selection, state="disabled")
+        self.clear_btn = tk.Button(self.btn_frame, text="Clear", command=self.clear_selection, state="disabled")
         self.clear_btn.grid(column=1, row=0)
         # coordinate display
         self.sel_coord_1 = tk.Label(self.frame, text=self._SEL_COORD_1_DEFAULT_TEXT)
@@ -52,7 +52,7 @@ class Selection_GUI(tk.Frame):
         self.select_btn.config(relief=self._gui_defaults.BUTTON_RELIEF.value)
 
     def _begin_selection(self, event: tk.Event):
-        self._clear_selection()
+        self.clear_selection()
         self.start_coord = (event.x, event.y)
     
     def _making_selection(self, event: tk.Event):
@@ -78,13 +78,14 @@ class Selection_GUI(tk.Frame):
             self._gui_refresh_image()
             self.clear_btn.config(state="active")
         
-    def _clear_selection(self):
+    def clear_selection(self, *_):
         if hasattr(self, "start_coord"):
             del self.start_coord
         if hasattr(self, "end_coord"):
             del self.end_coord
-        self._handler_clear_selection()
-        self.clear_btn.config(state="disabled")
-        self.sel_coord_1.config(text=self._SEL_COORD_1_DEFAULT_TEXT)
-        self.sel_coord_2.config(text="")
-        self._gui_refresh_image()
+        cleared = self._handler_clear_selection()
+        if cleared:
+            self.clear_btn.config(state="disabled")
+            self.sel_coord_1.config(text=self._SEL_COORD_1_DEFAULT_TEXT)
+            self.sel_coord_2.config(text="")
+            self._gui_refresh_image()

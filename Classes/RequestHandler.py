@@ -48,7 +48,8 @@ class RequestHandler:
         #     return True
         # else:
         #     return False
-        return self.selection.clear()
+        cleared = self.selection.clear()
+        return cleared
     
     def edit(self, args: Arguments):
         args.add_image(self.hist.get_current_img())

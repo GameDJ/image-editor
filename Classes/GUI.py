@@ -246,6 +246,7 @@ if __name__ == "__main__":
     )
     history_gui.frame.grid(row=0, rowspan=2, padx=1, pady=1)
     
+    # key bindings
     bindings["<Control-z>"] = window.bind("<Control-z>", history_gui.undo)
     bindings["<Control-y>"] = window.bind("<Control-y>", history_gui.redo)
     bindings["<Control-Shift-Z>"] = window.bind("<Control-Shift-Z>", history_gui.redo)
@@ -269,6 +270,10 @@ if __name__ == "__main__":
         refresh_image
     )
     selection_gui.frame.grid(row=3, rowspan=2, column=0, padx=1, pady=1, sticky="nsew")
+    
+    # key bindings
+    bindings["<a>"] = window.bind("<a>", lambda _: change_image_mode(ImageMode.SELECT))
+    bindings["<d>"] = window.bind("<d>", selection_gui.clear_selection)
     
     ##
     separator = ttk.Separator(rightside_frame, orient="horizontal")
