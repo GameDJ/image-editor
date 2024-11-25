@@ -8,6 +8,8 @@ from RequestHandler import RequestHandler
 from ArgumentType import ArgumentType
 from Arguments import Arguments
 from History_GUI import History_GUI
+from Selection_GUI import Selection_GUI
+from Defaults import Defaults
 
 from enum import Enum, auto
 class ImageMode(Enum):
@@ -24,12 +26,6 @@ if __name__ == "__main__":
     window.title("Helo vorld")
     window.geometry('800x560')
     
-    class Defaults(Enum):
-        BUTTON_RELIEF = "raised"
-        BUTTON_TOGGLED_RELIEF = "solid"
-        FONT = font.Font(size=12, underline=False, slant="italic")
-        SEPARATOR_CNF = {"column":0, "columnspan":1, "rowspan":1, "sticky":"nsew"}
-    
     # for storing bindings under a unique key
     bindings = {}
     
@@ -42,7 +38,7 @@ if __name__ == "__main__":
         global current_image_mode
         print("current image mode:", current_image_mode)
         if current_image_mode == ImageMode.SELECT:
-            toggle_select_off()
+            selection_gui.toggle_select_off()
         elif current_image_mode == ImageMode.EYEDROP:
             toggle_eyedropper_off()
         elif current_image_mode == ImageMode.SHAPE:
@@ -55,7 +51,7 @@ if __name__ == "__main__":
             # set new mode
             current_image_mode = new_mode
             if new_mode == ImageMode.SELECT:
-                toggle_select_on()
+                selection_gui.toggle_select_on()
             elif new_mode == ImageMode.EYEDROP:
                 toggle_eyedropper_on()
             elif new_mode == ImageMode.SHAPE:
@@ -203,10 +199,10 @@ if __name__ == "__main__":
     window.grid_columnconfigure(0, minsize=400, weight=1)
     
     # a label to hold the image
-    img_preview = tk.Label(image_frame, borderwidth=0, cursor="circle")
+    image_preview = tk.Label(image_frame, borderwidth=0, cursor="circle")
     # img_preview.pack(side=tk.TOP)
     # img_preview.grid(sticky="nsew")
-    img_preview.place(in_=image_frame, anchor="c", relx=.5, rely=.5)
+    image_preview.place(in_=image_frame, anchor="c", relx=.5, rely=.5)
     
     loaded_file_name = "image.png"
     
@@ -215,9 +211,9 @@ if __name__ == "__main__":
         new_image = Image.fromarray(handler.get_render_image_array())
         new_tk_image = ImageTk.PhotoImage(new_image)
         # update the image label
-        img_preview.config(image=new_tk_image)
+        image_preview.config(image=new_tk_image)
         # prevent garbage collector from deleting image?
-        img_preview.image = new_tk_image
+        image_preview.image = new_tk_image
 
     
     #### RIGHTSIDE FRAME ####
@@ -227,7 +223,6 @@ if __name__ == "__main__":
     ## HISTORY MENU ##
     history_gui = History_GUI(
         rightside_frame, 
-        Defaults.FONT, 
         handler.history_undo, 
         handler.history_redo,
         handler.history_get_index,
@@ -246,9 +241,18 @@ if __name__ == "__main__":
     separator.grid(cnf=Defaults.SEPARATOR_CNF.value, row=2)
     
     ## SELECTION MENU ##
-    selection_frame = tk.Frame(rightside_frame)
-    selection_frame.grid(row=3, rowspan=2, column=0, padx=1, pady=1, sticky="nsew")
+    # selection_frame = tk.Frame(rightside_frame)
+    selection_gui = Selection_GUI(
+        rightside_frame,
+        lambda:change_image_mode(ImageMode.SELECT),
+        handler.make_selection,
+        handler.get_selection,
+        handler.clear_selection,
+        refresh_image
+    )
+    selection_gui.frame.grid(row=3, rowspan=2, column=0, padx=1, pady=1, sticky="nsew")
     
+
     label = tk.Label(selection_frame, text="Select", font=font.Font(size=12, underline=False, slant="italic"))
     label.pack(side=tk.TOP)
     
@@ -262,6 +266,7 @@ if __name__ == "__main__":
         selection_button.config(relief=Defaults.BUTTON_TOGGLED_RELIEF.value)
         global clear_sel_state
         clear_sel_state = "active"
+        bindings["begin_selection"] = image_preview.bind("<ButtonPress-1>", )
     def toggle_select_off():
         selection_button.config(relief=Defaults.BUTTON_RELIEF.value)
         clear_sel_btn.config(state=clear_sel_state)
@@ -368,10 +373,10 @@ if __name__ == "__main__":
         update_color()
             
     def toggle_eyedropper_on():
-        bindings["select_pixel_color"] = img_preview.bind("<ButtonPress-1>", select_pixel_color)
+        bindings["select_pixel_color"] = image_preview.bind("<ButtonPress-1>", select_pixel_color)
         eyedropper_btn.config(relief=Defaults.BUTTON_TOGGLED_RELIEF.value)
     def toggle_eyedropper_off():
-        img_preview.unbind("<begin_selection-1>", bindings["select_pixel_color"])
+        image_preview.unbind("<begin_selection-1>", bindings["select_pixel_color"])
         bindings.pop("select_pixel_color")
         eyedropper_btn.config(relief=Defaults.BUTTON_RELIEF.value)
     

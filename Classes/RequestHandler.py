@@ -30,6 +30,19 @@ class RequestHandler:
     
     def make_selection(self, start_coord, end_coord):
         self.selection = Selection(start_coord, end_coord)
+
+    def get_selection(self) -> Selection:
+        if hasattr(self, "selection"):
+            return self.selection
+        else:
+            return None
+        
+    def clear_selection(self) -> bool:
+        if hasattr(self, "selection"):
+            del self.selection
+            return True
+        else:
+            return False
     
     def edit(self, args: Arguments):
         args.add_image(self.hist.get_current_img())
