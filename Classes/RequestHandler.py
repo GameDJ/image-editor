@@ -16,6 +16,7 @@ class RequestHandler:
     
     def __init__(self):
         self.hist = History()
+        self.selection = Selection()
     
     def printy(self, args: Arguments):
         print(args.get_args().keys())
@@ -28,24 +29,31 @@ class RequestHandler:
     def export_image(self):
         return
     
-    def make_selection(self, start_coord, end_coord):
-        self.selection = Selection(start_coord, end_coord)
+    def make_selection(self, start_coord: tuple[int, int], end_coord: tuple[int, int]):
+        # self.selection = Selection(start_coord, end_coord)
+        self.selection.set_bbox_from_coords(start_coord, end_coord)
 
-    def get_selection(self) -> Selection:
-        if hasattr(self, "selection"):
-            return self.selection
-        else:
-            return None
+    def get_selection_bbox(self) -> tuple[int, int, int, int]:
+        """Returns None if no bbox is set"""
+        # if hasattr(self, "selection"):
+        #     return self.selection
+        # else:
+        #     return None
+        return self.selection.get_bbox()
         
     def clear_selection(self) -> bool:
-        if hasattr(self, "selection"):
-            del self.selection
-            return True
-        else:
-            return False
+        """Returns True if there was a bbox to clear, otherwise False"""
+        # if hasattr(self, "selection"):
+        #     del self.selection
+        #     return True
+        # else:
+        #     return False
+        return self.selection.clear()
     
     def edit(self, args: Arguments):
         args.add_image(self.hist.get_current_img())
+        if self.selection.get_bbox() is not None:
+            args.add_selection(self.selection)
         # self.printy(args)
         edited_image = Filters.edit(args)
         self._create_history_entry(edited_image, FilterInfo[args.get_args()[AT.FILTER]]["text"])
@@ -58,13 +66,19 @@ class RequestHandler:
     
     def get_current_actual_image(self):
         return self.hist.get_current_img()
+    
+    def get_image_dimensions(self) -> tuple[int, int]:
+        return self.hist.get_current_img().shape[0:2]
+    
     def history_undo(self):
         self.hist.undo()
+        
     def history_redo(self):
         self.hist.redo()
+        
     def history_set_index(self, index: int):
         self.hist.set_index(index)
-    
+        
     def _create_history_entry(self, image_array, desc: str):
         self.hist.add_record(image_array, desc)
         
@@ -94,11 +108,12 @@ class RequestHandler:
             # scale based on zoom
             #
             pass
-        if hasattr(self, "selection"):
+        if self.selection.get_bbox() is not None:
             # need to change the selection bounds based on zoom...
             # copy selection and scale/transform it appropriately
             #
-            cur_img = self.selection.draw_selection(cur_img)
+            render_img = cur_img.copy()
+            cur_img = self.selection.draw_selection(render_img)
         return cur_img
     def get_color_at_pixel(self, x: int, y: int) -> tuple[int, int, int]:
         return self.get_current_actual_image()[y][x]

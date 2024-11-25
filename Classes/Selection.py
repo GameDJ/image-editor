@@ -1,12 +1,16 @@
 import numpy as np
 
 class Selection:
-    """Class to hold the coordinates of the current selection from an Image."""
+    """Class to hold the coordinates of the current selection from an Image.
+    Initialize with or without coordinates. Set coordinates in order to calculate the bbox.
+    The bbox (bounding box) defines the four boundaries of the selection.
+    """
     
-    def __init__(self, start_coord: tuple[int, int], end_coord: tuple[int, int]):
-        self.bbox = self._calc_bbox(start_coord, end_coord)
+    def __init__(self, start_coord: tuple[int, int] = None, end_coord: tuple[int, int] = None):
+        if start_coord and end_coord:
+            self.bbox = self.set_bbox_from_coords(start_coord, end_coord)
         
-    def _calc_bbox(self, start_coord: tuple[int, int], end_coord: tuple[int, int]) -> tuple[int, int, int, int]:
+    def set_bbox_from_coords(self, start_coord: tuple[int, int], end_coord: tuple[int, int]) -> tuple[int, int, int, int]:
         """Takes two coordinates and returns a tuple representing the bounds
         Returns:
         (x_min, y_min, x_max, y_max)
@@ -15,17 +19,32 @@ class Selection:
         y_min = min(start_coord[1], end_coord[1])
         x_max = max(start_coord[0], end_coord[0])
         y_max = max(start_coord[1], end_coord[1])
-        return (x_min, y_min, x_max, y_max)
+        self.bbox = (x_min, y_min, x_max, y_max)
         
-        
-    # def get_start_coord(self) -> int:
-    #     return self.start_coordinate
-    
-    # def get_end_coord(self) -> int:
-    #     return self.end_coordinate
+    def set_bbox(self, bbox: tuple[int, int, int, int]) -> bool:
+        """Returns True if overwriting existing bbox (else False)"""
+        had_bbox = False
+        if hasattr(self, "bbox"):
+            had_bbox = True
+        self.bbox = bbox
+        return had_bbox
     
     def get_bbox(self) -> tuple[int, int, int, int]:
-        return self.bbox
+        if hasattr(self, "bbox"):
+            return self.bbox
+        else:
+            return None
+    
+    def clear(self) -> bool:
+        """Returns:
+        True if cleared successfully  
+        False if nothing to clear"""
+        if hasattr(self, "bbox"):
+            del self.bbox
+            return True
+        else:
+            return False
+        
     
     def draw_selection(self, image_array: np.ndarray) -> np.ndarray:
         """Draw a selection box onto an RGB numpy array"""

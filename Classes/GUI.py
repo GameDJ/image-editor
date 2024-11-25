@@ -9,7 +9,6 @@ from ArgumentType import ArgumentType
 from Arguments import Arguments
 from History_GUI import History_GUI
 from Selection_GUI import Selection_GUI
-from Defaults import Defaults
 
 from enum import Enum, auto
 class ImageMode(Enum):
@@ -26,6 +25,14 @@ if __name__ == "__main__":
     window.title("Helo vorld")
     window.geometry('800x560')
     
+    class Defaults(Enum):
+        BUTTON_RELIEF = "raised"
+        BUTTON_TOGGLED_RELIEF = "solid"
+        PANEL_TITLE_FONT = font.Font(size=12, underline=False, slant="italic")
+        SEPARATOR_CNF = {"column":0, "columnspan":1, "rowspan":1, "sticky":"nsew"}
+        CURSOR = ""
+        CURSOR_IMG_ACTION = "circle"
+    
     # for storing bindings under a unique key
     bindings = {}
     
@@ -36,7 +43,7 @@ if __name__ == "__main__":
     def change_image_mode(new_mode: ImageMode):
         """Change the image mode and reset the visual state of the button previously in use, if any"""
         global current_image_mode
-        print("current image mode:", current_image_mode)
+        # print("current image mode:", current_image_mode)
         if current_image_mode == ImageMode.SELECT:
             selection_gui.toggle_select_off()
         elif current_image_mode == ImageMode.EYEDROP:
@@ -56,7 +63,13 @@ if __name__ == "__main__":
                 toggle_eyedropper_on()
             elif new_mode == ImageMode.SHAPE:
                 toggle_drawing_on()
-        print("new image mode:", current_image_mode)
+        # print("new image mode:", current_image_mode)
+        
+        # Set cursor based on action
+        if current_image_mode == ImageMode.NONE:
+            image_preview.config(cursor=Defaults.CURSOR.value)
+        else:
+            image_preview.config(cursor=Defaults.CURSOR_IMG_ACTION.value)
             
     
     ### MENU BAR ###
@@ -199,7 +212,7 @@ if __name__ == "__main__":
     window.grid_columnconfigure(0, minsize=400, weight=1)
     
     # a label to hold the image
-    image_preview = tk.Label(image_frame, borderwidth=0, cursor="circle")
+    image_preview = tk.Label(image_frame, borderwidth=0, cursor=Defaults.CURSOR.value)
     # img_preview.pack(side=tk.TOP)
     # img_preview.grid(sticky="nsew")
     image_preview.place(in_=image_frame, anchor="c", relx=.5, rely=.5)
@@ -222,7 +235,8 @@ if __name__ == "__main__":
     
     ## HISTORY MENU ##
     history_gui = History_GUI(
-        rightside_frame, 
+        rightside_frame,
+        Defaults,
         handler.history_undo, 
         handler.history_redo,
         handler.history_get_index,
@@ -244,60 +258,17 @@ if __name__ == "__main__":
     # selection_frame = tk.Frame(rightside_frame)
     selection_gui = Selection_GUI(
         rightside_frame,
+        Defaults,
         lambda:change_image_mode(ImageMode.SELECT),
         handler.make_selection,
-        handler.get_selection,
+        handler.get_selection_bbox,
         handler.clear_selection,
+        handler.get_image_dimensions,
+        bindings,
+        image_preview,
         refresh_image
     )
     selection_gui.frame.grid(row=3, rowspan=2, column=0, padx=1, pady=1, sticky="nsew")
-    
-
-    label = tk.Label(selection_frame, text="Select", font=font.Font(size=12, underline=False, slant="italic"))
-    label.pack(side=tk.TOP)
-    
-    selection_btn_frame = tk.Frame(selection_frame)
-    selection_btn_frame.pack(side=tk.TOP)
-    
-    # gonna replace this with a check in handler for if selection exists
-    clear_sel_state = "disabled"
-        
-    def toggle_select_on():
-        selection_button.config(relief=Defaults.BUTTON_TOGGLED_RELIEF.value)
-        global clear_sel_state
-        clear_sel_state = "active"
-        bindings["begin_selection"] = image_preview.bind("<ButtonPress-1>", )
-    def toggle_select_off():
-        selection_button.config(relief=Defaults.BUTTON_RELIEF.value)
-        clear_sel_btn.config(state=clear_sel_state)
-    
-    selection_button = tk.Button(selection_btn_frame, text="Select", command=lambda:change_image_mode(ImageMode.SELECT))
-    selection_button.pack(side=tk.LEFT)
-    
-    # clear selection button
-    def clear_selection():
-        global clear_sel_state
-        sel_coord_1.config(text="No selection")
-        sel_coord_2.config(text="")
-        clear_sel_state = "disabled"
-        clear_sel_btn.config(state=clear_sel_state)
-    
-    clear_sel_btn = tk.Button(selection_btn_frame, text="Clear", command=clear_selection, state="disabled")
-    clear_sel_btn.pack(side=tk.LEFT)
-    
-    # coordinate display
-    sel_coord_1 = tk.Label(selection_frame, text="No selection")
-    sel_coord_1.pack()
-    sel_coord_2 = tk.Label(selection_frame, text="")
-    sel_coord_2.pack()
-    
-    # def fake_select():
-    #     sel_coord_1.config(text="x: 20, 40")
-    #     sel_coord_2.config(text="y: 30, 50")
-    
-    # fake_select_btn = tk.Button(selection_frame, text="Selection Tool", command=fake_select)
-    # fake_select_btn.pack(side=tk.TOP)
-    
     
     ##
     separator = ttk.Separator(rightside_frame, orient="horizontal")
