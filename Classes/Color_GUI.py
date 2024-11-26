@@ -44,7 +44,7 @@ class Color_GUI(tk.Frame):
     def _change_color(self):
         color = colorchooser.askcolor(title="Choose color", initialcolor=self._convert_color_to_hex(self.color))
         if all(color):
-            print(color)
+            # print(color)
             self.color = color[0]
             self._update_color()
             

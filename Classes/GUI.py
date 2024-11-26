@@ -282,7 +282,6 @@ if __name__ == "__main__":
     separator.grid(cnf=Defaults.SEPARATOR_CNF.value, row=6)
     
     ## DRAW MENU ##
-    # draw_menu_frame = tk.Frame(rightside_frame, highlightthickness=1, highlightbackground="blue")
     draw_menu_frame = tk.Frame(rightside_frame)
     draw_menu_frame.grid(row=7, rowspan=2, column=0, padx=1, pady=1, sticky="nsew")
     
@@ -324,7 +323,6 @@ if __name__ == "__main__":
     
     ##
     separator = ttk.Separator(rightside_frame, orient="horizontal")
-    # separator.grid(row=12, column=0, columnspan=1, rowspan=1, sticky="nsew")
     separator.grid(cnf=Defaults.SEPARATOR_CNF.value, row=12)
     
     ## ZOOM MENU ##
@@ -359,7 +357,6 @@ if __name__ == "__main__":
     
     ##
     separator = ttk.Separator(rightside_frame, orient="horizontal")
-    # separator.grid(row=15, column=0, columnspan=1, rowspan=1, sticky="nsew")
     separator.grid(cnf=Defaults.SEPARATOR_CNF.value, row=15)
     
     
