@@ -116,6 +116,7 @@ class RequestHandler:
             render_img = cur_img.copy()
             cur_img = self.selection.draw_selection(render_img)
         return cur_img
+    
     def get_color_at_pixel(self, x: int, y: int) -> tuple[int, int, int]:
         return self.get_current_actual_image()[y][x]
     

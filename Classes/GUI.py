@@ -9,6 +9,7 @@ from ArgumentType import ArgumentType
 from Arguments import Arguments
 from History_GUI import History_GUI
 from Selection_GUI import Selection_GUI
+from Color_GUI import Color_GUI
 
 from enum import Enum, auto
 class ImageMode(Enum):
@@ -44,10 +45,11 @@ if __name__ == "__main__":
         """Change the image mode and reset the visual state of the button previously in use, if any"""
         global current_image_mode
         # print("current image mode:", current_image_mode)
+        # Turn off current mode
         if current_image_mode == ImageMode.SELECT:
             selection_gui.toggle_select_off()
         elif current_image_mode == ImageMode.EYEDROP:
-            toggle_eyedropper_off()
+            color_gui.toggle_eyedropper_off()
         elif current_image_mode == ImageMode.SHAPE:
             toggle_drawing_off()
         if current_image_mode == new_mode:
@@ -55,12 +57,12 @@ if __name__ == "__main__":
             # (the other toggle off functions were handled above)
             current_image_mode = ImageMode.NONE
         else:
-            # set new mode
+            # Turn on new mode
             current_image_mode = new_mode
             if new_mode == ImageMode.SELECT:
                 selection_gui.toggle_select_on()
             elif new_mode == ImageMode.EYEDROP:
-                toggle_eyedropper_on()
+                color_gui.toggle_eyedropper_on()
             elif new_mode == ImageMode.SHAPE:
                 toggle_drawing_on()
         # print("new image mode:", current_image_mode)
@@ -309,58 +311,16 @@ if __name__ == "__main__":
     # separator.grid(row=9, column=0, columnspan=1, rowspan=1, sticky="nsew")
     
     ## COLOR ##
-    # color_menu_frame = tk.Frame(rightside_frame, highlightthickness=1, highlightbackground="red")
-    color_menu_frame = tk.Frame(rightside_frame)
-    color_menu_frame.grid(row=10, rowspan=2, column=0, padx=1, pady=1, sticky="nsew")
-    
-    label = tk.Label(color_menu_frame, text="Color", font=font.Font(size=12, underline=False, slant="italic"))
-    label.pack(side = tk.TOP)
-    
-    def convert_color_to_hex(rgb: np.ndarray):
-        return "#%02x%02x%02x" % (rgb[0], rgb[1], rgb[2])
-    
-    cur_color = (255, 0, 0)
-    
-    def change_color():
-        global cur_color
-        color = colorchooser.askcolor(title="Choose color", initialcolor=convert_color_to_hex(cur_color))
-        if all(color):
-            print(color)
-            cur_color = color[0]
-            update_color()
-    
-    def update_color():
-        color_preview.config(background=convert_color_to_hex(cur_color))
-    
-    color_inner_frame = tk.Frame(color_menu_frame)
-    color_inner_frame.pack(side=tk.TOP)
-    
-    fakeimage = tk.PhotoImage(width=1, height=1)
-    color_preview = tk.Button(color_inner_frame, text="", image=fakeimage, width=24, height=24, compound="c", command=change_color, background=convert_color_to_hex(cur_color), relief="groove")
-    color_preview.grid(row=0, column=1, padx=3)
-    update_color()
-    
-    # eyedropper
-    
-    def select_pixel_color(event):
-        global cur_color
-        cur_color = handler.get_color_at_pixel(event.x, event.y)
-        update_color()
-            
-    def toggle_eyedropper_on():
-        bindings["select_pixel_color"] = image_preview.bind("<ButtonPress-1>", select_pixel_color)
-        eyedropper_btn.config(relief=Defaults.BUTTON_TOGGLED_RELIEF.value)
-    def toggle_eyedropper_off():
-        image_preview.unbind("<begin_selection-1>", bindings["select_pixel_color"])
-        bindings.pop("select_pixel_color")
-        eyedropper_btn.config(relief=Defaults.BUTTON_RELIEF.value)
-    
-    # eyedropper_btn = tk.Button(color_menu_frame, text="Eyedropper", command=toggle_eyedropper, relief=Defaults.BUTTON_RELIEF.value)
-    # eyedrop_img = tk.PhotoImage(file=r"C:\\Users\\derek\\OneDrive\\Documents\\2024_Fall\\IT326\\icons8-color-dropper-24.png")
-    eyedrop_img = tk.PhotoImage(file=os.path.join(os.path.dirname(__file__), r"..\assets\icons8-color-dropper-24.png"))
-    eyedropper_btn = tk.Button(color_inner_frame, command=lambda:change_image_mode(ImageMode.EYEDROP), relief=Defaults.BUTTON_RELIEF.value, image=eyedrop_img)
-    # eyedropper_btn.pack(side=tk.TOP)
-    eyedropper_btn.grid(row=0, column=3, padx=3)
+    color_gui = Color_GUI(
+        rightside_frame,
+        Defaults,
+        lambda: change_image_mode(ImageMode.EYEDROP),
+        handler.get_color_at_pixel,
+        bindings,
+        image_preview,
+        refresh_image
+    )
+    color_gui.frame.grid(row=10, rowspan=2, column=0, padx=1, pady=1, sticky="nsew")
     
     ##
     separator = ttk.Separator(rightside_frame, orient="horizontal")
@@ -387,6 +347,7 @@ if __name__ == "__main__":
             zoom_level_label.config(text=f"{int(zoom_level)}x")
         
     
+    fakeimage = tk.PhotoImage(width=1, height=1)
     zoom_out_btn = tk.Button(zoom_inner_frame, text="-", command=lambda: zoom_change(-1), image=fakeimage, compound="c", width=20, height=20)
     zoom_out_btn.pack(side=tk.LEFT, padx=1)
     
