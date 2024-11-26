@@ -14,7 +14,7 @@ class Color_GUI(tk.Frame):
         self._gui_image_preview = gui_image_preview
         self._gui_refresh_image = gui_refresh_image
         
-        self.color = (255, 0, 0)
+        self.color_codes = ((255, 0, 0), "#ff0000")
         
         # Selection panel frame
         self.frame = tk.Frame(parent_frame)
@@ -26,8 +26,8 @@ class Color_GUI(tk.Frame):
         self.btn_frame.pack(side=tk.TOP)
         
         # Color preview button
-        self.fakeimage = tk.PhotoImage(width=1, height=1)
-        self.color_preview = tk.Button(self.btn_frame, text="", image=self.fakeimage, width=24, height=24, compound="c", command=self._change_color, background=self._convert_color_to_hex(self.color), relief="groove")
+        self._fakeimage = tk.PhotoImage(width=1, height=1)
+        self.color_preview = tk.Button(self.btn_frame, text="", image=self._fakeimage, width=24, height=24, compound="c", command=self._change_color, background=self.color_codes[1], relief="groove")
         self.color_preview.grid(row=0, column=1, padx=3)
         self._update_color()
         
@@ -41,17 +41,18 @@ class Color_GUI(tk.Frame):
         return "#%02x%02x%02x" % (rgb[0], rgb[1], rgb[2])
     
     def _change_color(self):
-        color = colorchooser.askcolor(title="Choose color", initialcolor=self._convert_color_to_hex(self.color))
-        if all(color):
+        new_color_codes = colorchooser.askcolor(title="Choose color", initialcolor=self.color_codes[1])
+        if all(new_color_codes):
             # print(color)
-            self.color = color[0]
+            self.color_codes = new_color_codes
             self._update_color()
             
     def _update_color(self):
-        self.color_preview.config(background=self._convert_color_to_hex(self.color))
+        self.color_preview.config(background=self.color_codes[1])
         
     def select_pixel_color(self, event: tk.Event):
-        self.color = self._handler_get_color_at_pixel(event.x, event.y)
+        color_RGB = self._handler_get_color_at_pixel(event.x, event.y)
+        self.color_codes = (color_RGB, self._convert_color_to_hex(color_RGB))
         self._update_color()
         
     def toggle_eyedropper_on(self):

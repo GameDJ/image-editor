@@ -25,7 +25,8 @@ class RequestHandler:
         print(args.get_args().keys())
     
     def create_canvas(self, width: int, height: int, color: tuple[int, int, int]):
-        pass
+        new_image_array = np.full((height, width, 3), color, dtype=np.uint8)
+        self.initialize_image(Image(new_image_array))
     
     def import_image(self, file_path: str) -> bool:
         """Returns True if image initialization successful (else False)"""
@@ -38,12 +39,23 @@ class RequestHandler:
         self.file_name = file_name
         return self.initialize_image(Image(np.array(image)))
     
+    def get_file_name(self) -> str:
+        if hasattr(self, "file_name"):
+            return self.file_name
+        else:
+            return None
+    
     def initialize_image(self, image: Image) -> bool:
         self._create_history_entry(image, "Create image")
         self.zoom_level = 1
         return True
     
-    def export_image(self):
+    def export_image(self, save_pathname: str):
+        image = PIL.Image.fromarray(self.get_current_actual_image().get_img_array())
+        if image.mode != "RGB":
+            image = image.convert("RGB")
+        image.save(save_pathname)
+        # should check to see if the file exists now, to verify it saved
         return
     
     def make_selection(self, start_coord: tuple[int, int], end_coord: tuple[int, int]):
@@ -103,7 +115,7 @@ class RequestHandler:
     
     def is_active_image(self) -> bool:
         """Returns True if history has a current image"""
-        return (self.hist.get_current_img() is not None)
+        return self.hist.is_active_image()
     
     def history_get_index(self) -> int:
         return self.hist.get_index()

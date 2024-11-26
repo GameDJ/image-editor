@@ -13,6 +13,7 @@ from History_GUI import History_GUI
 from Selection_GUI import Selection_GUI
 from Color_GUI import Color_GUI
 from Image import Image
+from CanvasDialog_GUI import CanvasDialog
 
 from enum import Enum, auto
 class ImageMode(Enum):
@@ -85,25 +86,15 @@ if __name__ == "__main__":
             discard_image = messagebox.askyesno(message="Are you sure you want to discard the current image?")
             if not discard_image: 
                 return
-        
-        width = simpledialog.askinteger("Canvas width", "Enter width:")
-        if not width:
+            
+        canvasDialog = CanvasDialog(window, title="Initialize Canvas", color_codes=color_gui.color_codes)
+        if not canvasDialog.width or not canvasDialog.height:
             messagebox.showerror(title="Operation cancelled", message="Failed to create canvas")
-            return
-        height = simpledialog.askinteger("Canvas height", "Enter height:")
-        if not height:
-            messagebox.showerror(title="Operation cancelled", message="Failed to create canvas")
-            return
-        color = colorchooser.askcolor(title="Choose a color")
-        if not color:
-            messagebox.showerror(title="Operation cancelled", message="Failed to create canvas")
-            return
-        
-        new_image_array = np.full((height, width, 3), color[0], dtype=np.uint8)
-        handler.initialize_image(Image(new_image_array))
-        refresh_image()
-        # activate_savebtn()
-        history_gui.refresh_history()
+        else:
+            handler.create_canvas(canvasDialog.width, canvasDialog.height, canvasDialog.color_codes[0])
+            refresh_image()
+            # activate_savebtn()
+            history_gui.refresh_history()
     
     def load_file():
         if handler.is_active_image():
@@ -113,9 +104,8 @@ if __name__ == "__main__":
         global loaded_file_name
         loaded_file_name = filedialog.askopenfilename(title="Select a file")
         if not loaded_file_name:
-            messagebox.showerror(title="Operation cancelled", message="Failed to load image")
+            messagebox.showerror(title="Operation cancelled", message="No file selected")
             return
-        loaded_file_name = loaded_file_name.split("/")[-1]
         if not handler.import_image(loaded_file_name):
             messagebox.showerror(title="Operation cancelled", message="Failed to load image")
             return
@@ -126,10 +116,7 @@ if __name__ == "__main__":
     def save_file():
         if handler.is_active_image() is not None:
             path = filedialog.asksaveasfilename(title="Save as:", initialfile=loaded_file_name, defaultextension=".png", filetypes=[("PNG", "*.png"), ("JPEG", "*.jpg")])
-            image = PIL.Image.fromarray(handler.get_current_actual_image())
-            if image.mode != "RGB":
-                image = image.convert("RGB")
-            image.save(path)
+            handler.export_image(path)
             # should check to see if the file exists now, to verify it saved
         else:
             messagebox.showerror(title="Error", message="No image loaded")

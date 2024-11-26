@@ -26,6 +26,9 @@ class History:
             return self.array_history[self.index].get_image().__deepcopy__()
         else:
             return None
+        
+    def is_active_image(self) -> bool:
+        return (self.index > -1)
     
     def undo(self):
         if (self.index > 0):
