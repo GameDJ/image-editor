@@ -17,7 +17,7 @@ class History_GUI(tk.Frame):
         # History panel frame
         self.frame = tk.Frame(parent_frame)
         # Label
-        self.label = tk.Label(self.frame, text="History", font=gui_defaults.PANEL_TITLE_FONT)
+        self.label = tk.Label(self.frame, text="History", font=gui_defaults.PANEL_TITLE_FONT.value)
         self.label.pack(side = tk.TOP)
         # Frame for history buttons
         self.btn_frame = tk.Frame(self.frame)

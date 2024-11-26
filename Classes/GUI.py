@@ -22,7 +22,7 @@ def printy(text, *args):
     
 if __name__ == "__main__":
     window = tk.Tk()
-    window.title("Helo vorld")
+    window.title("SIMPLE")
     window.geometry('800x560')
     
     class Defaults(Enum):
@@ -277,7 +277,6 @@ if __name__ == "__main__":
     
     ##
     separator = ttk.Separator(rightside_frame, orient="horizontal")
-    # separator.grid(row=6, column=0, columnspan=1, rowspan=1, sticky="nsew")
     separator.grid(cnf=Defaults.SEPARATOR_CNF.value, row=6)
     
     ## DRAW MENU ##
