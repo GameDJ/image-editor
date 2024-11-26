@@ -1,8 +1,10 @@
 import os
 import tkinter as tk
 from tkinter import Menu, ttk, simpledialog, filedialog, commondialog, dialog, colorchooser, font, messagebox
+import PIL.Image
 import numpy as np
-from PIL import Image, ImageTk
+import PIL
+from PIL import ImageTk
 from FilterType import FilterType, FilterInfo
 from RequestHandler import RequestHandler
 from ArgumentType import ArgumentType
@@ -10,6 +12,7 @@ from Arguments import Arguments
 from History_GUI import History_GUI
 from Selection_GUI import Selection_GUI
 from Color_GUI import Color_GUI
+from Image import Image
 
 from enum import Enum, auto
 class ImageMode(Enum):
@@ -96,8 +99,8 @@ if __name__ == "__main__":
             messagebox.showerror(title="Operation cancelled", message="Failed to create canvas")
             return
         
-        the_image_array = np.full((height, width, 3), color[0], dtype=np.uint8)
-        handler.initialize_image(the_image_array)
+        new_image_array = np.full((height, width, 3), color[0], dtype=np.uint8)
+        handler.initialize_image(Image(new_image_array))
         refresh_image()
         # activate_savebtn()
         history_gui.refresh_history()
@@ -113,12 +116,9 @@ if __name__ == "__main__":
             messagebox.showerror(title="Operation cancelled", message="Failed to load image")
             return
         loaded_file_name = loaded_file_name.split("/")[-1]
-        image = Image.open(loaded_file_name).convert('RGB')
-        if not image:
+        if not handler.import_image(loaded_file_name):
             messagebox.showerror(title="Operation cancelled", message="Failed to load image")
             return
-        the_image_array = np.array(image)
-        handler.initialize_image(the_image_array)
         refresh_image()
         # activate_savebtn()
         history_gui.refresh_history()
@@ -126,7 +126,7 @@ if __name__ == "__main__":
     def save_file():
         if handler.is_active_image() is not None:
             path = filedialog.asksaveasfilename(title="Save as:", initialfile=loaded_file_name, defaultextension=".png", filetypes=[("PNG", "*.png"), ("JPEG", "*.jpg")])
-            image = Image.fromarray(handler.get_current_actual_image())
+            image = PIL.Image.fromarray(handler.get_current_actual_image())
             if image.mode != "RGB":
                 image = image.convert("RGB")
             image.save(path)
@@ -223,8 +223,8 @@ if __name__ == "__main__":
     
     def refresh_image():
         """Regenerate the image preview from the render image provided by RequestHandler"""
-        new_image = Image.fromarray(handler.get_render_image_array())
-        new_tk_image = ImageTk.PhotoImage(new_image)
+        new_pil_image = PIL.Image.fromarray(handler.get_render_image().get_img_array())
+        new_tk_image = ImageTk.PhotoImage(new_pil_image)
         # update the image label
         image_preview.config(image=new_tk_image)
         # prevent garbage collector from deleting image?

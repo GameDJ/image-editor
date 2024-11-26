@@ -2,7 +2,6 @@ import tkinter as tk
 from tkinter import font, colorchooser
 from typing import Callable
 from enum import Enum
-import numpy as np
 import os
 
 class Color_GUI(tk.Frame):
@@ -38,7 +37,7 @@ class Color_GUI(tk.Frame):
         # eyedropper_btn.pack(side=tk.TOP)
         self.eyedropper_btn.grid(row=0, column=3, padx=3)
         
-    def _convert_color_to_hex(self, rgb: np.ndarray):
+    def _convert_color_to_hex(self, rgb: tuple[int, int, int]):
         return "#%02x%02x%02x" % (rgb[0], rgb[1], rgb[2])
     
     def _change_color(self):

@@ -1,11 +1,14 @@
+import PIL.Image
 from History import History
 from Arguments import Arguments
 from ArgumentType import ArgumentType as AT
 from FilterType import FilterType, FilterInfo
 from Filters import Filters
 from Selection import Selection
-from typing import Callable
+from Image import Image
 import numpy as np
+# from PIL import Image as PIL_Image
+import PIL
 
 # this is a very rough framework since i have no idea what kind of information
 # will be passed around here/is required for the various operations
@@ -21,10 +24,24 @@ class RequestHandler:
     def printy(self, args: Arguments):
         print(args.get_args().keys())
     
-    def initialize_image(self, image):
+    def create_canvas(self, width: int, height: int, color: tuple[int, int, int]):
+        pass
+    
+    def import_image(self, file_path: str) -> bool:
+        """Returns True if image initialization successful (else False)"""
+        # get just the file name from the whole path
+        file_name = file_path.split("/")[-1]
+        # open the file as a PIL Image
+        image = PIL.Image.open(file_name).convert('RGB')
+        if not image:
+            return False
+        self.file_name = file_name
+        return self.initialize_image(Image(np.array(image)))
+    
+    def initialize_image(self, image: Image) -> bool:
         self._create_history_entry(image, "Create image")
         self.zoom_level = 1
-        return
+        return True
     
     def export_image(self):
         return
@@ -35,41 +52,29 @@ class RequestHandler:
 
     def get_selection_bbox(self) -> tuple[int, int, int, int]:
         """Returns None if no bbox is set"""
-        # if hasattr(self, "selection"):
-        #     return self.selection
-        # else:
-        #     return None
         return self.selection.get_bbox()
         
     def clear_selection(self) -> bool:
         """Returns True if there was a bbox to clear, otherwise False"""
-        # if hasattr(self, "selection"):
-        #     del self.selection
-        #     return True
-        # else:
-        #     return False
         cleared = self.selection.clear()
         return cleared
     
     def edit(self, args: Arguments):
-        args.add_image(self.hist.get_current_img())
+        # make a copy of the current image
+        args.add_image(self.hist.get_current_img().__deepcopy__())
+        # add selection, if there is one
         if self.selection.get_bbox() is not None:
             args.add_selection(self.selection)
-        # self.printy(args)
+        # edit the image
         edited_image = Filters.edit(args)
+        # add the edited image to history, with the filter text as the change description
         self._create_history_entry(edited_image, FilterInfo[args.get_args()[AT.FILTER]]["text"])
-    
-    # def _history_action(self, request):
-    #     if request == "undo":
-    #         self.hist.undo()
-    #     elif request == "redo":
-    #         self.hist.redo()
     
     def get_current_actual_image(self):
         return self.hist.get_current_img()
     
     def get_image_dimensions(self) -> tuple[int, int]:
-        return self.hist.get_current_img().shape[0:2]
+        return self.hist.get_current_img().get_img_array().shape[0:2]
     
     def history_undo(self):
         self.hist.undo()
@@ -103,8 +108,8 @@ class RequestHandler:
     def history_get_index(self) -> int:
         return self.hist.get_index()
     
-    def get_render_image_array(self) -> np.ndarray:
-        cur_img = self.hist.get_current_img()
+    def get_render_image(self) -> Image:
+        render_img = self.hist.get_current_img()
         if self.zoom_level != 1:
             # scale based on zoom
             #
@@ -113,24 +118,8 @@ class RequestHandler:
             # need to change the selection bounds based on zoom...
             # copy selection and scale/transform it appropriately
             #
-            render_img = cur_img.copy()
-            cur_img = self.selection.draw_selection(render_img)
-        return cur_img
+            render_img.set_img_array(self.selection.draw_selection(render_img.get_img_array()))
+        return render_img
     
     def get_color_at_pixel(self, x: int, y: int) -> tuple[int, int, int]:
         return self.get_current_actual_image()[y][x]
-    
-    # def process_request(self, request):
-    #     # idk how this is gonna get the information to determine which method to call so assuming string rn
-    #     if request == "initialize":
-    #         self._initialize_image()
-    #         self._create_history_entry # save newly created image
-    #     elif request == "export":
-    #         self._export_image()
-    #     elif request == "edit":
-    #         self._edit()
-    #         self._create_history_entry() # save current image version after edit
-    #     elif request == "undo" or request == "redo":
-    #         self._history_action(request)
-    #     elif request == "color":
-    #         self._get_color_information()

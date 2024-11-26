@@ -1,14 +1,15 @@
 from ArgumentType import ArgumentType as AT
 from Selection import Selection
+from Image import Image
 
 class Arguments:
     """Build a dictionary of arguments to be passed to Edit subclasses"""
-    def __init__(self, image = None) -> None:
+    def __init__(self, image: Image = None) -> None:
         self.args = {}
         if image:
             self.args[AT.AMOUNT] = image
             
-    def add_image(self, image) -> bool:
+    def add_image(self, image: Image) -> bool:
         """Adds an image to args and returns True if it's not overwriting an existing image value; otherwise False"""
         key_already_existed = AT.IMAGE in self.args
         self.args[AT.IMAGE] = image
@@ -30,7 +31,7 @@ class Arguments:
         """Name of the chosen shape"""
         self.args[AT.SHAPE] = shape_name
     def add_color(self, color: tuple[int, int, int]) -> None:
-        """An RGB color tuple, usually to inform a shape's color"""
+        """An RGB color tuple, usually to inform the drawing color"""
         self.args[AT.COLOR] = color
 
     def get_args(self) -> dict:
