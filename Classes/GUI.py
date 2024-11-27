@@ -50,8 +50,8 @@ if __name__ == "__main__":
         KEYBIND_CLEAR_SELECTION = "<c>"
         KEYBIND_EYEDROPPER = "<i>"
         KEYBIND_DRAW = "<d>"
-        KEYBIND_ZOOM_IN = "<->"
-        KEYBIND_ZOOM_OUT = "<=>"
+        KEYBIND_ZOOM_IN = "<equal>"
+        KEYBIND_ZOOM_OUT = "<minus>"
         
     
     # for storing bindings under a unique key
@@ -329,6 +329,9 @@ if __name__ == "__main__":
     )
     zoom_gui.frame.grid(row=13, rowspan=2, column=0, padx=1, pady=1, sticky="nsew")
     
+    bindings[Defaults.KEYBIND_ZOOM_IN] = window.bind(Defaults.KEYBIND_ZOOM_IN.value, lambda _: zoom_gui.zoom_change(1))
+    bindings[Defaults.KEYBIND_ZOOM_OUT] = window.bind(Defaults.KEYBIND_ZOOM_OUT.value, lambda _: zoom_gui.zoom_change(-1))
+
     ##
     separator = ttk.Separator(rightside_frame, orient="horizontal")
     separator.grid(cnf=Defaults.SEPARATOR_CNF.value, row=15)
