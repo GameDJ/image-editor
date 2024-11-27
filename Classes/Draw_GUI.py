@@ -8,7 +8,7 @@ from Selection import Selection
 from GUI_Defaults import GUI_Defaults
 from tkinter import font
 
-class Draw_GUI(tk.Frame):
+class Draw_GUI():
     def __init__(self, parent_frame: tk.Frame, gui_title_font: font, gui_change_image_mode: Callable, handler_edit: Callable, handler_get_image_dimensions: Callable, _gui_get_color_codes: Callable, gui_bindings: dict, gui_image_preview: tk.Label, gui_refresh_image: Callable, gui_refresh_history: Callable):
         # Outside refs
         self._gui_change_image_mode = gui_change_image_mode

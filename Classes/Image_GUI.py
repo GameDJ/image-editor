@@ -9,7 +9,7 @@ from PIL import ImageTk
 from GUI_Defaults import GUI_Defaults
 from ImageMode import ImageMode
 
-class Image_GUI(tk.Frame):
+class Image_GUI():
     def __init__(self, parent_frame: tk.Frame, handler_get_render_image: Callable[[], Image]):
         # Outside refs
         self._handler_get_render_image = handler_get_render_image

@@ -3,7 +3,7 @@ from typing import Callable
 from enum import Enum
 from tkinter import font
 
-class Zoom_GUI(tk.Frame):
+class Zoom_GUI():
     def __init__(self, parent_frame: tk.Frame, gui_title_font: font, handler_zoom_change: Callable, refresh_image: Callable):
         # Outside refs
         self._handler_zoom_change = handler_zoom_change
@@ -23,13 +23,13 @@ class Zoom_GUI(tk.Frame):
         # fake image for controlling exact size of the buttons
         self._fakeimage = tk.PhotoImage(width=1, height=1)
         
-        self.zoom_out_btn = tk.Button(self.inner_frame, text="-", command=lambda: zoom_change(-1), image=self._fakeimage, compound="c", width=20, height=20)
+        self.zoom_out_btn = tk.Button(self.inner_frame, text="-", command=lambda: self.zoom_change(-1), image=self._fakeimage, compound="c", width=20, height=20)
         self.zoom_out_btn.pack(side=tk.LEFT, padx=1)
         
         self.zoom_level_label = tk.Label(self.inner_frame, text=f"1x")
         self.zoom_level_label.pack(side=tk.LEFT, padx=3)
         
-        self.zoom_in_btn = tk.Button(self.inner_frame, text="+", command=lambda: zoom_change(1), image=self._fakeimage, compound="c", width=20, height=20)
+        self.zoom_in_btn = tk.Button(self.inner_frame, text="+", command=lambda: self.zoom_change(1), image=self._fakeimage, compound="c", width=20, height=20)
         self.zoom_in_btn.pack(side=tk.LEFT, padx=1)
 
     def zoom_change(self, delta: int):

@@ -4,7 +4,7 @@ from typing import Callable
 import os
 from GUI_Defaults import GUI_Defaults
 
-class Color_GUI(tk.Frame):
+class Color_GUI():
     def __init__(self, parent_frame: tk.Frame, gui_title_font: font, gui_change_image_mode: Callable, handler_get_color_at_pixel: Callable, gui_bindings: dict, gui_image_preview: tk.Label, gui_refresh_image: Callable):
         # Outside refs
         self._gui_change_image_mode = gui_change_image_mode
