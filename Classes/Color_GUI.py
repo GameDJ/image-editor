@@ -1,13 +1,12 @@
 import tkinter as tk
 from tkinter import font, colorchooser
 from typing import Callable
-from enum import Enum
 import os
+from GUI_Defaults import GUI_Defaults
 
 class Color_GUI(tk.Frame):
-    def __init__(self, parent_frame: tk.Frame, gui_defaults: Enum, gui_change_image_mode: Callable, handler_get_color_at_pixel: Callable, gui_bindings: dict, gui_image_preview: tk.Label, gui_refresh_image: Callable):
+    def __init__(self, parent_frame: tk.Frame, gui_title_font: font, gui_change_image_mode: Callable, handler_get_color_at_pixel: Callable, gui_bindings: dict, gui_image_preview: tk.Label, gui_refresh_image: Callable):
         # Outside refs
-        self._gui_defaults = gui_defaults
         self._gui_change_image_mode = gui_change_image_mode
         self._handler_get_color_at_pixel = handler_get_color_at_pixel
         self._gui_bindings = gui_bindings
@@ -19,7 +18,7 @@ class Color_GUI(tk.Frame):
         # Selection panel frame
         self.frame = tk.Frame(parent_frame)
         # Label
-        self.label = tk.Label(self.frame, text="Color", font=self._gui_defaults.PANEL_TITLE_FONT.value)
+        self.label = tk.Label(self.frame, text="Color", font=gui_title_font)
         self.label.pack(side = tk.TOP)
         
         self.btn_frame = tk.Frame(self.frame)
@@ -33,7 +32,7 @@ class Color_GUI(tk.Frame):
         
         # Eyedropper button
         self.eyedrop_img = tk.PhotoImage(file=os.path.join(os.path.dirname(__file__), r"..\assets\icons8-color-dropper-24.png"))
-        self.eyedropper_btn = tk.Button(self.btn_frame, command=self._gui_change_image_mode, relief=self._gui_defaults.BUTTON_RELIEF.value, image=self.eyedrop_img)
+        self.eyedropper_btn = tk.Button(self.btn_frame, command=lambda: self._gui_change_image_mode(self.toggle_eyedropper_on, self.toggle_eyedropper_off), relief=GUI_Defaults.BUTTON_RELIEF.value, image=self.eyedrop_img)
         # eyedropper_btn.pack(side=tk.TOP)
         self.eyedropper_btn.grid(row=0, column=3, padx=3)
         
@@ -56,12 +55,12 @@ class Color_GUI(tk.Frame):
         self._update_color()
         
     def toggle_eyedropper_on(self):
-        self._gui_bindings[self._gui_defaults.CLICK_PRESS_BINDING] = self._gui_image_preview.bind(self._gui_defaults.CLICK_PRESS_BINDING.value, self.select_pixel_color)
-        self.eyedropper_btn.config(relief=self._gui_defaults.BUTTON_TOGGLED_RELIEF.value)
+        self._gui_bindings[GUI_Defaults.CLICK_PRESS_BINDING] = self._gui_image_preview.bind(GUI_Defaults.CLICK_PRESS_BINDING.value, self.select_pixel_color)
+        self.eyedropper_btn.config(relief=GUI_Defaults.BUTTON_TOGGLED_RELIEF.value)
         
     def toggle_eyedropper_off(self):
-        self._gui_image_preview.unbind(self._gui_defaults.CLICK_PRESS_BINDING.value, self._gui_bindings.pop(self._gui_defaults.CLICK_PRESS_BINDING))
-        self.eyedropper_btn.config(relief=self._gui_defaults.BUTTON_RELIEF.value)
+        self._gui_image_preview.unbind(GUI_Defaults.CLICK_PRESS_BINDING.value, self._gui_bindings.pop(GUI_Defaults.CLICK_PRESS_BINDING))
+        self.eyedropper_btn.config(relief=GUI_Defaults.BUTTON_RELIEF.value)
         
     def get_color_codes(self):
         return self.color_codes

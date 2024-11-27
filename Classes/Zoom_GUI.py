@@ -1,18 +1,18 @@
 import tkinter as tk
 from typing import Callable
 from enum import Enum
+from tkinter import font
 
 class Zoom_GUI(tk.Frame):
-    def __init__(self, parent_frame: tk.Frame, gui_defaults: Enum, handler_zoom_change: Callable, refresh_image: Callable):
+    def __init__(self, parent_frame: tk.Frame, gui_title_font: font, handler_zoom_change: Callable, refresh_image: Callable):
         # Outside refs
-        self._gui_defaults = gui_defaults
         self._handler_zoom_change = handler_zoom_change
         self._gui_refresh_image = refresh_image
         
         # Zoom panel frame
         self.frame = tk.Frame(parent_frame)
         # Label
-        self.label = tk.Label(self.frame, text="Zoom", font=gui_defaults.PANEL_TITLE_FONT.value)
+        self.label = tk.Label(self.frame, text="Zoom", font=gui_title_font)
         self.label.pack(side = tk.TOP)
         # Frame for inner buttons
         self.inner_frame = tk.Frame(self.frame)

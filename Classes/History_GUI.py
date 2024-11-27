@@ -1,11 +1,11 @@
 import tkinter as tk
 from typing import Callable
 from enum import Enum
+from tkinter import font
 
 class History_GUI(tk.Frame):
-    def __init__(self, parent_frame: tk.Frame, gui_defaults: Enum, handler_undo: Callable, handler_redo: Callable, handler_history_get_index: Callable, handler_history_set_index: Callable, handler_history_descriptions: Callable, refresh_image: Callable):
+    def __init__(self, parent_frame: tk.Frame, gui_title_font: font, handler_undo: Callable, handler_redo: Callable, handler_history_get_index: Callable, handler_history_set_index: Callable, handler_history_descriptions: Callable, refresh_image: Callable):
         # Outside refs
-        self._gui_defaults = gui_defaults
         self._handler_undo = handler_undo
         self._handler_redo = handler_redo
         self._handler_history_get_index = handler_history_get_index
@@ -16,7 +16,7 @@ class History_GUI(tk.Frame):
         # History panel frame
         self.frame = tk.Frame(parent_frame)
         # Label
-        self.label = tk.Label(self.frame, text="History", font=gui_defaults.PANEL_TITLE_FONT.value)
+        self.label = tk.Label(self.frame, text="History", font=gui_title_font)
         self.label.pack(side = tk.TOP)
         # Frame for history buttons
         self.btn_frame = tk.Frame(self.frame)

@@ -10,6 +10,8 @@ from RequestHandler import RequestHandler
 from ArgumentType import ArgumentType
 from Arguments import Arguments
 from ShapeType import ShapeType
+from Image_GUI import Image_GUI
+from ImageMode import ImageMode
 from History_GUI import History_GUI
 from Selection_GUI import Selection_GUI
 from Color_GUI import Color_GUI
@@ -17,13 +19,7 @@ from Image import Image
 from CanvasDialog_GUI import CanvasDialog
 from Draw_GUI import Draw_GUI
 from Zoom_GUI import Zoom_GUI
-
-from enum import Enum, auto
-class ImageMode(Enum):
-    NONE = auto()
-    SELECT = auto()
-    EYEDROP = auto()
-    SHAPE = auto()
+from GUI_Defaults import GUI_Defaults
 
 def printy(text, *args):
     print("printy", text, *args)
@@ -33,26 +29,7 @@ if __name__ == "__main__":
     window.title("SIMPLE")
     window.geometry('800x560')
     
-    class Defaults(Enum):
-        BUTTON_RELIEF = "raised"
-        BUTTON_TOGGLED_RELIEF = "solid"
-        PANEL_TITLE_FONT = font.Font(size=12, underline=False, slant="italic")
-        SEPARATOR_CNF = {"column":0, "columnspan":1, "rowspan":1, "sticky":"nsew"}
-        CURSOR = ""
-        CURSOR_IMG_ACTION = "circle"
-        CLICK_PRESS_BINDING = "<ButtonPress-1>"
-        CLICK_DRAG_BINDING = "<B1-Motion>"
-        CLICK_RELEASE_BINDING = "<ButtonRelease-1>"
-        KEYBIND_UNDO = "<Control-z>"
-        KEYBIND_REDO = "<Control-y>"
-        KEYBIND_REDO2 = "<Control-Shift-Z>"
-        KEYBIND_SELECT = "<s>"
-        KEYBIND_CLEAR_SELECTION = "<c>"
-        KEYBIND_EYEDROPPER = "<i>"
-        KEYBIND_DRAW = "<d>"
-        KEYBIND_ZOOM_IN = "<equal>"
-        KEYBIND_ZOOM_OUT = "<minus>"
-        
+    PANEL_TITLE_FONT = font.Font(size=12, underline=False, slant="italic")
     
     # for storing bindings under a unique key
     bindings = {}
@@ -89,9 +66,9 @@ if __name__ == "__main__":
         
         # Set cursor based on action
         if current_image_mode == ImageMode.NONE:
-            image_preview.config(cursor=Defaults.CURSOR.value)
+            image_gui.set_cursor(GUI_Defaults.CURSOR.value)
         else:
-            image_preview.config(cursor=Defaults.CURSOR_IMG_ACTION.value)
+            image_gui.set_cursor(GUI_Defaults.CURSOR_IMG_ACTION.value)
             
     
     ### MENU BAR ###
@@ -108,7 +85,7 @@ if __name__ == "__main__":
             messagebox.showerror(title="Operation cancelled", message="Failed to create canvas")
         else:
             handler.create_canvas(canvasDialog.width, canvasDialog.height, canvasDialog.color_codes[0])
-            refresh_image()
+            image_gui.refresh_image()
             # activate_savebtn()
             history_gui.refresh_history()
     
@@ -125,7 +102,7 @@ if __name__ == "__main__":
         if not handler.import_image(loaded_file_name):
             messagebox.showerror(title="Operation cancelled", message="Failed to load image")
             return
-        refresh_image()
+        image_gui.refresh_image()
         # activate_savebtn()
         history_gui.refresh_history()
         
@@ -148,7 +125,7 @@ if __name__ == "__main__":
         # handler will add image and selection to args before passing it to the edit class
         handler.edit(args)
         history_gui.refresh_history()
-        refresh_image()
+        image_gui.refresh_image()
     
     def help_message(title: str, text: str):
         messagebox.showinfo(title=title, message=text)
@@ -208,31 +185,11 @@ if __name__ == "__main__":
         generate_menu(menubar, menu_storage[menubar], submenu, menu_structure[submenu])
     
     ### IMAGE PREVIEW ###
-    image_frame = tk.Frame(window, width=400, height=300, background="#000000", borderwidth=1)
-    # image_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-    image_frame.grid(row=0, column=0, rowspan=3, columnspan=3, padx=3, pady=3, sticky="nsew")
-    window.grid_rowconfigure(0, minsize=300, weight=1)
-    window.grid_columnconfigure(0, minsize=400, weight=1)
-    
-    # a label to hold the image
-    image_preview = tk.Label(image_frame, borderwidth=0, cursor=Defaults.CURSOR.value)
-    # img_preview.pack(side=tk.TOP)
-    # img_preview.grid(sticky="nsew")
-    image_preview.place(in_=image_frame, anchor="c", relx=.5, rely=.5)
-    
-    loaded_file_name = "image.png"
-    
-    def refresh_image(args: Arguments = None):
-        """Regenerate the image preview from the render image provided by RequestHandler.  
-        Arguments:
-        args -- draw a temporary shape if one is provided"""
-        new_pil_image = PIL.Image.fromarray(handler.get_render_image(args).get_img_array())
-        new_tk_image = ImageTk.PhotoImage(new_pil_image)
-        # update the image label
-        image_preview.config(image=new_tk_image)
-        # prevent garbage collector from deleting image?
-        image_preview.image = new_tk_image
-
+    image_gui = Image_GUI(
+        window,
+        handler.get_render_image,
+    )
+    # this one is packed within the class constructor
     
     #### RIGHTSIDE FRAME ####
     rightside_frame = tk.Frame(window, highlightthickness=1, highlightbackground="black")
@@ -241,100 +198,100 @@ if __name__ == "__main__":
     ## HISTORY MENU ##
     history_gui = History_GUI(
         rightside_frame,
-        Defaults,
+        PANEL_TITLE_FONT,
         handler.history_undo, 
         handler.history_redo,
         handler.history_get_index,
         handler.history_set_index,
         handler.history_descriptions,
-        refresh_image
+        image_gui.refresh_image
     )
     history_gui.frame.grid(row=0, rowspan=2, padx=1, pady=1)
     
     # key bindings
-    bindings[Defaults.KEYBIND_UNDO] = window.bind(Defaults.KEYBIND_UNDO.value, history_gui.undo)
-    bindings[Defaults.KEYBIND_REDO] = window.bind(Defaults.KEYBIND_REDO.value, history_gui.redo)
-    bindings[Defaults.KEYBIND_REDO2] = window.bind(Defaults.KEYBIND_REDO2.value, history_gui.redo)
+    bindings[GUI_Defaults.KEYBIND_UNDO] = window.bind(GUI_Defaults.KEYBIND_UNDO.value, history_gui.undo)
+    bindings[GUI_Defaults.KEYBIND_REDO] = window.bind(GUI_Defaults.KEYBIND_REDO.value, history_gui.redo)
+    bindings[GUI_Defaults.KEYBIND_REDO2] = window.bind(GUI_Defaults.KEYBIND_REDO2.value, history_gui.redo)
     
     ##
     separator = ttk.Separator(rightside_frame, orient="horizontal")
-    separator.grid(cnf=Defaults.SEPARATOR_CNF.value, row=2)
+    separator.grid(cnf=GUI_Defaults.SEPARATOR_CNF.value, row=2)
     
     ## SELECTION MENU ##
     # selection_frame = tk.Frame(rightside_frame)
     selection_gui = Selection_GUI(
         rightside_frame,
-        Defaults,
-        lambda:change_image_mode(ImageMode.SELECT),
+        PANEL_TITLE_FONT,
+        image_gui.change_image_mode,
         handler.make_selection,
         handler.get_selection_bbox,
         handler.clear_selection,
         handler.get_image_dimensions,
         bindings,
-        image_preview,
-        refresh_image
+        image_gui.image_preview,
+        image_gui.refresh_image
     )
     selection_gui.frame.grid(row=3, rowspan=2, column=0, padx=1, pady=1, sticky="nsew")
     
     # key bindings
-    bindings[Defaults.KEYBIND_SELECT] = window.bind(Defaults.KEYBIND_SELECT.value, lambda _: change_image_mode(ImageMode.SELECT))
-    bindings[Defaults.KEYBIND_CLEAR_SELECTION] = window.bind(Defaults.KEYBIND_CLEAR_SELECTION.value, selection_gui.clear_selection)
+    bindings[GUI_Defaults.KEYBIND_SELECT] = window.bind(GUI_Defaults.KEYBIND_SELECT.value, lambda _: change_image_mode(ImageMode.SELECT))
+    bindings[GUI_Defaults.KEYBIND_CLEAR_SELECTION] = window.bind(GUI_Defaults.KEYBIND_CLEAR_SELECTION.value, selection_gui.clear_selection)
     
     ##
     separator = ttk.Separator(rightside_frame, orient="horizontal")
-    separator.grid(cnf=Defaults.SEPARATOR_CNF.value, row=6)
+    separator.grid(cnf=GUI_Defaults.SEPARATOR_CNF.value, row=6)
     
     ## COLOR ##
     color_gui = Color_GUI(
         rightside_frame,
-        Defaults,
-        lambda: change_image_mode(ImageMode.EYEDROP),
+        PANEL_TITLE_FONT,
+        image_gui.change_image_mode,
         handler.get_color_at_pixel,
         bindings,
-        image_preview,
-        refresh_image
+        image_gui.image_preview,
+        image_gui.refresh_image
     )
     color_gui.frame.grid(row=7, rowspan=2, column=0, padx=1, pady=1, sticky="nsew")
 
-    bindings[Defaults.KEYBIND_EYEDROPPER] = window.bind(Defaults.KEYBIND_EYEDROPPER.value, lambda _: change_image_mode(ImageMode.EYEDROP))
+    bindings[GUI_Defaults.KEYBIND_EYEDROPPER] = window.bind(GUI_Defaults.KEYBIND_EYEDROPPER.value, lambda _: change_image_mode(ImageMode.EYEDROP))
     
     
     ## DRAW MENU ##
     draw_gui = Draw_GUI(
         rightside_frame,
-        Defaults,
-        lambda:change_image_mode(ImageMode.SHAPE),
+        PANEL_TITLE_FONT,
+        image_gui.change_image_mode,
         handler.edit,
         handler.get_image_dimensions,
         color_gui.get_color_codes,
         bindings,
-        image_preview,
-        refresh_image,
+        image_gui.image_preview,
+        image_gui.refresh_image,
         history_gui.refresh_history
     )
     draw_gui.frame.grid(row=9, rowspan=2, column=0, padx=1, pady=1, sticky="nsew")
     
-    bindings[Defaults.KEYBIND_DRAW] = window.bind(Defaults.KEYBIND_DRAW.value, lambda _: change_image_mode(ImageMode.SHAPE))
+    bindings[GUI_Defaults.KEYBIND_DRAW] = window.bind(GUI_Defaults.KEYBIND_DRAW.value, lambda _: change_image_mode(ImageMode.SHAPE))
     
     ##
     separator = ttk.Separator(rightside_frame, orient="horizontal")
-    separator.grid(cnf=Defaults.SEPARATOR_CNF.value, row=12)
+    separator.grid(cnf=GUI_Defaults.SEPARATOR_CNF.value, row=12)
     
     ## ZOOM MENU ##
     zoom_gui = Zoom_GUI(
         rightside_frame,
-        Defaults,
+        PANEL_TITLE_FONT,
         handler.zoom_change,
-        refresh_image
+        image_gui.refresh_image
     )
     zoom_gui.frame.grid(row=13, rowspan=2, column=0, padx=1, pady=1, sticky="nsew")
     
-    bindings[Defaults.KEYBIND_ZOOM_IN] = window.bind(Defaults.KEYBIND_ZOOM_IN.value, lambda _: zoom_gui.zoom_change(1))
-    bindings[Defaults.KEYBIND_ZOOM_OUT] = window.bind(Defaults.KEYBIND_ZOOM_OUT.value, lambda _: zoom_gui.zoom_change(-1))
+    bindings[GUI_Defaults.KEYBIND_ZOOM_IN] = window.bind(GUI_Defaults.KEYBIND_ZOOM_IN.value, lambda _: zoom_gui.zoom_change(1))
+    bindings[GUI_Defaults.KEYBIND_ZOOM_OUT] = window.bind(GUI_Defaults.KEYBIND_ZOOM_OUT.value, lambda _: zoom_gui.zoom_change(-1))
 
     ##
     separator = ttk.Separator(rightside_frame, orient="horizontal")
-    separator.grid(cnf=Defaults.SEPARATOR_CNF.value, row=15)
+    separator.grid(cnf=GUI_Defaults.SEPARATOR_CNF.value, row=15)
     
     
     window.config(menu=menubar)

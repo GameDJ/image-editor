@@ -67,8 +67,6 @@ class DrawShape(Edit):
                     min_bound = min(actual_sel_bbox[i], shape_sel_bbox[i])
                     combined_bbox[i] = min_bound
                     offset[i] = min_bound - shape_sel_bbox[i-2]
-            print("combined_bbox", combined_bbox)
-            print("offset", offset)
             full_image_array[combined_bbox[1]:combined_bbox[3], combined_bbox[0]:combined_bbox[2]] = image_edit_area[offset[1]:offset[3], offset[0]:offset[2]]
         else:
             # no actual selection; simply apply the edited shape area

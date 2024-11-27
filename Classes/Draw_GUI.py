@@ -5,11 +5,12 @@ from Arguments import Arguments
 from ArgumentType import ArgumentType as AT
 from ShapeType import ShapeType
 from Selection import Selection
+from GUI_Defaults import GUI_Defaults
+from tkinter import font
 
 class Draw_GUI(tk.Frame):
-    def __init__(self, parent_frame: tk.Frame, gui_defaults: Enum, gui_change_image_mode: Callable, handler_edit: Callable, handler_get_image_dimensions: Callable, _gui_get_color_codes: Callable, gui_bindings: dict, gui_image_preview: tk.Label, gui_refresh_image: Callable, gui_refresh_history: Callable):
+    def __init__(self, parent_frame: tk.Frame, gui_title_font: font, gui_change_image_mode: Callable, handler_edit: Callable, handler_get_image_dimensions: Callable, _gui_get_color_codes: Callable, gui_bindings: dict, gui_image_preview: tk.Label, gui_refresh_image: Callable, gui_refresh_history: Callable):
         # Outside refs
-        self._gui_defaults = gui_defaults
         self._gui_change_image_mode = gui_change_image_mode
         self._handler_edit = handler_edit
         self._handler_get_image_dimensions = handler_get_image_dimensions
@@ -25,13 +26,13 @@ class Draw_GUI(tk.Frame):
         # Draw panel frame
         self.frame = tk.Frame(parent_frame)
         # Label
-        self.label = tk.Label(self.frame, text="Draw", font=gui_defaults.PANEL_TITLE_FONT.value)
+        self.label = tk.Label(self.frame, text="Draw", font=gui_title_font)
         self.label.pack(side = tk.TOP)
         # Frame for draw button and menu
         self.inner_frame = tk.Frame(self.frame)
         self.inner_frame.pack(side=tk.TOP)
         # draw button
-        self.draw_btn = tk.Button(self.inner_frame, text="Draw", command=self._gui_change_image_mode, underline=0)
+        self.draw_btn = tk.Button(self.inner_frame, text="Draw", command=lambda: self._gui_change_image_mode(self.toggle_drawing_on, self.toggle_drawing_off), underline=0)
         self.draw_btn.pack(side=tk.LEFT)
         
         self.options_list = [name.value for name in ShapeType]
@@ -41,16 +42,16 @@ class Draw_GUI(tk.Frame):
         self.draw_optionmenu.pack(side=tk.LEFT)
         
     def toggle_drawing_on(self):
-        self._gui_bindings[self._gui_defaults.CLICK_PRESS_BINDING] = self._gui_image_preview.bind(self._gui_defaults.CLICK_PRESS_BINDING.value, self._begin_shape)
-        self._gui_bindings[self._gui_defaults.CLICK_DRAG_BINDING] = self._gui_image_preview.bind(self._gui_defaults.CLICK_DRAG_BINDING.value, self._making_shape)
-        self._gui_bindings[self._gui_defaults.CLICK_RELEASE_BINDING] = self._gui_image_preview.bind(self._gui_defaults.CLICK_RELEASE_BINDING.value, self._released_shape)
-        self.draw_btn.config(relief=self._gui_defaults.BUTTON_TOGGLED_RELIEF.value)
+        self._gui_bindings[GUI_Defaults.CLICK_PRESS_BINDING] = self._gui_image_preview.bind(GUI_Defaults.CLICK_PRESS_BINDING.value, self._begin_shape)
+        self._gui_bindings[GUI_Defaults.CLICK_DRAG_BINDING] = self._gui_image_preview.bind(GUI_Defaults.CLICK_DRAG_BINDING.value, self._making_shape)
+        self._gui_bindings[GUI_Defaults.CLICK_RELEASE_BINDING] = self._gui_image_preview.bind(GUI_Defaults.CLICK_RELEASE_BINDING.value, self._released_shape)
+        self.draw_btn.config(relief=GUI_Defaults.BUTTON_TOGGLED_RELIEF.value)
     
     def toggle_drawing_off(self):
-        self._gui_image_preview.unbind(self._gui_defaults.CLICK_PRESS_BINDING.value, self._gui_bindings.pop(self._gui_defaults.CLICK_PRESS_BINDING))
-        self._gui_image_preview.unbind(self._gui_defaults.CLICK_DRAG_BINDING.value, self._gui_bindings.pop(self._gui_defaults.CLICK_DRAG_BINDING))
-        self._gui_image_preview.unbind(self._gui_defaults.CLICK_RELEASE_BINDING.value, self._gui_bindings.pop(self._gui_defaults.CLICK_RELEASE_BINDING))
-        self.draw_btn.config(relief=self._gui_defaults.BUTTON_RELIEF.value)
+        self._gui_image_preview.unbind(GUI_Defaults.CLICK_PRESS_BINDING.value, self._gui_bindings.pop(GUI_Defaults.CLICK_PRESS_BINDING))
+        self._gui_image_preview.unbind(GUI_Defaults.CLICK_DRAG_BINDING.value, self._gui_bindings.pop(GUI_Defaults.CLICK_DRAG_BINDING))
+        self._gui_image_preview.unbind(GUI_Defaults.CLICK_RELEASE_BINDING.value, self._gui_bindings.pop(GUI_Defaults.CLICK_RELEASE_BINDING))
+        self.draw_btn.config(relief=GUI_Defaults.BUTTON_RELIEF.value)
         
     def _begin_shape(self, event: tk.Event):
         self.shape_selection.clear()
