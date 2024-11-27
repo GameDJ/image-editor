@@ -1,6 +1,7 @@
 from ArgumentType import ArgumentType as AT
 from Selection import Selection
 from Image import Image
+from ShapeType import ShapeType
 
 class Arguments:
     """Build a dictionary of arguments to be passed to Edit subclasses"""
@@ -16,8 +17,12 @@ class Arguments:
         return not key_already_existed
             
     def add_selection(self, selection: Selection) -> None:
-        """Coordinates of selection"""
+        """Coordinates of actual selection"""
         self.args[AT.SELECTION] = selection
+        
+    def add_selection2(self, selection: Selection) -> None:
+        """Coordinates of selection2; e.g. shape draw area"""
+        self.args[AT.SELECTION2] = selection
     
     # eventually these will prob be enums and stuff
     def add_filter(self, filter_name: str) -> None:
@@ -27,9 +32,9 @@ class Arguments:
         """An amount, usually to inform a filter strength"""
         self.args[AT.AMOUNT] = amount
             
-    def add_shape(self, shape_name: str) -> None:
+    def add_shape(self, shape_type: ShapeType) -> None:
         """Name of the chosen shape"""
-        self.args[AT.SHAPE] = shape_name
+        self.args[AT.SHAPE] = shape_type
     def add_color(self, color: tuple[int, int, int]) -> None:
         """An RGB color tuple, usually to inform the drawing color"""
         self.args[AT.COLOR] = color

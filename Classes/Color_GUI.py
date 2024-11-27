@@ -56,12 +56,11 @@ class Color_GUI(tk.Frame):
         self._update_color()
         
     def toggle_eyedropper_on(self):
-        self._gui_bindings["select_pixel_color"] = self._gui_image_preview.bind("<ButtonPress-1>", self.select_pixel_color)
+        self._gui_bindings[self._gui_defaults.CLICK_PRESS_BINDING] = self._gui_image_preview.bind(self._gui_defaults.CLICK_PRESS_BINDING.value, self.select_pixel_color)
         self.eyedropper_btn.config(relief=self._gui_defaults.BUTTON_TOGGLED_RELIEF.value)
         
     def toggle_eyedropper_off(self):
-        self._gui_image_preview.unbind("<begin_selection-1>", self._gui_bindings["select_pixel_color"])
-        self._gui_bindings.pop("select_pixel_color")
+        self._gui_image_preview.unbind(self._gui_defaults.CLICK_PRESS_BINDING.value, self._gui_bindings.pop(self._gui_defaults.CLICK_PRESS_BINDING))
         self.eyedropper_btn.config(relief=self._gui_defaults.BUTTON_RELIEF.value)
         
     def get_color_codes(self):

@@ -15,6 +15,7 @@ from Selection_GUI import Selection_GUI
 from Color_GUI import Color_GUI
 from Image import Image
 from CanvasDialog_GUI import CanvasDialog
+from Draw_GUI import Draw_GUI
 
 from enum import Enum, auto
 class ImageMode(Enum):
@@ -38,6 +39,17 @@ if __name__ == "__main__":
         SEPARATOR_CNF = {"column":0, "columnspan":1, "rowspan":1, "sticky":"nsew"}
         CURSOR = ""
         CURSOR_IMG_ACTION = "circle"
+        CLICK_PRESS_BINDING = "<ButtonPress-1>"
+        CLICK_DRAG_BINDING = "<B1-Motion>"
+        CLICK_RELEASE_BINDING = "<ButtonRelease-1>"
+        KEYBIND_UNDO = "<Control-z>"
+        KEYBIND_REDO = "<Control-y>"
+        KEYBIND_REDO2 = "<Control-Shift-Z>"
+        KEYBIND_SELECT = "<s>"
+        KEYBIND_CLEAR_SELECTION = "<c>"
+        KEYBIND_EYEDROPPER = "<i>"
+        KEYBIND_DRAW = "<d>"
+        
     
     # for storing bindings under a unique key
     bindings = {}
@@ -56,7 +68,7 @@ if __name__ == "__main__":
         elif current_image_mode == ImageMode.EYEDROP:
             color_gui.toggle_eyedropper_off()
         elif current_image_mode == ImageMode.SHAPE:
-            toggle_drawing_off()
+            draw_gui.toggle_drawing_off()
         if current_image_mode == new_mode:
             # if the same mode was selected, toggle it off
             # (the other toggle off functions were handled above)
@@ -69,7 +81,7 @@ if __name__ == "__main__":
             elif new_mode == ImageMode.EYEDROP:
                 color_gui.toggle_eyedropper_on()
             elif new_mode == ImageMode.SHAPE:
-                toggle_drawing_on()
+                draw_gui.toggle_drawing_on()
         # print("new image mode:", current_image_mode)
         
         # Set cursor based on action
@@ -130,8 +142,6 @@ if __name__ == "__main__":
                 args.add_amount(simpledialog.askfloat(title="Amount entry", prompt="Enter amount:"))
             elif arg == ArgumentType.COLOR:
                 args.add_color(colorchooser.askcolor(title="Choose a color")[1])
-            elif arg == ArgumentType.SHAPE:
-                args.add_shape(selected_shape)
         # handler will add image and selection to args before passing it to the edit class
         handler.edit(args)
         history_gui.refresh_history()
@@ -209,9 +219,11 @@ if __name__ == "__main__":
     
     loaded_file_name = "image.png"
     
-    def refresh_image():
-        """Regenerate the image preview from the render image provided by RequestHandler"""
-        new_pil_image = PIL.Image.fromarray(handler.get_render_image().get_img_array())
+    def refresh_image(args: Arguments = None):
+        """Regenerate the image preview from the render image provided by RequestHandler.  
+        Arguments:
+        args -- draw a temporary shape if one is provided"""
+        new_pil_image = PIL.Image.fromarray(handler.get_render_image(args).get_img_array())
         new_tk_image = ImageTk.PhotoImage(new_pil_image)
         # update the image label
         image_preview.config(image=new_tk_image)
@@ -237,9 +249,9 @@ if __name__ == "__main__":
     history_gui.frame.grid(row=0, rowspan=2, padx=1, pady=1)
     
     # key bindings
-    bindings["<Control-z>"] = window.bind("<Control-z>", history_gui.undo)
-    bindings["<Control-y>"] = window.bind("<Control-y>", history_gui.redo)
-    bindings["<Control-Shift-Z>"] = window.bind("<Control-Shift-Z>", history_gui.redo)
+    bindings[Defaults.KEYBIND_UNDO] = window.bind(Defaults.KEYBIND_UNDO.value, history_gui.undo)
+    bindings[Defaults.KEYBIND_REDO] = window.bind(Defaults.KEYBIND_REDO.value, history_gui.redo)
+    bindings[Defaults.KEYBIND_REDO2] = window.bind(Defaults.KEYBIND_REDO2.value, history_gui.redo)
     
     ##
     separator = ttk.Separator(rightside_frame, orient="horizontal")
@@ -262,51 +274,12 @@ if __name__ == "__main__":
     selection_gui.frame.grid(row=3, rowspan=2, column=0, padx=1, pady=1, sticky="nsew")
     
     # key bindings
-    bindings["<a>"] = window.bind("<a>", lambda _: change_image_mode(ImageMode.SELECT))
-    bindings["<d>"] = window.bind("<d>", selection_gui.clear_selection)
+    bindings[Defaults.KEYBIND_SELECT] = window.bind(Defaults.KEYBIND_SELECT.value, lambda _: change_image_mode(ImageMode.SELECT))
+    bindings[Defaults.KEYBIND_CLEAR_SELECTION] = window.bind(Defaults.KEYBIND_CLEAR_SELECTION.value, selection_gui.clear_selection)
     
     ##
     separator = ttk.Separator(rightside_frame, orient="horizontal")
     separator.grid(cnf=Defaults.SEPARATOR_CNF.value, row=6)
-    
-    ## DRAW MENU ##
-    draw_menu_frame = tk.Frame(rightside_frame)
-    draw_menu_frame.grid(row=7, rowspan=2, column=0, padx=1, pady=1, sticky="nsew")
-    
-    label = tk.Label(draw_menu_frame, text="Draw", font=font.Font(size=12, underline=False, slant="italic"))
-    label.pack(side = tk.TOP)
-    
-    draw_inner_frame = tk.Frame(draw_menu_frame)
-    draw_inner_frame.pack(side = tk.TOP)
-    
-    def toggle_drawing_on():
-        draw_btn.config(relief=Defaults.BUTTON_TOGGLED_RELIEF.value)
-    def toggle_drawing_off():
-        draw_btn.config(relief=Defaults.BUTTON_RELIEF.value)
-            
-    def test_draw():
-        args = Arguments()
-        args.add_shape(ShapeType.RECTANGLE)
-        args.add_color(color_gui.get_color_codes()[0])
-        handler.edit(args)
-        refresh_image()
-        history_gui.refresh_history()
-    test_draw_btn = tk.Button(draw_inner_frame, text="Draw test", command=test_draw)
-    test_draw_btn.pack(side=tk.TOP)
-    
-    draw_btn = tk.Button(draw_inner_frame, text="Draw", command=lambda:change_image_mode(ImageMode.SHAPE))
-    draw_btn.pack(side=tk.LEFT)
-    
-    
-    options_list = ["Pen", "Rectangle"]
-    selected_shape = tk.StringVar(draw_inner_frame)
-    selected_shape.set(options_list[0])
-    draw_optionmenu = tk.OptionMenu(draw_inner_frame, selected_shape, *options_list)
-    draw_optionmenu.pack(side=tk.LEFT)
-    
-    ##
-    # separator = ttk.Separator(rightside_frame, orient="horizontal")
-    # separator.grid(row=9, column=0, columnspan=1, rowspan=1, sticky="nsew")
     
     ## COLOR ##
     color_gui = Color_GUI(
@@ -318,7 +291,27 @@ if __name__ == "__main__":
         image_preview,
         refresh_image
     )
-    color_gui.frame.grid(row=10, rowspan=2, column=0, padx=1, pady=1, sticky="nsew")
+    color_gui.frame.grid(row=7, rowspan=2, column=0, padx=1, pady=1, sticky="nsew")
+
+    bindings[Defaults.KEYBIND_EYEDROPPER] = window.bind(Defaults.KEYBIND_EYEDROPPER.value, lambda _: change_image_mode(ImageMode.EYEDROP))
+    
+    
+    ## DRAW MENU ##
+    draw_gui = Draw_GUI(
+        rightside_frame,
+        Defaults,
+        lambda:change_image_mode(ImageMode.SHAPE),
+        handler.edit,
+        handler.get_image_dimensions,
+        color_gui.get_color_codes,
+        bindings,
+        image_preview,
+        refresh_image,
+        history_gui.refresh_history
+    )
+    draw_gui.frame.grid(row=9, rowspan=2, column=0, padx=1, pady=1, sticky="nsew")
+    
+    bindings[Defaults.KEYBIND_DRAW] = window.bind(Defaults.KEYBIND_DRAW.value, lambda _: change_image_mode(ImageMode.SHAPE))
     
     ##
     separator = ttk.Separator(rightside_frame, orient="horizontal")

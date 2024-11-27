@@ -29,9 +29,9 @@ class Selection_GUI(tk.Frame):
         self.btn_frame = tk.Frame(self.frame)
         self.btn_frame.pack(side=tk.TOP)
         # Select & Clear buttons
-        self.select_btn = tk.Button(self.btn_frame, text="Select", command=self._gui_change_image_mode)
+        self.select_btn = tk.Button(self.btn_frame, text="Select", command=self._gui_change_image_mode, underline=0)
         self.select_btn.grid(column=0, row=0)
-        self.clear_btn = tk.Button(self.btn_frame, text="Clear", command=self.clear_selection, state="disabled")
+        self.clear_btn = tk.Button(self.btn_frame, text="Clear", command=self.clear_selection, state="disabled", underline=0)
         self.clear_btn.grid(column=1, row=0)
         # coordinate display
         self.sel_coord_1 = tk.Label(self.frame, text=self._SEL_COORD_1_DEFAULT_TEXT)
@@ -40,15 +40,15 @@ class Selection_GUI(tk.Frame):
         self.sel_coord_2.pack()
 
     def toggle_select_on(self):
-        self._gui_bindings["begin_selection"] = self._gui_image_preview.bind("<ButtonPress-1>", self._begin_selection)
-        self._gui_bindings["making_selection"] = self._gui_image_preview.bind("<B1-Motion>", self._making_selection)
-        self._gui_bindings["released_selection"] = self._gui_image_preview.bind("<ButtonRelease-1>", self._released_selection)
+        self._gui_bindings[self._gui_defaults.CLICK_PRESS_BINDING] = self._gui_image_preview.bind(self._gui_defaults.CLICK_PRESS_BINDING.value, self._begin_selection)
+        self._gui_bindings[self._gui_defaults.CLICK_DRAG_BINDING] = self._gui_image_preview.bind(self._gui_defaults.CLICK_DRAG_BINDING.value, self._making_selection)
+        self._gui_bindings[self._gui_defaults.CLICK_RELEASE_BINDING] = self._gui_image_preview.bind(self._gui_defaults.CLICK_RELEASE_BINDING.value, self._released_selection)
         self.select_btn.config(relief=self._gui_defaults.BUTTON_TOGGLED_RELIEF.value)
     
     def toggle_select_off(self):
-        self._gui_image_preview.unbind("<begin_selection-1>", self._gui_bindings.pop("begin_selection"))
-        self._gui_image_preview.unbind("<B1-Motion>", self._gui_bindings.pop("making_selection"))
-        self._gui_image_preview.unbind("<ButtonRelease-1>", self._gui_bindings.pop("released_selection"))
+        self._gui_image_preview.unbind(self._gui_defaults.CLICK_PRESS_BINDING.value, self._gui_bindings.pop(self._gui_defaults.CLICK_PRESS_BINDING))
+        self._gui_image_preview.unbind(self._gui_defaults.CLICK_DRAG_BINDING.value, self._gui_bindings.pop(self._gui_defaults.CLICK_DRAG_BINDING))
+        self._gui_image_preview.unbind(self._gui_defaults.CLICK_RELEASE_BINDING.value, self._gui_bindings.pop(self._gui_defaults.CLICK_RELEASE_BINDING))
         self.select_btn.config(relief=self._gui_defaults.BUTTON_RELIEF.value)
 
     def _begin_selection(self, event: tk.Event):

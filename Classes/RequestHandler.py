@@ -87,7 +87,8 @@ class RequestHandler:
             edited_image = DrawShape.edit(args)
             desc = args.get_args()[AT.SHAPE].value
         # add the edited image to history, with the filter text as the change description
-        self._create_history_entry(edited_image, desc)
+        if edited_image is not None:
+            self._create_history_entry(edited_image, desc)
     
     def get_current_actual_image(self):
         return self.hist.get_current_img()
@@ -127,12 +128,20 @@ class RequestHandler:
     def history_get_index(self) -> int:
         return self.hist.get_index()
     
-    def get_render_image(self) -> Image:
+    def get_render_image(self, args: Arguments = None) -> Image:
         render_img = self.hist.get_current_img()
         if self.zoom_level != 1:
             # scale based on zoom
             #
             pass
+        if args is not None:
+            if self.selection.get_bbox() is not None:
+                args.add_selection(self.selection)
+            # render a shape while it's being dragged
+            args.add_image(render_img)
+            draw_shape_img = DrawShape.edit(args)
+            if draw_shape_img is not None:
+                render_img = draw_shape_img
         if self.selection.get_bbox() is not None:
             # need to change the selection bounds based on zoom...
             # copy selection and scale/transform it appropriately
