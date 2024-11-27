@@ -16,6 +16,7 @@ from Color_GUI import Color_GUI
 from Image import Image
 from CanvasDialog_GUI import CanvasDialog
 from Draw_GUI import Draw_GUI
+from Zoom_GUI import Zoom_GUI
 
 from enum import Enum, auto
 class ImageMode(Enum):
@@ -49,6 +50,8 @@ if __name__ == "__main__":
         KEYBIND_CLEAR_SELECTION = "<c>"
         KEYBIND_EYEDROPPER = "<i>"
         KEYBIND_DRAW = "<d>"
+        KEYBIND_ZOOM_IN = "<->"
+        KEYBIND_ZOOM_OUT = "<=>"
         
     
     # for storing bindings under a unique key
@@ -318,34 +321,13 @@ if __name__ == "__main__":
     separator.grid(cnf=Defaults.SEPARATOR_CNF.value, row=12)
     
     ## ZOOM MENU ##
-    zoom_frame = tk.Frame(rightside_frame)
-    zoom_frame.grid(row=13, rowspan=2, column=0, padx=1, pady=1, sticky="nsew")
-    
-    label = tk.Label(zoom_frame, text="Zoom", font=font.Font(size=12, underline=False, slant="italic"))
-    label.pack(side = tk.TOP)
-    
-    zoom_inner_frame = tk.Frame(zoom_frame)
-    zoom_inner_frame.pack(side=tk.TOP)
-    
-    zoom_level = 1.0
-    
-    def zoom_change(delta: int):
-        zoom_level = handler.zoom_change(delta)
-        if zoom_level < 0:
-            zoom_level_label.config(text=f"1/{2**(int(zoom_level)*-1)}x")
-        else:
-            zoom_level_label.config(text=f"{int(zoom_level)}x")
-        
-    
-    fakeimage = tk.PhotoImage(width=1, height=1)
-    zoom_out_btn = tk.Button(zoom_inner_frame, text="-", command=lambda: zoom_change(-1), image=fakeimage, compound="c", width=20, height=20)
-    zoom_out_btn.pack(side=tk.LEFT, padx=1)
-    
-    zoom_level_label = tk.Label(zoom_inner_frame, text=f"1x")
-    zoom_level_label.pack(side=tk.LEFT, padx=3)
-    
-    zoom_in_btn = tk.Button(zoom_inner_frame, text="+", command=lambda: zoom_change(1), image=fakeimage, compound="c", width=20, height=20)
-    zoom_in_btn.pack(side=tk.LEFT, padx=1)
+    zoom_gui = Zoom_GUI(
+        rightside_frame,
+        Defaults,
+        handler.zoom_change,
+        refresh_image
+    )
+    zoom_gui.frame.grid(row=13, rowspan=2, column=0, padx=1, pady=1, sticky="nsew")
     
     ##
     separator = ttk.Separator(rightside_frame, orient="horizontal")
