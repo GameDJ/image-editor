@@ -1,12 +1,11 @@
 import tkinter as tk
-from typing import Callable
-from enum import Enum
-from Arguments import Arguments
-from ArgumentType import ArgumentType as AT
-from ShapeType import ShapeType
-from Selection import Selection
-from GUI_Defaults import GUI_Defaults
 from tkinter import font
+from typing import Callable
+from Classes.Arguments import Arguments
+from Classes.ArgumentType import ArgumentType as AT
+from Classes.ShapeType import ShapeType
+from Classes.Selection import Selection
+from Classes.gui.GUI_Defaults import GUI_Defaults
 
 class Draw_GUI():
     def __init__(self, parent_frame: tk.Frame, gui_title_font: font, gui_change_image_mode: Callable, handler_edit: Callable, handler_get_image_dimensions: Callable, _gui_get_color_codes: Callable, gui_bindings: dict, gui_image_preview: tk.Label, gui_refresh_image: Callable, gui_refresh_history: Callable):

@@ -1,13 +1,10 @@
 import tkinter as tk
 from typing import Callable
-from enum import Enum
-from Image import Image
-import PIL.Image
-from Arguments import Arguments
 import PIL
 from PIL import ImageTk
-from GUI_Defaults import GUI_Defaults
-from ImageMode import ImageMode
+from Classes.Image import Image
+from Classes.Arguments import Arguments
+from Classes.gui.GUI_Defaults import GUI_Defaults
 
 class Image_GUI():
     def __init__(self, parent_frame: tk.Frame, handler_get_render_image: Callable[[], Image]):

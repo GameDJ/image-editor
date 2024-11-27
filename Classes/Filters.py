@@ -1,12 +1,12 @@
-from Edit import Edit
-from Arguments import Arguments
-from ArgumentType import ArgumentType as AT
-from Image import Image
-from Selection import Selection
+from Classes.Edit import Edit
+from Classes.Arguments import Arguments
+from Classes.ArgumentType import ArgumentType as AT
+from Classes.Image import Image
+from Classes.Selection import Selection
 from enum import Enum, auto
 import numpy as np
 import cv2
-from FilterType import FilterType
+from Classes.FilterType import FilterType
 
 class Filters(Edit):
     @staticmethod

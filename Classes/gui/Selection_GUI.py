@@ -1,10 +1,7 @@
 import tkinter as tk
 from tkinter import font
 from typing import Callable
-from Selection import Selection
-from enum import Enum
-from tkinter import font
-from GUI_Defaults import GUI_Defaults
+from Classes.gui.GUI_Defaults import GUI_Defaults
 
 class Selection_GUI():
     def __init__(self, parent_frame: tk.Frame, gui_title_font: font, gui_change_image_mode: Callable, handler_make_selection: Callable, handler_get_selection_bbox: Callable, handler_clear_selection: Callable, handler_get_image_dimensions: Callable, gui_bindings: dict, gui_image_preview: tk.Label, gui_refresh_image: Callable):

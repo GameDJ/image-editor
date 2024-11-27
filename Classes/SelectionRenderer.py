@@ -1,6 +1,6 @@
 from RenderAddon import NdarrayAddon
 import numpy as np
-from Selection import Selection
+from Classes.Selection import Selection
 
 class SelectionRenderer(NdarrayAddon):
     # def __init__(self, ndarray: np.ndarray):

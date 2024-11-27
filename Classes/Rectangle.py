@@ -1,10 +1,10 @@
-from Shape import Shape
-from Image import Image
-from Selection import Selection
-from Arguments import Arguments
-from ArgumentType import ArgumentType as AT
+from Classes.Shape import Shape
+from Classes.Image import Image
+from Classes.Selection import Selection
+from Classes.Arguments import Arguments
+from Classes.ArgumentType import ArgumentType as AT
 import numpy as np
-import cv2
+# import cv2
 
 class Rectangle(Shape):
     @staticmethod

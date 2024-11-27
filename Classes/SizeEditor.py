@@ -2,10 +2,10 @@
 
 import cv2
 import numpy as np
-from Edit import Edit
-from Arguments import Arguments
-from ArgumentType import ArgumentType as AT
-from Image import Image
+from Classes.Edit import Edit
+from Classes.Arguments import Arguments
+from Classes.ArgumentType import ArgumentType as AT
+from Classes.Image import Image
 import numpy as np
 class SizeEditor(Edit):
   @staticmethod

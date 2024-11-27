@@ -1,18 +1,19 @@
 import tkinter as tk
-from typing import Callable
-from FilterType import FilterType, FilterInfo
 from tkinter import messagebox, simpledialog, colorchooser, filedialog
-from Arguments import Arguments
-from ArgumentType import ArgumentType
-from CanvasDialog_GUI import CanvasDialog
+from typing import Callable
+from Classes.FilterType import FilterInfo
+from Classes.Arguments import Arguments
+from Classes.ArgumentType import ArgumentType
+from Classes.gui.CanvasDialog import CanvasDialog
 
 class Menubar_GUI():
-    def __init__(self, root: tk.Tk, handler_create_canvas: Callable, handler_import_image: Callable, handler_export_image: Callable, handler_is_active_image: Callable, handler_edit: Callable, gui_get_color_codes: Callable, gui_refresh_history: Callable, gui_refresh_image: Callable):
+    def __init__(self, root: tk.Tk, handler_create_canvas: Callable, handler_import_image: Callable, handler_export_image: Callable, handler_get_file_path: Callable, handler_is_active_image: Callable, handler_edit: Callable, gui_get_color_codes: Callable, gui_refresh_history: Callable, gui_refresh_image: Callable):
         # outside refs
         self._root = root
         self._handler_create_canvas = handler_create_canvas
         self._handler_import_image = handler_import_image
         self._handler_export_image = handler_export_image
+        self._handler_get_file_path = handler_get_file_path
         self._handler_is_active_image = handler_is_active_image
         self._handler_edit = handler_edit
         self._gui_get_color_codes = gui_get_color_codes
@@ -80,7 +81,7 @@ class Menubar_GUI():
             if not discard_image: 
                 return
             
-        canvasDialog = CanvasDialog(self._root, title="Initialize Canvas", color_codes=self._gui_get_color_codes)
+        canvasDialog = CanvasDialog(self._root, title="Initialize Canvas", color_codes=self._gui_get_color_codes())
         if not canvasDialog.width or not canvasDialog.height:
             messagebox.showerror(title="Operation cancelled", message="Failed to create canvas")
         else:
@@ -94,7 +95,6 @@ class Menubar_GUI():
             discard_image = messagebox.askyesno(message="Are you sure you want to discard the current image?")
             if not discard_image: 
                 return
-        global loaded_file_name
         loaded_file_name = filedialog.askopenfilename(title="Select a file")
         if not loaded_file_name:
             messagebox.showerror(title="Operation cancelled", message="No file selected")
@@ -108,9 +108,16 @@ class Menubar_GUI():
         
     def save_file(self):
         if self._handler_is_active_image() is not None:
-            path = filedialog.asksaveasfilename(title="Save as:", initialfile=loaded_file_name, defaultextension=".png", filetypes=[("PNG", "*.png"), ("JPEG", "*.jpg")])
-            self._handler_export_image(path)
+            file_path = self._handler_get_file_path()
+            if file_path is None:
+                file_path = ""
+            file_name = file_path.split("/")[-1]
+            file_dir = file_path[len(file_name):]
+            path = filedialog.asksaveasfilename(title="Save as:", initialdir=file_dir, initialfile=file_name, defaultextension=".png", filetypes=[("PNG", "*.png"), ("JPEG", "*.jpg")])
+            if path is not None:
+                self._handler_export_image(path)
             # should check to see if the file exists now, to verify it saved
+            #
         else:
             messagebox.showerror(title="Error", message="No image loaded")
 

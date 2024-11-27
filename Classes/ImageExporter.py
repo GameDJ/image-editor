@@ -1,4 +1,4 @@
-import Image
+from Classes.Image import Image
 
 class ImageExporter:
     """Class to export an Image to the user's local storage"""

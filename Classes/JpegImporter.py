@@ -1,5 +1,5 @@
-import ImageInitializer
-import Image
+from Classes.ImageInitializer import ImageInitializer
+from Classes.Image import Image
 from PIL import Image as PilImage
 import numpy as np
 

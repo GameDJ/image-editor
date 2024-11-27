@@ -1,20 +1,15 @@
 import PIL.Image
-from History import History
-from Arguments import Arguments
-from ArgumentType import ArgumentType as AT
-from FilterType import FilterType, FilterInfo
-from Filters import Filters
-from DrawShape import DrawShape
-from ShapeType import ShapeType
-from Selection import Selection
-from Image import Image
+from Classes.History import History
+from Classes.Arguments import Arguments
+from Classes.ArgumentType import ArgumentType as AT
+from Classes.FilterType import FilterType, FilterInfo
+from Classes.Filters import Filters
+from Classes.DrawShape import DrawShape
+from Classes.ShapeType import ShapeType
+from Classes.Selection import Selection
+from Classes.Image import Image
 import numpy as np
-# from PIL import Image as PIL_Image
 import PIL
-
-# this is a very rough framework since i have no idea what kind of information
-# will be passed around here/is required for the various operations
-# anyone should feel free to fill in or change stuff as needed
 
 class RequestHandler:
     """Handles all requests."""
@@ -33,17 +28,17 @@ class RequestHandler:
     def import_image(self, file_path: str) -> bool:
         """Returns True if image initialization successful (else False)"""
         # get just the file name from the whole path
-        file_name = file_path.split("/")[-1]
+        # file_name = file_path.split("/")[-1]
         # open the file as a PIL Image
-        image = PIL.Image.open(file_name).convert('RGB')
+        image = PIL.Image.open(file_path).convert('RGB')
         if not image:
             return False
-        self.file_name = file_name
+        self.file_path = file_path
         return self.initialize_image(Image(np.array(image)))
     
-    def get_file_name(self) -> str:
-        if hasattr(self, "file_name"):
-            return self.file_name
+    def get_file_path(self) -> str:
+        if hasattr(self, "file_path"):
+            return self.file_path
         else:
             return None
     

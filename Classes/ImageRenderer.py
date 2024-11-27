@@ -8,4 +8,4 @@ class ImageRenderer(Renderer):
         super().__init__(image)
         
     def render_image(self) -> None:
-        
+        pass

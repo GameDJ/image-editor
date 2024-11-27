@@ -1,5 +1,5 @@
-import ImageExporter
-import Image
+from Classes.ImageExporter import ImageExporter
+from Classes.Image import Image
 from PIL import Image as PilImage
 
 class JpegExporter(ImageExporter):

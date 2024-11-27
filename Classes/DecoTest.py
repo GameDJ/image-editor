@@ -1,4 +1,4 @@
-from SelectionRenderer import SelectionRenderer
+from Classes.SelectionRenderer import SelectionRenderer
 from RenderAddon import NdarrayAddon
 import numpy as np
 

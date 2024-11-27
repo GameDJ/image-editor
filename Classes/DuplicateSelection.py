@@ -1,10 +1,9 @@
 import numpy as np
-from Edit import Edit
-from Arguments import Arguments
-from ArgumentType import ArgumentType as AT
-from Selection import Selection
-from Image import Image
-import numpy as np
+from Classes.Edit import Edit
+from Classes.Arguments import Arguments
+from Classes.ArgumentType import ArgumentType as AT
+from Classes.Selection import Selection
+from Classes.Image import Image
 
 class DuplicateSelection(Edit):
   @staticmethod

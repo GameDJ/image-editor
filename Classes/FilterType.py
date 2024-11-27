@@ -1,5 +1,5 @@
 from enum import Enum, auto
-from ArgumentType import ArgumentType
+from Classes.ArgumentType import ArgumentType
 
 class FilterType(Enum):
     BLUR = auto()

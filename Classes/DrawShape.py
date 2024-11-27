@@ -1,10 +1,10 @@
-from Edit import Edit
-from Image import Image
-from Arguments import Arguments
-from ArgumentType import ArgumentType as AT
-from ShapeType import ShapeType
-from Rectangle import Rectangle
-from Selection import Selection
+from Classes.Edit import Edit
+from Classes.Image import Image
+from Classes.Arguments import Arguments
+from Classes.ArgumentType import ArgumentType as AT
+from Classes.ShapeType import ShapeType
+from Classes.Rectangle import Rectangle
+from Classes.Selection import Selection
 import numpy as np
 
 class DrawShape(Edit):

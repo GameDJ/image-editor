@@ -1,6 +1,6 @@
 #This is a superclass that defines the behavior of all of its subclasses
 
-from Arguments import Arguments
+from Classes.Arguments import Arguments
 
 class Edit():
   @staticmethod

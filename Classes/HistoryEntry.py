@@ -1,5 +1,5 @@
 from numpy import ndarray
-from Image import Image
+from Classes.Image import Image
 
 class HistoryEntry:
     """Class to hold an entry for the history."""

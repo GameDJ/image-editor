@@ -1,5 +1,5 @@
-import Image
-import Arguments
+from Classes.Image import Image
+from Classes.Arguments import Arguments
 
 class Shape:
     def __init__(self, name: str):
