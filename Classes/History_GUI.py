@@ -1,21 +1,22 @@
 import tkinter as tk
-from tkinter import font
 from typing import Callable
+from enum import Enum
 
 class History_GUI(tk.Frame):
-    def __init__(self, parent_frame: tk.Frame, font: font, handler_undo: Callable, handler_redo: Callable, handler_history_get_index: Callable, handler_history_set_index: Callable, handler_history_descriptions: Callable, refresh_image: Callable):
-        # Outside funcs
+    def __init__(self, parent_frame: tk.Frame, gui_defaults: Enum, handler_undo: Callable, handler_redo: Callable, handler_history_get_index: Callable, handler_history_set_index: Callable, handler_history_descriptions: Callable, refresh_image: Callable):
+        # Outside refs
+        self._gui_defaults = gui_defaults
         self._handler_undo = handler_undo
         self._handler_redo = handler_redo
         self._handler_history_get_index = handler_history_get_index
         self._handler_history_set_index = handler_history_set_index
         self._handler_history_descriptions = handler_history_descriptions
-        self._refresh_image = refresh_image
+        self._gui_refresh_image = refresh_image
         
-        # History frame
+        # History panel frame
         self.frame = tk.Frame(parent_frame)
         # Label
-        self.label = tk.Label(self.frame, text="History", font=font)
+        self.label = tk.Label(self.frame, text="History", font=gui_defaults.PANEL_TITLE_FONT.value)
         self.label.pack(side = tk.TOP)
         # Frame for history buttons
         self.btn_frame = tk.Frame(self.frame)
@@ -34,12 +35,12 @@ class History_GUI(tk.Frame):
         # update data
         self._handler_undo()
         # update ui
-        self._refresh_image()
+        self._gui_refresh_image()
         self.refresh_history()
         
     def redo(self, *_):
         self._handler_redo()
-        self._refresh_image()
+        self._gui_refresh_image()
         self.refresh_history()
         
     def refresh_history(self):
@@ -70,4 +71,4 @@ class History_GUI(tk.Frame):
         if len(self.listbox.curselection()) > 0:
             self._handler_history_set_index(self.listbox.curselection()[0])
             self.refresh_history()
-            self._refresh_image()
+            self._gui_refresh_image()

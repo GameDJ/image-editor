@@ -2,12 +2,16 @@
 
 import cv2
 import numpy as np
-import Edit
+from Edit import Edit
+from Arguments import Arguments
+from ArgumentType import ArgumentType as AT
+from Image import Image
+import numpy as np
 class SizeEditor(Edit):
-  def __init__(self):
-    super.__init__()
-
-
-  def edit(self, args, image):
-    image = cv2.resize(image, args["new_size"])
+  @staticmethod
+  def edit(args: Arguments):
+    image: Image = args.get_args()[AT.IMAGE]
+    image_array: np.ndarray = image.get_img_array()
+    image_array = cv2.resize(image, args["new_size"])
+    image.set_img_array(image_array)
     return image

@@ -1,17 +1,28 @@
 import numpy as np
-import Edit
+from Edit import Edit
+from Arguments import Arguments
+from ArgumentType import ArgumentType as AT
+from Selection import Selection
+from Image import Image
+import numpy as np
 
 class DuplicateSelection(Edit):
-  def __init__(self):
-    pass
-
-  def edit(self, args, image):
-    im2 = image[args['selection'].start_coordinate[0] : args['selection'].end_coordinate[0], args['selection'].start_coordinate[1] : args['selection']end_coordinate[1]]
-
-
-
-    for row in im2:
-      for col in row:
-        image[args['selection2'].start_coordinate[0] + row][args['selection2'].start_coordinate[1] + col] = im2[row][col]
+  @staticmethod
+  def edit(args: Arguments):
+    image: Image = args.get_args()[AT.IMAGE]
+    image_array: np.ndarray = image.get_img_array()
+    sel1: Selection = args.get_args()[AT.SELECTION]
+    sel1_bbox: tuple[int, int, int, int] = sel1.get_bbox()
+    sel2: Selection = args.get_args()[AT.SELECTION2]
+    sel2_bbox: tuple[int, int, int, int] = sel2.get_bbox()
     
+    image_array[sel2_bbox[1]:sel2_bbox[3], sel2_bbox[0]:sel2_bbox[2]] = image_array[sel1_bbox[1]:sel1_bbox[3], sel1_bbox[0]:sel1_bbox[2]]
+    
+    # im2 = image[args[AT.SELECTION].start_coordinate[0] : args[AT.SELECTION].end_coordinate[0], args[AT.SELECTION].start_coordinate[1] : args[AT.SELECTION]end_coordinate[1]]
+
+    # for row in im2:
+    #   for col in row:
+    #     image[args[AT.SELECTION2].start_coordinate[0] + row][args[AT.SELECTION2].start_coordinate[1] + col] = im2[row][col]
+    
+    image.set_img_array(image_array)
     return image

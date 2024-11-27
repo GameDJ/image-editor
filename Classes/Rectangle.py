@@ -1,14 +1,21 @@
-import Shape
-import Image
-import Arguments
+from Shape import Shape
+from Image import Image
+from Selection import Selection
+from Arguments import Arguments
+from ArgumentType import ArgumentType as AT
+import numpy as np
 import cv2
 
 class Rectangle(Shape):
-    def __init__(self, name: str = "Rectangle"):
-        super().__init__(name)
-    
-    def apply_shape(self, image: Image, args: Arguments) -> Image:
+    @staticmethod
+    def apply_shape(image_array: np.ndarray, color: tuple[int, int, int]) -> np.ndarray:
+        """Draw the shape across the given image array.  
+        Arguments:
+        image_array -- ONLY the part of the array to draw the shape across
+        color -- RGB tuple
+        """
         
-        self.image = cv2.rectangle(self.image)
+        # apply rectangle
+        # image_array = color
         
-        return self.image
+        return np.full(image_array.shape, color)

@@ -1,5 +1,5 @@
-import numpy as np
 from HistoryEntry import HistoryEntry as Entry
+from Image import Image
 
 class History:
     """Class to keep track of the edit history of an Image."""
@@ -8,23 +8,27 @@ class History:
         self.array_history: list[Entry] = []
         self.index = -1
 
-    def add_record(self, image_array: np.ndarray, change_desc: str):
+    def add_record(self, image: Image, change_desc: str):
         if (len(self.array_history) > self.index+1):
             # we are in the "past", so chop off any "future" entries
             self.array_history = self.array_history[0:self.index+1]
-        new_entry = Entry(image_array, change_desc)
+        new_entry = Entry(image, change_desc)
         self.array_history.append(new_entry)
         self.index += 1
         
     # can also trigger the above function using +=
-    def __iadd__(self, image_array: np.ndarray, change_desc: str):
-        self.add_record(image_array, change_desc)
+    def __iadd__(self, image: Image, change_desc: str):
+        self.add_record(image, change_desc)
     
-    def get_current_img(self) -> np.ndarray:
+    def get_current_img(self) -> Image:
+        """Returns a deep copy of the current entry's Image"""
         if self.index > -1:
-            return self.array_history[self.index].get_image()
+            return self.array_history[self.index].get_image().__deepcopy__()
         else:
             return None
+        
+    def is_active_image(self) -> bool:
+        return (self.index > -1)
     
     def undo(self):
         if (self.index > 0):
