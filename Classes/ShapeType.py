@@ -1,4 +1,4 @@
 from enum import Enum, auto
 
 class ShapeType(Enum):
-    RECTANGLE = auto()
+    RECTANGLE = "Rectangle"

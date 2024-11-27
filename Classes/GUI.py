@@ -9,6 +9,7 @@ from FilterType import FilterType, FilterInfo
 from RequestHandler import RequestHandler
 from ArgumentType import ArgumentType
 from Arguments import Arguments
+from ShapeType import ShapeType
 from History_GUI import History_GUI
 from Selection_GUI import Selection_GUI
 from Color_GUI import Color_GUI
@@ -283,8 +284,19 @@ if __name__ == "__main__":
     def toggle_drawing_off():
         draw_btn.config(relief=Defaults.BUTTON_RELIEF.value)
             
+    def test_draw():
+        args = Arguments()
+        args.add_shape(ShapeType.RECTANGLE)
+        args.add_color(color_gui.get_color_codes()[0])
+        handler.edit(args)
+        refresh_image()
+        history_gui.refresh_history()
+    test_draw_btn = tk.Button(draw_inner_frame, text="Draw test", command=test_draw)
+    test_draw_btn.pack(side=tk.TOP)
+    
     draw_btn = tk.Button(draw_inner_frame, text="Draw", command=lambda:change_image_mode(ImageMode.SHAPE))
     draw_btn.pack(side=tk.LEFT)
+    
     
     options_list = ["Pen", "Rectangle"]
     selected_shape = tk.StringVar(draw_inner_frame)

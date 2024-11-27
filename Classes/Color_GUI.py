@@ -63,3 +63,6 @@ class Color_GUI(tk.Frame):
         self._gui_image_preview.unbind("<begin_selection-1>", self._gui_bindings["select_pixel_color"])
         self._gui_bindings.pop("select_pixel_color")
         self.eyedropper_btn.config(relief=self._gui_defaults.BUTTON_RELIEF.value)
+        
+    def get_color_codes(self):
+        return self.color_codes

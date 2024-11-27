@@ -4,6 +4,8 @@ from Arguments import Arguments
 from ArgumentType import ArgumentType as AT
 from FilterType import FilterType, FilterInfo
 from Filters import Filters
+from DrawShape import DrawShape
+from ShapeType import ShapeType
 from Selection import Selection
 from Image import Image
 import numpy as np
@@ -78,9 +80,14 @@ class RequestHandler:
         if self.selection.get_bbox() is not None:
             args.add_selection(self.selection)
         # edit the image
-        edited_image = Filters.edit(args)
+        if AT.FILTER in args.get_args():
+            edited_image = Filters.edit(args)
+            desc = FilterInfo[args.get_args()[AT.FILTER]]["text"]
+        elif AT.SHAPE in args.get_args():
+            edited_image = DrawShape.edit(args)
+            desc = args.get_args()[AT.SHAPE].value
         # add the edited image to history, with the filter text as the change description
-        self._create_history_entry(edited_image, FilterInfo[args.get_args()[AT.FILTER]]["text"])
+        self._create_history_entry(edited_image, desc)
     
     def get_current_actual_image(self):
         return self.hist.get_current_img()
@@ -134,4 +141,5 @@ class RequestHandler:
         return render_img
     
     def get_color_at_pixel(self, x: int, y: int) -> tuple[int, int, int]:
-        return self.get_current_actual_image()[y][x]
+        return self.get_current_actual_image().get_img_array()[y][x]
+    
