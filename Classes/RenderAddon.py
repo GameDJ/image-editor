@@ -1,13 +1,13 @@
-import numpy as np
+from Classes.ImageRenderer import ImageRenderer
+from Classes.Image import Image
 
-class NdarrayAddon(np.ndarray):
-    def __new__(cls, input_array, *args, **kwargs):
-        obj = np.asarray(input_array).view(cls)
-        return obj
-    
-    def __init__(self, input_array, *args, **kwargs):
-        pass
+class RenderAddon(ImageRenderer):
+    """Parent class for decorator addons."""
+    def __init__(self, renderer: ImageRenderer):
+        """Store a renderer which has already been initialized"""
+        self.renderer = renderer
         
-    def copify(self) -> np.ndarray:
-        return self.copy()
+    def render_image(self) -> Image:
+        """Return the image stored in the renderer"""
+        self.renderer.render_image()
         

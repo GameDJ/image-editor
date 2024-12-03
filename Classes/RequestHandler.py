@@ -8,6 +8,10 @@ from Classes.DrawShape import DrawShape
 from Classes.ShapeType import ShapeType
 from Classes.Selection import Selection
 from Classes.Image import Image
+from Classes.ImageRenderer import ImageRenderer
+from Classes.BasicImageRenderer import BasicImageRenderer
+from Classes.SelectionRenderer import SelectionRenderer
+from Classes.ShapeRenderer import ShapeRenderer
 import numpy as np
 import PIL
 
@@ -124,25 +128,17 @@ class RequestHandler:
         return self.hist.get_index()
     
     def get_render_image(self, args: Arguments = None) -> Image:
-        render_img = self.hist.get_current_img()
+        render_image = BasicImageRenderer(self.hist.get_current_img())
         if self.zoom_level != 1:
-            # scale based on zoom
-            #
             pass
         if args is not None:
-            if self.selection.get_bbox() is not None:
-                args.add_selection(self.selection)
+            args.add_image(render_image)
             # render a shape while it's being dragged
-            args.add_image(render_img)
-            draw_shape_img = DrawShape.edit(args)
-            if draw_shape_img is not None:
-                render_img = draw_shape_img
+            render_image = ShapeRenderer(render_image, args)
         if self.selection.get_bbox() is not None:
-            # need to change the selection bounds based on zoom...
-            # copy selection and scale/transform it appropriately
-            #
-            render_img.set_img_array(self.selection.draw_selection(render_img.get_img_array()))
-        return render_img
+            # render selection box
+            render_image = SelectionRenderer(render_image, self.selection)
+        return render_image.render_image()
     
     def get_color_at_pixel(self, x: int, y: int) -> tuple[int, int, int]:
         return self.get_current_actual_image().get_img_array()[y][x]

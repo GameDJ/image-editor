@@ -7,13 +7,13 @@ from Classes.Arguments import Arguments
 from Classes.ShapeType import ShapeType
 from Classes.gui.Menubar_GUI import Menubar_GUI
 from Classes.gui.Image_GUI import Image_GUI
-from Classes.ImageMode import ImageMode
+from Classes.gui.ImageMode import ImageMode
 from Classes.gui.History_GUI import History_GUI
 from Classes.gui.Selection_GUI import Selection_GUI
 from Classes.gui.Color_GUI import Color_GUI
 from Classes.Image import Image
 from Classes.gui.Draw_GUI import Draw_GUI
-from Classes.Zoom_GUI import Zoom_GUI
+from Classes.gui.Zoom_GUI import Zoom_GUI
 from Classes.gui.GUI_Defaults import GUI_Defaults
 
 class GUI():
