@@ -1,4 +1,4 @@
-from Classes.Image import Image
+from Classes.image.Image import Image
 
 class ImageRenderer:
     """Class for holding an image intended for rendering.  

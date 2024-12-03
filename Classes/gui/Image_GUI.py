@@ -2,8 +2,8 @@ import tkinter as tk
 from typing import Callable
 import PIL
 from PIL import ImageTk
-from Classes.Image import Image
-from Classes.Arguments import Arguments
+from Classes.image.Image import Image
+from Classes.info.Arguments import Arguments
 from Classes.gui.GUI_Defaults import GUI_Defaults
 
 class Image_GUI():

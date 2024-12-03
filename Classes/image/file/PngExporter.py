@@ -1,9 +1,9 @@
-from Classes.ImageExporter import ImageExporter
-from Classes.Image import Image
+from Classes.image.file.ImageExporter import ImageExporter
+from Classes.image.Image import Image
 from PIL import Image as PilImage
 
-class JpegExporter(ImageExporter):
-    """Class to export an Image of type .jpeg to the user's local storage"""
+class PngExporter(ImageExporter):
+    """Class to export an Image of type .png to the user's local storage"""
     
     def __init__(self) -> None:
         super.__init__()

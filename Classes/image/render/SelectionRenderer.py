@@ -1,7 +1,7 @@
-from Classes.Selection import Selection
-from Classes.ImageRenderer import ImageRenderer
-from Classes.RenderAddon import RenderAddon
-from Classes.Image import Image
+from Classes.info.Selection import Selection
+from Classes.image.render.ImageRenderer import ImageRenderer
+from Classes.image.render.RenderAddon import RenderAddon
+from Classes.image.Image import Image
 
 class SelectionRenderer(RenderAddon):
     """Adds a selection box onto the image of an existing ImageRenderer."""

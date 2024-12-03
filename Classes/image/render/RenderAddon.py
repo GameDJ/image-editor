@@ -1,5 +1,5 @@
-from Classes.ImageRenderer import ImageRenderer
-from Classes.Image import Image
+from Classes.image.render.ImageRenderer import ImageRenderer
+from Classes.image.Image import Image
 
 class RenderAddon(ImageRenderer):
     """Parent class for decorator addons."""

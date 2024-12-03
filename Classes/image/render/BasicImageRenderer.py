@@ -1,5 +1,5 @@
-from Classes.Image import Image
-from Classes.ImageRenderer import ImageRenderer
+from Classes.image.Image import Image
+from Classes.image.render.ImageRenderer import ImageRenderer
 
 class BasicImageRenderer(ImageRenderer):
     """Stores a basic Image, ready for rendering."""

@@ -1,10 +1,10 @@
-from Classes.Selection import Selection
-from Classes.Shape import Shape
-from Classes.ImageRenderer import ImageRenderer
-from Classes.RenderAddon import RenderAddon
-from Classes.Image import Image
-from Classes.Arguments import Arguments
-from Classes.DrawShape import DrawShape
+from Classes.info.Selection import Selection
+from Classes.edit.draw.Shape import Shape
+from Classes.image.render.ImageRenderer import ImageRenderer
+from Classes.image.render.RenderAddon import RenderAddon
+from Classes.image.Image import Image
+from Classes.info.Arguments import Arguments
+from Classes.edit.draw.DrawShape import DrawShape
 
 class ShapeRenderer(RenderAddon):
     def __init__(self, renderer: ImageRenderer, args: Arguments):

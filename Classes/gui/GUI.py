@@ -1,17 +1,17 @@
 import tkinter as tk
 from tkinter import ttk, font
-from Classes.FilterType import FilterType, FilterInfo
+from Classes.edit.filter.FilterType import FilterType, FilterInfo
 from Classes.RequestHandler import RequestHandler
-from Classes.ArgumentType import ArgumentType
-from Classes.Arguments import Arguments
-from Classes.ShapeType import ShapeType
+from Classes.info.ArgumentType import ArgumentType
+from Classes.info.Arguments import Arguments
+from Classes.edit.draw.ShapeType import ShapeType
 from Classes.gui.Menubar_GUI import Menubar_GUI
 from Classes.gui.Image_GUI import Image_GUI
 from Classes.gui.ImageMode import ImageMode
 from Classes.gui.History_GUI import History_GUI
 from Classes.gui.Selection_GUI import Selection_GUI
 from Classes.gui.Color_GUI import Color_GUI
-from Classes.Image import Image
+from Classes.image.Image import Image
 from Classes.gui.Draw_GUI import Draw_GUI
 from Classes.gui.Zoom_GUI import Zoom_GUI
 from Classes.gui.GUI_Defaults import GUI_Defaults
