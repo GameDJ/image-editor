@@ -32,16 +32,7 @@ class Menubar_GUI():
                 # populate the edit commands based on available filters
                 FilterInfo[filter]["text"]:lambda filter=filter: self.filter_action(filter) for filter in FilterInfo 
             },
-            "Help": {
-                "Usage": {
-                    "File menu": {
-                        "Create blank canvas": lambda: self.display_help_message("Create blank canvas", "placeholder"),
-                        "Load image": lambda: self.display_help_message("Load image", "placeholder"),
-                        "Save as": lambda: self.display_help_message("Save as", "placeholder"),
-                    }
-                },
-                "About": lambda: self.display_help_message("SIMPLE v1.0.0", "SIMPLE: Simple IMage Processor for Lazy Editors\n\nContributors:\n\tAddison Casner\n\tDerek Jennings\n\tQuinn Pulley\n\tWill Verplaetse")
-            }
+            "About": lambda: self.display_help_message("SIMPLE v1.0.0", "SIMPLE: Simple IMage Processor for Lazy Editors\n\nContributors:\n\tAddison Casner\n\tDerek Jennings\n\tQuinn Pulley\n\tWill Verplaetse")
         }
 
         self.menu_storage = {self.menubar: {}}
