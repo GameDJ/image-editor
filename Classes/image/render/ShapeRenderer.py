@@ -19,7 +19,8 @@ class ShapeRenderer(RenderAddon):
         
     def draw_shape(self, args: Arguments) -> None:
         """Draw the shape onto the image's array"""
-        DrawShape.edit(args)
+        shape_drawer = DrawShape()
+        shape_drawer.edit(args)
         
         
         

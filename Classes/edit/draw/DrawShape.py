@@ -8,8 +8,7 @@ from Classes.info.Selection import Selection
 import numpy as np
 
 class DrawShape(Edit):
-    @staticmethod
-    def edit(args: Arguments) -> Image:
+    def edit(self, args: Arguments) -> Image:
         """Draw a shape.
         Arguments:
         image -- Image to edit
@@ -39,7 +38,7 @@ class DrawShape(Edit):
         # set the shape type
         shape_type = args.get_args()[AT.SHAPE]
         if shape_type == ShapeType.RECTANGLE:
-            shape = Rectangle
+            shape = Rectangle()
         else:
             return None
 

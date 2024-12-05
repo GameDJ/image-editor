@@ -81,12 +81,14 @@ class RequestHandler:
         # edit the image
         if AT.FILTER in args.get_args():
             try:
-                edited_image = Filters.edit(args)
+                filter = Filters()
+                edited_image = filter.edit(args)
             except Exception as e:
                 raise e
             desc = FilterInfo[args.get_args()[AT.FILTER]]["text"]
         elif AT.SHAPE in args.get_args():
-            edited_image = DrawShape.edit(args)
+            draw_shape = DrawShape()
+            edited_image = draw_shape.edit(args)
             desc = args.get_args()[AT.SHAPE].value
         # add the edited image to history, with the filter text as the change description
         if edited_image is not None:

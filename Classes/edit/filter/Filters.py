@@ -9,8 +9,7 @@ import cv2
 from Classes.edit.filter.FilterType import FilterType
 
 class Filters(Edit):
-    @staticmethod
-    def edit(args: Arguments) -> Image:
+    def edit(self, args: Arguments) -> Image:
         full_image: Image = args.get_args()[AT.IMAGE]
         full_image_array: np.ndarray = full_image.get_img_array()
         filter_type: FilterType = args.get_args()[AT.FILTER]
@@ -27,17 +26,17 @@ class Filters(Edit):
             
         # Perform the edit
         if filter_type == FilterType.BLUR:
-            image_edit_area = Filters._blur(image_edit_area, args.get_args()[AT.AMOUNT])
+            image_edit_area = self._blur(image_edit_area, args.get_args()[AT.AMOUNT])
         elif filter_type == FilterType.INVERT:
-            image_edit_area = Filters._invert(image_edit_area)
+            image_edit_area = self._invert(image_edit_area)
         elif filter_type == FilterType.FLIP_HORIZONTAL:
-            image_edit_area = Filters._flipHorizontal(image_edit_area)
+            image_edit_area = self._flipHorizontal(image_edit_area)
         elif filter_type == FilterType.FLIP_VERTICAL:
-            image_edit_area = Filters._flipVertical(image_edit_area)
+            image_edit_area = self._flipVertical(image_edit_area)
         elif filter_type == FilterType.GRAYSCALE:
-            image_edit_area = Filters._grayscale(image_edit_area)
+            image_edit_area = self._grayscale(image_edit_area)
         elif filter_type == FilterType.ADJUST_BRIGHTNESS:
-            image_edit_area = Filters._adjustBrightness(image_edit_area, args.get_args()[AT.AMOUNT])
+            image_edit_area = self._adjustBrightness(image_edit_area, args.get_args()[AT.AMOUNT])
         
         # Apply the edited selection area to the full image array (if applicable) 
         if using_selection:
@@ -48,8 +47,7 @@ class Filters(Edit):
         full_image.set_img_array(full_image_array)
         return full_image
 
-    @staticmethod
-    def _blur(image: np.ndarray, kernel_size: int)->np.ndarray:
+    def _blur(self, image: np.ndarray, kernel_size: int)->np.ndarray:
         def nearest_odd_int(num: float) -> int:
             num = int(num)
             if num % 2 == 0:
@@ -65,20 +63,16 @@ class Filters(Edit):
         rgb_blurred = blurred[0:m:1, 0:n:1, -1::-1]
         return np.array(rgb_blurred)
     
-    @staticmethod
-    def _invert(image: np.ndarray)->np.ndarray:
+    def _invert(self, image: np.ndarray)->np.ndarray:
         return 255 - image
     
-    @staticmethod
-    def _flipHorizontal(image: np.ndarray)->np.ndarray:
+    def _flipHorizontal(self, image: np.ndarray)->np.ndarray:
         return np.flip(image, axis = 1)
 
-    @staticmethod
-    def _flipVertical(image: np.ndarray)->np.ndarray:
+    def _flipVertical(self, image: np.ndarray)->np.ndarray:
         return np.flip(image, axis = 0)
 
-    @staticmethod
-    def _grayscale(image: np.ndarray)->np.ndarray:
+    def _grayscale(self, image: np.ndarray)->np.ndarray:
         # calculate Luminance value of each RGB cell
         grayed_L: np.ndarray = np.dot(image, [0.299, 0.587, 0.114])
         # round each value back to an int
@@ -87,6 +81,5 @@ class Filters(Edit):
         grayed_RGB = np.stack([grayed_L] * 3, axis=2)
         return grayed_RGB
     
-    @staticmethod
-    def _adjustBrightness(image: np.ndarray, amount: float)->np.ndarray:
+    def _adjustBrightness(self, image: np.ndarray, amount: float)->np.ndarray:
         return np.clip(image * amount, 0, 255).astype(np.uint8)
