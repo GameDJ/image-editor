@@ -8,7 +8,11 @@ from Classes.Selection import Selection
 import numpy as np
 
 class DrawShape(Edit):
-    @staticmethod
+    
+    def __init__(self):
+        pass
+
+
     def edit(args: Arguments) -> Image:
         """Draw a shape.
         Arguments:

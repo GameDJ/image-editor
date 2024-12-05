@@ -3,6 +3,6 @@
 from Classes.Arguments import Arguments
 
 class Edit():
-  @staticmethod
+  
   def edit(args: Arguments):
     pass

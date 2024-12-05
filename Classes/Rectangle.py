@@ -7,7 +7,10 @@ import numpy as np
 # import cv2
 
 class Rectangle(Shape):
-    @staticmethod
+    
+    def __init__(self):
+        pass
+
     def apply_shape(image_array: np.ndarray, color: tuple[int, int, int]) -> np.ndarray:
         """Draw the shape across the given image array.  
         Arguments:

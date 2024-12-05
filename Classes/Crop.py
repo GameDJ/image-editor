@@ -7,7 +7,10 @@ from Classes.Arguments import Arguments
 from Classes.ArgumentType import ArgumentType as AT
 
 class Crop(Edit):
-  @staticmethod
+  
+  def __init__(self):
+    pass
+
   def edit(args: Arguments):
     image = args.get_args[AT.IMAGE]
     if AT.SELECTION in args:
