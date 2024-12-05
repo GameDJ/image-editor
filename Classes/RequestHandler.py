@@ -12,6 +12,7 @@ from Classes.image.render.ImageRenderer import ImageRenderer
 from Classes.image.render.BasicImageRenderer import BasicImageRenderer
 from Classes.image.render.SelectionRenderer import SelectionRenderer
 from Classes.image.render.ShapeRenderer import ShapeRenderer
+from Classes.edit.Crop import Crop
 import numpy as np
 import PIL
 
@@ -148,3 +149,15 @@ class RequestHandler:
     def get_color_at_pixel(self, x: int, y: int) -> tuple[int, int, int]:
         return self.get_current_actual_image().get_img_array()[y][x]
     
+    def crop(self) -> Image:
+        args = Arguments()
+        # make a copy of the current image
+        args.add_image(self.hist.get_current_img().__deepcopy__())
+        # add selection, if there is one
+        if self.selection.get_bbox() is None:
+            return None
+        args.add_selection(self.selection)
+        crop = Crop()
+        edited_image = crop.edit(args)
+        if edited_image is not None:
+            self._create_history_entry(edited_image, "Crop")

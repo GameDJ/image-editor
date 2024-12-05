@@ -4,7 +4,7 @@ from typing import Callable
 from Classes.gui.GUI_Defaults import GUI_Defaults
 
 class Selection_GUI():
-    def __init__(self, parent_frame: tk.Frame, gui_title_font: font, gui_change_image_mode: Callable, handler_make_selection: Callable, handler_get_selection_bbox: Callable, handler_clear_selection: Callable, handler_get_image_dimensions: Callable, gui_bindings: dict, gui_image_preview: tk.Label, gui_refresh_image: Callable):
+    def __init__(self, parent_frame: tk.Frame, gui_title_font: font, gui_change_image_mode: Callable, handler_make_selection: Callable, handler_get_selection_bbox: Callable, handler_clear_selection: Callable, handler_get_image_dimensions: Callable, handler_crop: Callable, gui_bindings: dict, gui_image_preview: tk.Label, gui_refresh_image: Callable, gui_refresh_history: Callable):
         # Constants
         self._SEL_COORD_1_DEFAULT_TEXT = "No selection"
         
@@ -14,9 +14,11 @@ class Selection_GUI():
         self._handler_get_selection_bbox = handler_get_selection_bbox
         self._handler_clear_selection = handler_clear_selection
         self._handler_get_image_dimensions = handler_get_image_dimensions
+        self._handler_crop = handler_crop
         self._gui_bindings = gui_bindings
         self._gui_image_preview = gui_image_preview
         self._gui_refresh_image = gui_refresh_image
+        self._gui_refresh_history = gui_refresh_history
         
         # Selection panel frame
         self.frame = tk.Frame(parent_frame)
@@ -99,7 +101,10 @@ class Selection_GUI():
             self._gui_refresh_image()
             
     def crop(self, *_):
-        print("crop")
+        self._handler_crop()
+        self.clear_selection()
+        self._gui_refresh_image()
+        self._gui_refresh_history()
         
     def duplicate(self, *_):
         print("duplicate")

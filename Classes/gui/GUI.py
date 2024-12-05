@@ -72,9 +72,11 @@ class GUI():
             handler.get_selection_bbox,
             handler.clear_selection,
             handler.get_image_dimensions,
+            handler.crop,
             bindings,
             image_gui.image_preview,
-            image_gui.refresh_image
+            image_gui.refresh_image,
+            history_gui.refresh_history
         )
         selection_gui.frame.grid(row=3, rowspan=2, column=0, padx=1, pady=1, sticky="nsew")
         

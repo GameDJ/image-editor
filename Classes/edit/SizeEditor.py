@@ -8,11 +8,6 @@ from Classes.info.ArgumentType import ArgumentType as AT
 from Classes.image.Image import Image
 import numpy as np
 class SizeEditor(Edit):
-  
-  def __init__(self):
-    pass
-
-
   def edit(args: Arguments):
     image: Image = args.get_args()[AT.IMAGE]
     image_array: np.ndarray = image.get_img_array()
