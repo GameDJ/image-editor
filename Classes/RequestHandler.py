@@ -150,7 +150,7 @@ class RequestHandler:
     def get_color_at_pixel(self, x: int, y: int) -> tuple[int, int, int]:
         return self.get_current_actual_image().get_img_array()[y][x]
     
-    def crop(self) -> Image:
+    def crop(self) -> None:
         args = Arguments()
         # make a copy of the current image
         args.add_image(self.hist.get_current_img())
@@ -163,7 +163,7 @@ class RequestHandler:
         if edited_image is not None:
             self._create_history_entry(edited_image, "Crop")
 
-    def resize(self, dimensions: tuple[int, int]):
+    def resize(self, dimensions: tuple[int, int]) -> None:
         args = Arguments()
         args.add_image(self.hist.get_current_img())
         args.add_dimensions(dimensions)

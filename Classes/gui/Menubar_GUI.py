@@ -134,18 +134,6 @@ class Menubar_GUI():
             messagebox.showerror("Error", "Invalid value")
 
     def resize(self):
-        # width = simpledialog.askinteger("Width", "Enter width:")
-        # if width is None:
-        #     return
-        # if width < 1 or width >= GUI_Defaults.IMAGE_MAX_WIDTH.value:
-        #     messagebox.showerror("Error", "Invalid value")
-        
-        # height = simpledialog.askinteger("Height", "Enter height:")
-        # if height is None:
-        #     return
-        # if height < 1 or height >= GUI_Defaults.IMAGE_MAX_HEIGHT.value:
-        #     messagebox.showerror("Error", "Invalid value")
-        
         dimension_dialog = CanvasDialog(self._root, title="Initialize Canvas", color_codes=self._gui_get_color_codes(), use_color=False)
         if not dimension_dialog.width or not dimension_dialog.height:
             return
