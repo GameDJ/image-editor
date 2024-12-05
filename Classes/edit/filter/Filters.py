@@ -1,19 +1,15 @@
-from Classes.Edit import Edit
-from Classes.Arguments import Arguments
-from Classes.ArgumentType import ArgumentType as AT
-from Classes.Image import Image
-from Classes.Selection import Selection
+from Classes.edit.Edit import Edit
+from Classes.info.Arguments import Arguments
+from Classes.info.ArgumentType import ArgumentType as AT
+from Classes.image.Image import Image
+from Classes.info.Selection import Selection
 from enum import Enum, auto
 import numpy as np
 import cv2
-from Classes.FilterType import FilterType
+from Classes.edit.filter.FilterType import FilterType
 
 class Filters(Edit):
-    
-    def __init__(self):
-        pass
-
-
+    @staticmethod
     def edit(args: Arguments) -> Image:
         full_image: Image = args.get_args()[AT.IMAGE]
         full_image_array: np.ndarray = full_image.get_img_array()
@@ -54,8 +50,6 @@ class Filters(Edit):
 
     @staticmethod
     def _blur(image: np.ndarray, kernel_size: int)->np.ndarray:
-        if kernel_size < 0:
-            raise ValueError
         def nearest_odd_int(num: float) -> int:
             num = int(num)
             if num % 2 == 0:

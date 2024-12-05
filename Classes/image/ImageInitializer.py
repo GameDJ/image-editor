@@ -1,5 +1,5 @@
-from Classes.Image import Image
-from Classes.Color import Color
+from Classes.image.Image import Image
+from Classes.edit.draw.Color import Color
 
 class ImageInitializer:
     """Class to initialize an Image"""

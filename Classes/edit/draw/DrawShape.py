@@ -1,18 +1,14 @@
-from Classes.Edit import Edit
-from Classes.Image import Image
-from Classes.Arguments import Arguments
-from Classes.ArgumentType import ArgumentType as AT
-from Classes.ShapeType import ShapeType
-from Classes.Rectangle import Rectangle
-from Classes.Selection import Selection
+from Classes.edit.Edit import Edit
+from Classes.image.Image import Image
+from Classes.info.Arguments import Arguments
+from Classes.info.ArgumentType import ArgumentType as AT
+from Classes.edit.draw.ShapeType import ShapeType
+from Classes.edit.draw.Rectangle import Rectangle
+from Classes.info.Selection import Selection
 import numpy as np
 
 class DrawShape(Edit):
-    
-    def __init__(self):
-        pass
-
-
+    @staticmethod
     def edit(args: Arguments) -> Image:
         """Draw a shape.
         Arguments:

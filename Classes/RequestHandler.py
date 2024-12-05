@@ -1,17 +1,17 @@
 import PIL.Image
-from Classes.History import History
-from Classes.Arguments import Arguments
-from Classes.ArgumentType import ArgumentType as AT
-from Classes.FilterType import FilterType, FilterInfo
-from Classes.Filters import Filters
-from Classes.DrawShape import DrawShape
-from Classes.ShapeType import ShapeType
-from Classes.Selection import Selection
-from Classes.Image import Image
-from Classes.ImageRenderer import ImageRenderer
-from Classes.BasicImageRenderer import BasicImageRenderer
-from Classes.SelectionRenderer import SelectionRenderer
-from Classes.ShapeRenderer import ShapeRenderer
+from Classes.info.History import History
+from Classes.info.Arguments import Arguments
+from Classes.info.ArgumentType import ArgumentType as AT
+from Classes.edit.filter.FilterType import FilterType, FilterInfo
+from Classes.edit.filter.Filters import Filters
+from Classes.edit.draw.DrawShape import DrawShape
+from Classes.edit.draw.ShapeType import ShapeType
+from Classes.info.Selection import Selection
+from Classes.image.Image import Image
+from Classes.image.render.ImageRenderer import ImageRenderer
+from Classes.image.render.BasicImageRenderer import BasicImageRenderer
+from Classes.image.render.SelectionRenderer import SelectionRenderer
+from Classes.image.render.ShapeRenderer import ShapeRenderer
 import numpy as np
 import PIL
 

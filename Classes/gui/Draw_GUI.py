@@ -1,10 +1,10 @@
 import tkinter as tk
 from tkinter import font
 from typing import Callable
-from Classes.Arguments import Arguments
-from Classes.ArgumentType import ArgumentType as AT
-from Classes.ShapeType import ShapeType
-from Classes.Selection import Selection
+from Classes.info.Arguments import Arguments
+from Classes.info.ArgumentType import ArgumentType as AT
+from Classes.edit.draw.ShapeType import ShapeType
+from Classes.info.Selection import Selection
 from Classes.gui.GUI_Defaults import GUI_Defaults
 
 class Draw_GUI():

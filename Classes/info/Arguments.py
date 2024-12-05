@@ -1,7 +1,7 @@
-from Classes.ArgumentType import ArgumentType as AT
-from Classes.Selection import Selection
-from Classes.Image import Image
-from Classes.ShapeType import ShapeType
+from Classes.info.ArgumentType import ArgumentType as AT
+from Classes.info.Selection import Selection
+from Classes.image.Image import Image
+from Classes.edit.draw.ShapeType import ShapeType
 
 class Arguments:
     """Build a dictionary of arguments to be passed to Edit subclasses"""

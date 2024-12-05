@@ -1,5 +1,5 @@
-from Classes.HistoryEntry import HistoryEntry as Entry
-from Classes.Image import Image
+from Classes.info.HistoryEntry import HistoryEntry as Entry
+from Classes.image.Image import Image
 
 class History:
     """Class to keep track of the edit history of an Image."""

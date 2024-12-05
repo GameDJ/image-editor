@@ -1,9 +1,9 @@
 import tkinter as tk
 from tkinter import messagebox, simpledialog, colorchooser, filedialog
 from typing import Callable
-from Classes.FilterType import FilterInfo
-from Classes.Arguments import Arguments
-from Classes.ArgumentType import ArgumentType
+from Classes.edit.filter.FilterType import FilterInfo
+from Classes.info.Arguments import Arguments
+from Classes.info.ArgumentType import ArgumentType
 from Classes.gui.CanvasDialog import CanvasDialog
 
 class Menubar_GUI():
