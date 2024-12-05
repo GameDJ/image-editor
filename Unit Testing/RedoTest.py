@@ -1,10 +1,8 @@
-# def redo(self) -> bool:
-#     if (self.index < len(self.array_history)-1):
-#         self.index += 1
-#         return True
-#     return False
+# MUST BE RUN AS: python '.\Unit Testing\RedoTest.py'
 
 import unittest
+import sys
+sys.path.append("../image-editor")
 from Classes.History import History
 from Classes.Image import Image
 import numpy as np

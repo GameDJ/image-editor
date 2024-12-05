@@ -1,4 +1,8 @@
+# MUST BE RUN AS: python '.\Unit Testing\CreateBlankCanvasTest.py'
+
 import unittest
+import sys
+sys.path.append("../image-editor")
 from Classes import RequestHandler
 
 class CreateBlankCanvasTest(unittest.TestCase):

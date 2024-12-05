@@ -1,12 +1,8 @@
-# def undo(self) -> bool:
-#     if (self.index > 0):
-#         self.index -= 1
-#         return True
-#     return False
-
-# does he want use case testing to use objects in context or can i create a dummy history?
+# MUST BE RUN AS: python '.\Unit Testing\UndoTest.py'
 
 import unittest
+import sys
+sys.path.append("../image-editor")
 from Classes.History import History
 from Classes.Image import Image
 import numpy as np
