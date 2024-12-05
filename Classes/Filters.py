@@ -9,7 +9,11 @@ import cv2
 from Classes.FilterType import FilterType
 
 class Filters(Edit):
-    @staticmethod
+    
+    def __init__(self):
+        pass
+
+
     def edit(args: Arguments) -> Image:
         full_image: Image = args.get_args()[AT.IMAGE]
         full_image_array: np.ndarray = full_image.get_img_array()
