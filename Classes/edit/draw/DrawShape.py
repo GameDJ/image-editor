@@ -5,7 +5,6 @@ from Classes.info.ArgumentType import ArgumentType as AT
 from Classes.edit.draw.ShapeType import ShapeType
 from Classes.edit.draw.Rectangle import Rectangle
 from Classes.info.Selection import Selection
-import numpy as np
 
 class DrawShape(Edit):
     def edit(self, args: Arguments) -> Image:
@@ -23,7 +22,7 @@ class DrawShape(Edit):
         """
         # get the image and its array
         full_image: Image = args.get_args()[AT.IMAGE]
-        full_image_array: np.ndarray = full_image.get_img_array()
+        full_image_array = full_image.get_img_array()
         # get the actual selection (to be applied later)
         actual_sel_bbox: tuple[int, int, int, int] = None
         if AT.SELECTION in args.get_args():
@@ -44,7 +43,7 @@ class DrawShape(Edit):
 
         # get the color and apply the shape with that color
         color: tuple[int, int, int] = args.get_args()[AT.COLOR]
-        image_edit_area = shape.apply_shape(image_edit_area, color)
+        image_edit_area = shape.apply_shape(Image(image_edit_area), color).get_img_array()
         
         # Apply the edited selection area to the full image array
         if actual_sel_bbox is not None:
