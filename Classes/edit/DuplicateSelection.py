@@ -6,11 +6,6 @@ from Classes.info.Selection import Selection
 from Classes.image.Image import Image
 
 class DuplicateSelection(Edit):
-  
-  def __init__(self):
-    pass
-
-
   def edit(args: Arguments):
     image: Image = args.get_args()[AT.IMAGE]
     image_array: np.ndarray = image.get_img_array()

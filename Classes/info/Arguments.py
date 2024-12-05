@@ -25,9 +25,9 @@ class Arguments:
         self.args[AT.SELECTION2] = selection
     
     # eventually these will prob be enums and stuff
-    def add_filter(self, filter_name: str) -> None:
+    def add_filter(self, filter_type: AT) -> None:
         """Name of filter to apply"""
-        self.args[AT.FILTER] = filter_name
+        self.args[AT.FILTER] = filter_type
     def add_amount(self, amount: float) -> None:
         """An amount, usually to inform a filter strength"""
         self.args[AT.AMOUNT] = amount
@@ -38,6 +38,9 @@ class Arguments:
     def add_color(self, color: tuple[int, int, int]) -> None:
         """An RGB color tuple, usually to inform the drawing color"""
         self.args[AT.COLOR] = color
+
+    def add_dimensions(self, dimensions: tuple[int, int]) -> None:
+        self.args[AT.DIMENSIONS] = dimensions
 
     def get_args(self) -> dict:
         return self.args

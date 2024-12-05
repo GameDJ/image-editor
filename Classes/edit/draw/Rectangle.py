@@ -7,7 +7,7 @@ import numpy as np
 # import cv2
 
 class Rectangle(Shape):
-    def apply_shape(self, image_array: np.ndarray, color: tuple[int, int, int]) -> np.ndarray:
+    def apply_shape(self, image: Image, color: tuple[int, int, int]) -> Image:
         """Draw the shape across the given image array.  
         Arguments:
         image_array -- ONLY the part of the array to draw the shape across
@@ -16,5 +16,5 @@ class Rectangle(Shape):
         
         # apply rectangle
         # image_array = color
-        
-        return np.full(image_array.shape, color)
+        image.set_img_array(np.full(image.get_img_array().shape, color))
+        return image

@@ -48,6 +48,8 @@ class Filters(Edit):
         return full_image
 
     def _blur(self, image: np.ndarray, kernel_size: int)->np.ndarray:
+        if kernel_size < 0:
+            raise ValueError
         def nearest_odd_int(num: float) -> int:
             num = int(num)
             if num % 2 == 0:
