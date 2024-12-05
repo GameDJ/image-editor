@@ -12,6 +12,6 @@ class SizeEditor(Edit):
   def edit(args: Arguments):
     image: Image = args.get_args()[AT.IMAGE]
     image_array: np.ndarray = image.get_img_array()
-    image_array = cv2.resize(image, args["new_size"])
+    image_array = cv2.resize(image, ( abs(args["new_size"][0]) , abs(args["new_size"][1])) )
     image.set_img_array(image_array)
     return image
