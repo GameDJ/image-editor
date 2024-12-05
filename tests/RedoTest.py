@@ -3,8 +3,8 @@
 import unittest
 import sys
 sys.path.append("../image-editor")
-from Classes.History import History
-from Classes.Image import Image
+from Classes.info.History import History
+from Classes.image.Image import Image
 import numpy as np
 
 class TestRedo(unittest.TestCase):    
