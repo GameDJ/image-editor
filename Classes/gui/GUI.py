@@ -148,6 +148,7 @@ class GUI():
             handler.get_file_path,
             handler.is_active_image,
             handler.edit,
+            handler.resize,
             color_gui.get_color_codes,
             history_gui.refresh_history,
             image_gui.refresh_image

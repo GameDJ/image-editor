@@ -13,6 +13,7 @@ from Classes.image.render.BasicImageRenderer import BasicImageRenderer
 from Classes.image.render.SelectionRenderer import SelectionRenderer
 from Classes.image.render.ShapeRenderer import ShapeRenderer
 from Classes.edit.Crop import Crop
+from Classes.edit.SizeEditor import SizeEditor
 import numpy as np
 import PIL
 
@@ -75,7 +76,7 @@ class RequestHandler:
     
     def edit(self, args: Arguments):
         # make a copy of the current image
-        args.add_image(self.hist.get_current_img().__deepcopy__())
+        args.add_image(self.hist.get_current_img())
         # add selection, if there is one
         if self.selection.get_bbox() is not None:
             args.add_selection(self.selection)
@@ -152,7 +153,7 @@ class RequestHandler:
     def crop(self) -> Image:
         args = Arguments()
         # make a copy of the current image
-        args.add_image(self.hist.get_current_img().__deepcopy__())
+        args.add_image(self.hist.get_current_img())
         # add selection, if there is one
         if self.selection.get_bbox() is None:
             return None
@@ -161,3 +162,12 @@ class RequestHandler:
         edited_image = crop.edit(args)
         if edited_image is not None:
             self._create_history_entry(edited_image, "Crop")
+
+    def resize(self, dimensions: tuple[int, int]):
+        args = Arguments()
+        args.add_image(self.hist.get_current_img())
+        args.add_dimensions(dimensions)
+        size_editor = SizeEditor()
+        resized_image = size_editor.edit(args)
+        if resized_image is not None:
+            self._create_history_entry(resized_image, "Resize")

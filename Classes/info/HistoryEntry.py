@@ -1,4 +1,3 @@
-from numpy import ndarray
 from Classes.image.Image import Image
 
 class HistoryEntry:
@@ -8,7 +7,7 @@ class HistoryEntry:
         self.image = image
         self.change_desc = change_desc
         
-    def get_image(self) -> ndarray:
+    def get_image(self) -> Image:
         return self.image
     
     def get_description(self) -> str:

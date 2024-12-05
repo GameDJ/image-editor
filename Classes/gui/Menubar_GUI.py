@@ -5,9 +5,10 @@ from Classes.edit.filter.FilterType import FilterInfo
 from Classes.info.Arguments import Arguments
 from Classes.info.ArgumentType import ArgumentType
 from Classes.gui.CanvasDialog import CanvasDialog
+from Classes.gui.GUI_Defaults import GUI_Defaults
 
 class Menubar_GUI():
-    def __init__(self, root: tk.Tk, handler_create_canvas: Callable, handler_import_image: Callable, handler_export_image: Callable, handler_get_file_path: Callable, handler_is_active_image: Callable, handler_edit: Callable, gui_get_color_codes: Callable, gui_refresh_history: Callable, gui_refresh_image: Callable):
+    def __init__(self, root: tk.Tk, handler_create_canvas: Callable, handler_import_image: Callable, handler_export_image: Callable, handler_get_file_path: Callable, handler_is_active_image: Callable, handler_edit: Callable, handler_resize: Callable, gui_get_color_codes: Callable, gui_refresh_history: Callable, gui_refresh_image: Callable):
         # outside refs
         self._root = root
         self._handler_create_canvas = handler_create_canvas
@@ -16,6 +17,7 @@ class Menubar_GUI():
         self._handler_get_file_path = handler_get_file_path
         self._handler_is_active_image = handler_is_active_image
         self._handler_edit = handler_edit
+        self._handler_resize = handler_resize
         self._gui_get_color_codes = gui_get_color_codes
         self._gui_refresh_image = gui_refresh_image
         self._gui_refresh_history = gui_refresh_history
@@ -132,5 +134,29 @@ class Menubar_GUI():
             messagebox.showerror("Error", "Invalid value")
 
     def resize(self):
-        print("dialog goes here")
-        print("resize")
+        # width = simpledialog.askinteger("Width", "Enter width:")
+        # if width is None:
+        #     return
+        # if width < 1 or width >= GUI_Defaults.IMAGE_MAX_WIDTH.value:
+        #     messagebox.showerror("Error", "Invalid value")
+        
+        # height = simpledialog.askinteger("Height", "Enter height:")
+        # if height is None:
+        #     return
+        # if height < 1 or height >= GUI_Defaults.IMAGE_MAX_HEIGHT.value:
+        #     messagebox.showerror("Error", "Invalid value")
+        
+        dimension_dialog = CanvasDialog(self._root, title="Initialize Canvas", color_codes=self._gui_get_color_codes(), use_color=False)
+        if not dimension_dialog.width or not dimension_dialog.height:
+            return
+        width = dimension_dialog.width
+        height = dimension_dialog.height
+        
+        if width < 1 or width >= GUI_Defaults.IMAGE_MAX_WIDTH.value or height < 1 or height >= GUI_Defaults.IMAGE_MAX_HEIGHT.value:
+            messagebox.showerror(title="Operation cancelled", message="Invalid value")
+            return
+        
+        self._handler_resize((dimension_dialog.width, dimension_dialog.height))
+        self._gui_refresh_history()
+        self._gui_refresh_image()
+        
