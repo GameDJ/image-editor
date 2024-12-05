@@ -12,8 +12,14 @@ from Classes.image.render.ImageRenderer import ImageRenderer
 from Classes.image.render.BasicImageRenderer import BasicImageRenderer
 from Classes.image.render.SelectionRenderer import SelectionRenderer
 from Classes.image.render.ShapeRenderer import ShapeRenderer
+from Classes.image.ImageInitializer import ImageInitializer
+from Classes.image.file.JpegImporter import JpegImporter
+from Classes.image.file.PngImporter import PngImporter
+from Classes.image.file.JpegExporter import JpegExporter
+from Classes.image.file.PngExporter import PngExporter
 import numpy as np
 import PIL
+import os.path
 
 class RequestHandler:
     """Handles all requests."""
@@ -26,19 +32,27 @@ class RequestHandler:
         print(args.get_args().keys())
     
     def create_canvas(self, width: int, height: int, color: tuple[int, int, int]) -> bool:
-        new_image_array = np.full((height, width, 3), color, dtype=np.uint8)
-        return self.initialize_image(Image(new_image_array))
+        creator = ImageInitializer()
+        new_image = creator.create_blank_canvas(width, height, color)
+        return self.initialize_image(new_image)
     
     def import_image(self, file_path: str) -> bool:
         """Returns True if image initialization successful (else False)"""
         # get just the file name from the whole path
         # file_name = file_path.split("/")[-1]
         # open the file as a PIL Image
-        image = PIL.Image.open(file_path).convert('RGB')
+        split_path = file_path.split(".")
+        file_type = split_path[len(split_path) - 1].lower()
+        importer = None
+        if file_type == "png":
+            importer = PngImporter()
+        elif file_type == "jpeg" or file_type == "jpg":
+            importer = JpegImporter()
+        image = importer.import_image(file_path)
         if not image:
             return False
         self.file_path = file_path
-        return self.initialize_image(Image(np.array(image)))
+        return self.initialize_image(image)
     
     def get_file_path(self) -> str:
         if hasattr(self, "file_path"):
@@ -52,12 +66,18 @@ class RequestHandler:
         return retVal
     
     def export_image(self, save_pathname: str):
-        image = PIL.Image.fromarray(self.get_current_actual_image().get_img_array())
-        if image.mode != "RGB":
-            image = image.convert("RGB")
-        image.save(save_pathname)
-        # should check to see if the file exists now, to verify it saved
-        return
+        split_path = save_pathname.split(".")
+        file_type = split_path[len(split_path) - 1].lower()
+        exporter = None
+        if file_type == "png":
+            exporter = PngExporter()
+        elif file_type == "jpeg" or file_type == "jpg":
+            exporter = JpegExporter()
+        exporter.export_image(self.get_current_actual_image(), save_pathname)
+        if os.path.isfile(save_pathname):
+            return True
+        else:
+            return False
     
     def make_selection(self, start_coord: tuple[int, int], end_coord: tuple[int, int]):
         # self.selection = Selection(start_coord, end_coord)
