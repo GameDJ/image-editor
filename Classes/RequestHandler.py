@@ -25,9 +25,9 @@ class RequestHandler:
     def printy(self, args: Arguments):
         print(args.get_args().keys())
     
-    def create_canvas(self, width: int, height: int, color: tuple[int, int, int]):
+    def create_canvas(self, width: int, height: int, color: tuple[int, int, int]) -> bool:
         new_image_array = np.full((height, width, 3), color, dtype=np.uint8)
-        self.initialize_image(Image(new_image_array))
+        return self.initialize_image(Image(new_image_array))
     
     def import_image(self, file_path: str) -> bool:
         """Returns True if image initialization successful (else False)"""
@@ -47,9 +47,9 @@ class RequestHandler:
             return None
     
     def initialize_image(self, image: Image) -> bool:
-        self._create_history_entry(image, "Create image")
+        retVal = self._create_history_entry(image, "Create image")
         self.zoom_level = 1
-        return True
+        return retVal
     
     def export_image(self, save_pathname: str):
         image = PIL.Image.fromarray(self.get_current_actual_image().get_img_array())
@@ -105,7 +105,7 @@ class RequestHandler:
         self.hist.set_index(index)
         
     def _create_history_entry(self, image_array, desc: str):
-        self.hist.add_record(image_array, desc)
+        return self.hist.add_record(image_array, desc)
         
     def history_descriptions(self) -> list[tuple[int, str]]:
         return self.hist.get_entry_descriptions()
