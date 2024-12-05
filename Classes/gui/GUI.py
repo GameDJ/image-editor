@@ -134,8 +134,8 @@ class GUI():
         bindings[GUI_Defaults.KEYBIND_ZOOM_OUT] = window.bind(GUI_Defaults.KEYBIND_ZOOM_OUT.value, lambda _: zoom_gui.zoom_change(-1))
 
         ##
-        separator = ttk.Separator(rightside_frame, orient="horizontal")
-        separator.grid(cnf=GUI_Defaults.SEPARATOR_CNF.value, row=15)
+        # separator = ttk.Separator(rightside_frame, orient="horizontal")
+        # separator.grid(cnf=GUI_Defaults.SEPARATOR_CNF.value, row=15)
         
         #### MENU BAR ####
         menubar_gui = Menubar_GUI(

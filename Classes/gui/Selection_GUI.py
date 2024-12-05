@@ -23,7 +23,7 @@ class Selection_GUI():
         # Label
         self.label = tk.Label(self.frame, text="Selection", font=gui_title_font)
         self.label.pack(side = tk.TOP)
-        # Frame for history buttons
+        # Frame for select/clear buttons
         self.btn_frame = tk.Frame(self.frame)
         self.btn_frame.pack(side=tk.TOP)
         # Select & Clear buttons
@@ -36,6 +36,14 @@ class Selection_GUI():
         self.sel_coord_1.pack()
         self.sel_coord_2 = tk.Label(self.frame, text="")
         self.sel_coord_2.pack()
+        # Frame for crop/duplicate buttons
+        self.btn_frame_2 = tk.Frame(self.frame)
+        self.btn_frame_2.pack(side=tk.TOP)
+        # Crop & Duplicate buttons
+        self.crop_btn = tk.Button(self.btn_frame_2, text="Crop", command=self.crop, state="disabled")
+        self.crop_btn.grid(column=0, row=0, padx=3)
+        self.duplicate_btn = tk.Button(self.btn_frame_2, text="Duplicate", command=self.duplicate, state="disabled")
+        self.duplicate_btn.grid(column=1, row=0, padx=3)
 
     def toggle_select_on(self):
         self._gui_bindings[GUI_Defaults.CLICK_PRESS_BINDING] = self._gui_image_preview.bind(GUI_Defaults.CLICK_PRESS_BINDING.value, self._begin_selection)
@@ -75,6 +83,8 @@ class Selection_GUI():
         if self._handler_get_selection_bbox() is not None:
             self._gui_refresh_image()
             self.clear_btn.config(state="active")
+            self.crop_btn.config(state="active")
+            self.duplicate_btn.config(state="active")
         
     def clear_selection(self, *_):
         if hasattr(self, "start_coord"):
@@ -87,3 +97,9 @@ class Selection_GUI():
             self.sel_coord_1.config(text=self._SEL_COORD_1_DEFAULT_TEXT)
             self.sel_coord_2.config(text="")
             self._gui_refresh_image()
+            
+    def crop(self, *_):
+        print("crop")
+        
+    def duplicate(self, *_):
+        print("duplicate")

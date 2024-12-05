@@ -80,7 +80,10 @@ class RequestHandler:
             args.add_selection(self.selection)
         # edit the image
         if AT.FILTER in args.get_args():
-            edited_image = Filters.edit(args)
+            try:
+                edited_image = Filters.edit(args)
+            except Exception as e:
+                raise e
             desc = FilterInfo[args.get_args()[AT.FILTER]]["text"]
         elif AT.SHAPE in args.get_args():
             edited_image = DrawShape.edit(args)

@@ -29,8 +29,11 @@ class Menubar_GUI():
                 "Save as": lambda: self.save_file()
             },
             "Edit": { 
-                # populate the edit commands based on available filters
-                FilterInfo[filter]["text"]:lambda filter=filter: self.filter_action(filter) for filter in FilterInfo 
+                "Filter": {
+                    # populate the commands based on available filters
+                    FilterInfo[filter]["text"]:lambda filter=filter: self.filter_action(filter) for filter in FilterInfo
+                },
+                "Resize": lambda: self.resize()
             },
             "About": lambda: self.display_help_message("SIMPLE v1.0.0", "SIMPLE: Simple IMage Processor for Lazy Editors\n\nContributors:\n\tAddison Casner\n\tDerek Jennings\n\tQuinn Pulley\n\tWill Verplaetse")
         }
@@ -121,7 +124,13 @@ class Menubar_GUI():
             elif arg == ArgumentType.COLOR:
                 args.add_color(colorchooser.askcolor(title="Choose a color")[1])
         # handler will add image and selection to args before passing it to the edit class
-        self._handler_edit(args)
-        self._gui_refresh_history()
-        self._gui_refresh_image()
+        try:
+            self._handler_edit(args)
+            self._gui_refresh_history()
+            self._gui_refresh_image()
+        except ValueError:
+            messagebox.showerror("Error", "Invalid value")
 
+    def resize(self):
+        print("dialog goes here")
+        print("resize")
