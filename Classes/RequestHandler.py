@@ -131,8 +131,8 @@ class RequestHandler:
     def history_set_index(self, index: int):
         self.hist.set_index(index)
         
-    def _create_history_entry(self, image_array, desc: str):
-        return self.hist.add_record(image_array, desc)
+    def _create_history_entry(self, image: Image, desc: str) -> bool:
+        return self.hist.add_record(image, desc)
         
     def history_descriptions(self) -> list[tuple[int, str]]:
         return self.hist.get_entry_descriptions()
