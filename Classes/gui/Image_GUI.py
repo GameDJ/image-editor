@@ -12,10 +12,10 @@ class Image_GUI():
         self._handler_get_render_image = handler_get_render_image
 
         # image preview frame
-        self.image_frame = tk.Frame(parent_frame, width=400, height=300, background="#000000", borderwidth=1)
+        self.image_frame = tk.Frame(parent_frame, width=GUI_Defaults.IMAGE_MAX_WIDTH.value, height=GUI_Defaults.IMAGE_MAX_HEIGHT.value, background="#000000", borderwidth=1)
         self.image_frame.grid(row=0, column=0, rowspan=3, columnspan=3, padx=3, pady=3, sticky="nsew")
-        parent_frame.grid_rowconfigure(0, minsize=300, weight=1)
-        parent_frame.grid_columnconfigure(0, minsize=400, weight=1)
+        parent_frame.grid_rowconfigure(0, minsize=GUI_Defaults.IMAGE_MAX_HEIGHT.value, weight=1)
+        parent_frame.grid_columnconfigure(0, minsize=GUI_Defaults.IMAGE_MAX_WIDTH.value, weight=1)
 
         # a label to hold the image
         self.image_preview = tk.Label(self.image_frame, borderwidth=0, cursor=GUI_Defaults.CURSOR.value)

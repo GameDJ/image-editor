@@ -21,7 +21,10 @@ class GUI():
     def render():
         window = tk.Tk()
         window.title("SIMPLE")
-        window.geometry('800x560')
+        # window.geometry('800x560')
+        # window.geometry(f'{GUI_Defaults.IMAGE_MAX_WIDTH.value + 151}x{GUI_Defaults.IMAGE_MAX_HEIGHT.value + 57}')
+        window.resizable(False, False)
+        
         
         PANEL_TITLE_FONT = font.Font(size=12, underline=False, slant="italic")
         
@@ -140,6 +143,7 @@ class GUI():
         # separator.grid(cnf=GUI_Defaults.SEPARATOR_CNF.value, row=15)
         
         def global_toggle_buttons(toggle_on: bool):
+            """Toggle buttons on/off based on whether an image is loaded"""
             selection_gui.toggle_buttons(toggle_on)
             color_gui.toggle_buttons(toggle_on)
             draw_gui.toggle_buttons(toggle_on)
