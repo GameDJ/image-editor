@@ -64,3 +64,8 @@ class Color_GUI():
         
     def get_color_codes(self):
         return self.color_codes
+    
+    def toggle_buttons(self, toggle_on: bool):
+        state = "active" if toggle_on else "disabled"
+        
+        self.eyedropper_btn.config(state=state)

@@ -24,9 +24,6 @@ class RequestHandler:
         self.hist = History()
         self.selection = Selection()
     
-    def printy(self, args: Arguments):
-        print(args.get_args().keys())
-    
     def create_canvas(self, width: int, height: int, color: tuple[int, int, int]) -> bool:
         new_image_array = np.full((height, width, 3), color, dtype=np.uint8)
         return self.initialize_image(Image(new_image_array))

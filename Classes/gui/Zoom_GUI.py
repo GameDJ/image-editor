@@ -23,13 +23,13 @@ class Zoom_GUI():
         # fake image for controlling exact size of the buttons
         self._fakeimage = tk.PhotoImage(width=1, height=1)
         
-        self.zoom_out_btn = tk.Button(self.inner_frame, text="-", command=lambda: self.zoom_change(-1), image=self._fakeimage, compound="c", width=20, height=20)
+        self.zoom_out_btn = tk.Button(self.inner_frame, text="-", command=lambda: self.zoom_change(-1), image=self._fakeimage, compound="c", width=20, height=20, state="disabled")
         self.zoom_out_btn.pack(side=tk.LEFT, padx=1)
         
         self.zoom_level_label = tk.Label(self.inner_frame, text=f"1x")
         self.zoom_level_label.pack(side=tk.LEFT, padx=3)
         
-        self.zoom_in_btn = tk.Button(self.inner_frame, text="+", command=lambda: self.zoom_change(1), image=self._fakeimage, compound="c", width=20, height=20)
+        self.zoom_in_btn = tk.Button(self.inner_frame, text="+", command=lambda: self.zoom_change(1), image=self._fakeimage, compound="c", width=20, height=20, state="disabled")
         self.zoom_in_btn.pack(side=tk.LEFT, padx=1)
 
     def zoom_change(self, delta: int):
@@ -39,3 +39,8 @@ class Zoom_GUI():
         else:
             self.zoom_level_label.config(text=f"{int(self.zoom_level)}x")
         self._gui_refresh_image()
+        
+    def toggle_buttons(self, toggle_on: bool):
+        state = "active" if toggle_on else "disabled"
+        self.zoom_out_btn.config(state=state)
+        self.zoom_in_btn.config(state=state)

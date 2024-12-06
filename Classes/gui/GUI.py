@@ -139,6 +139,13 @@ class GUI():
         # separator = ttk.Separator(rightside_frame, orient="horizontal")
         # separator.grid(cnf=GUI_Defaults.SEPARATOR_CNF.value, row=15)
         
+        def global_toggle_buttons(toggle_on: bool):
+            selection_gui.toggle_buttons(toggle_on)
+            color_gui.toggle_buttons(toggle_on)
+            draw_gui.toggle_buttons(toggle_on)
+            zoom_gui.toggle_buttons(toggle_on)
+            # menu bar handles itself; it calls this
+        
         #### MENU BAR ####
         menubar_gui = Menubar_GUI(
             window,
@@ -151,7 +158,8 @@ class GUI():
             handler.resize,
             color_gui.get_color_codes,
             history_gui.refresh_history,
-            image_gui.refresh_image
+            image_gui.refresh_image,
+            global_toggle_buttons
         )
         
         window.config(menu=menubar_gui.menubar)

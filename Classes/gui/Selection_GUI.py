@@ -29,7 +29,7 @@ class Selection_GUI():
         self.btn_frame = tk.Frame(self.frame)
         self.btn_frame.pack(side=tk.TOP)
         # Select & Clear buttons
-        self.select_btn = tk.Button(self.btn_frame, text="Select", command=lambda: self._gui_change_image_mode(self.toggle_select_on, self.toggle_select_off), underline=0)
+        self.select_btn = tk.Button(self.btn_frame, text="Select", command=lambda: self._gui_change_image_mode(self.toggle_select_on, self.toggle_select_off), underline=0, state="disabled")
         self.select_btn.grid(column=0, row=0)
         self.clear_btn = tk.Button(self.btn_frame, text="Clear", command=self.clear_selection, state="disabled", underline=0)
         self.clear_btn.grid(column=1, row=0)
@@ -108,3 +108,7 @@ class Selection_GUI():
         
     def duplicate(self, *_):
         print("duplicate")
+        
+    def toggle_buttons(self, toggle_on: bool):
+        state = "active" if toggle_on else "disabled"
+        self.select_btn.config(state=state)

@@ -72,3 +72,7 @@ class Draw_GUI():
             self._handler_edit(self._args)
             self._gui_refresh_image()
             self._gui_refresh_history()
+    
+    def toggle_buttons(self, toggle_on: bool):
+        state = "active" if toggle_on else "disabled"
+        self.draw_btn.config(state=state)
