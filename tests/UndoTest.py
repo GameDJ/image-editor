@@ -1,4 +1,4 @@
-# MUST BE RUN AS: python '.\Unit Testing\UndoTest.py'
+# MUST BE RUN FROM image-editor FOLDER AS: python .\tests\UndoTest.py
 
 import unittest
 import sys
