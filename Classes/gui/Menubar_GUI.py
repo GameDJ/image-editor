@@ -86,6 +86,10 @@ class Menubar_GUI():
         if not canvasDialog.width or not canvasDialog.height:
             messagebox.showerror(title="Operation cancelled", message="Failed to create canvas")
         else:
+            canvasDialog.width = min(canvasDialog.width, GUI_Defaults.IMAGE_MAX_WIDTH.value)
+            canvasDialog.height = min(canvasDialog.height, GUI_Defaults.IMAGE_MAX_HEIGHT.value)
+            messagebox.showwarning(title="Operation modified", message=f"Image shrunk to fit max bounds: {GUI_Defaults.IMAGE_MAX_WIDTH.value}x{GUI_Defaults.IMAGE_MAX_HEIGHT.value}")
+
             self._handler_create_canvas(canvasDialog.width, canvasDialog.height, canvasDialog.color_codes[0])
             self._gui_refresh_image()
             # activate_savebtn()
