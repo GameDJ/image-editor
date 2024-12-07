@@ -8,7 +8,7 @@ class Arguments:
     def __init__(self, image: Image = None) -> None:
         self.args = {}
         if image:
-            self.args[AT.AMOUNT] = image
+            self.args[AT.IMAGE] = image
             
     def add_image(self, image: Image) -> bool:
         """Adds an image to args and returns True if it's not overwriting an existing image value; otherwise False"""
