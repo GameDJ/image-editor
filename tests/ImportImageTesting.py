@@ -1,5 +1,6 @@
 import unittest
 import sys
+import PIL
 
 sys.path.append('../image-editor')
 
@@ -17,7 +18,7 @@ class ImportImageTesting(unittest.TestCase):
 
     def testing_import_with_non_supported_file_type(self):
         handler = RequestHandler()
-        self.assertEqual(handler.import_image('./sample_images/words.txt'), False)
+        self.assertRaises(PIL.UnidentifiedImageError, handler.import_image('./sample_images/words.txt'))
 
 
     def testing_not_valid_file_path(self):
