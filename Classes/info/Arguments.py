@@ -47,7 +47,7 @@ class Arguments:
         self.args[AT.COLOR] = color
         return True
 
-    def add_dimensions(self, dimensions: tuple[int, int]) -> bool:
+    def add_size(self, dimensions: tuple[int, int]) -> bool:
         self.args[AT.DIMENSIONS] = dimensions
         return True
 

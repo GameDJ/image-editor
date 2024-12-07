@@ -16,7 +16,7 @@ class ResizeTesting(unittest.TestCase):
 
     image = Image(orig)
     the_args = Arguments(image)
-    the_args.add_dimensions( (-100, -100))
+    the_args.add_size((-100, -100))
     editor = SizeEditor()
     edited = editor.edit(the_args)
     resized = cv2.resize(orig, (100, 100))
