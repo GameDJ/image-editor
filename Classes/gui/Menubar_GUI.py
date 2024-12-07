@@ -179,3 +179,8 @@ class Menubar_GUI():
         editmenu.entryconfig(1, {"state": state})
         
         self._gui_toggle_buttons(toggle_on)
+        
+    def toggle_resize(self, toggle_on: bool):
+        state = "active" if toggle_on else "disabled"
+        editmenu: tk.Menu = self.menu_storage[self.menubar]["Edit"][0]
+        editmenu.entryconfig(1, {"state": state})

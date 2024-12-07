@@ -39,7 +39,7 @@ class Image_GUI():
         
         is_same_mode = False
 
-        if hasattr(self, "toggle_image_mode_off"):
+        if hasattr(self, "toggle_image_mode_off") and self.toggle_image_mode_off is not None:
             # if we have a stored toggle_of action (i.e. there is an active binding)
             self.toggle_image_mode_off()
             if toggle_off == self.toggle_image_mode_off:
@@ -49,12 +49,16 @@ class Image_GUI():
                 self.image_preview.config(cursor=GUI_Defaults.CURSOR.value)
             del self.toggle_image_mode_off
 
-        if not is_same_mode:
-            toggle_on()
-            # set the toggle off method to be called next time
-            self.toggle_image_mode_off = toggle_off
-            # change the cursor to the active style
-            self.image_preview.config(cursor=GUI_Defaults.CURSOR_IMG_ACTION.value)
+        if toggle_on is None:
+            # no arguments provided (we're just disabling the mode)
+            self.image_preview.config(cursor=GUI_Defaults.CURSOR.value)
+        else:
+            if not is_same_mode:
+                toggle_on()
+                # set the toggle off method to be called next time
+                self.toggle_image_mode_off = toggle_off
+                # change the cursor to the active style
+                self.image_preview.config(cursor=GUI_Defaults.CURSOR_IMG_ACTION.value)
 
     def get_image_preview_dimensions(self) -> tuple[int, int]:
         img: tk.PhotoImage = self.image_preview.image

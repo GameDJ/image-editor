@@ -42,7 +42,7 @@ class ZoomRenderer(RenderAddon):
             # image than the viewport, to ensure we can crop it down a bit more
             # and have an exact result.
             reversefactor_dimensions = (int(dimensions[0]//factor+1), int(dimensions[1]//factor+1))
-            print(reversefactor_dimensions, "rev")
+            # print(reversefactor_dimensions, "rev")
             # determine how much on each axis will overflow past the view bounds
             width_overflow = width - reversefactor_dimensions[0]
             if width_overflow < 0:
@@ -50,27 +50,27 @@ class ZoomRenderer(RenderAddon):
             height_overflow = height - reversefactor_dimensions[1]
             if height_overflow < 0:
                 height_overflow = 0
-            print(width_overflow, height_overflow, "overflows")
+            # print(width_overflow, height_overflow, "overflows")
             # determine the bounds
             left = width_overflow//2
             right = width - width_overflow//2
             top = height_overflow//2
             bot = height - height_overflow//2
-            print(left, right, "\n", top, bot, "bounds")
+            # print(left, right, "\n", top, bot, "bounds")
             # crop the pre-resized image
             image_array = image_array[top:bot, left:right]
-            print(image_array.shape, "shape after first crop")
+            # print(image_array.shape, "shape after first crop")
             
             new_width = factor * (right - left)
             new_height = factor * (bot - top)
-            print(new_width, new_height, "news")
+            # print(new_width, new_height, "news")
             
             # resize
             image_array = cv2.resize(image_array, (new_width, new_height))
-            print(image_array.shape, "shape after resize")
+            # print(image_array.shape, "shape after resize")
             # crop the resized image to exact dimensions
             image_array = image_array[:dimensions[1], :dimensions[0]]
-            print(image_array.shape, "shape after final crop")
+            # print(image_array.shape, "shape after final crop")
         else:
             # zoom out from base
             new_width = int(factor * width)

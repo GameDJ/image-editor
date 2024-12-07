@@ -58,9 +58,15 @@ class GUI():
         history_gui.frame.grid(row=0, rowspan=2, padx=1, pady=1)
         
         # key bindings
-        bindings[GUI_Defaults.KEYBIND_UNDO] = window.bind(GUI_Defaults.KEYBIND_UNDO.value, history_gui.undo)
-        bindings[GUI_Defaults.KEYBIND_REDO] = window.bind(GUI_Defaults.KEYBIND_REDO.value, history_gui.redo)
-        bindings[GUI_Defaults.KEYBIND_REDO2] = window.bind(GUI_Defaults.KEYBIND_REDO2.value, history_gui.redo)
+        def toggle_history_keybinds(toggle_on: bool):
+            if toggle_on:
+                bindings[GUI_Defaults.KEYBIND_UNDO] = window.bind(GUI_Defaults.KEYBIND_UNDO.value, history_gui.undo)
+                bindings[GUI_Defaults.KEYBIND_REDO] = window.bind(GUI_Defaults.KEYBIND_REDO.value, history_gui.redo)
+                bindings[GUI_Defaults.KEYBIND_REDO2] = window.bind(GUI_Defaults.KEYBIND_REDO2.value, history_gui.redo)
+            else:
+                window.unbind(GUI_Defaults.KEYBIND_UNDO.value, bindings.pop(GUI_Defaults.KEYBIND_UNDO, None))
+                window.unbind(GUI_Defaults.KEYBIND_REDO.value, bindings.pop(GUI_Defaults.KEYBIND_REDO, None))
+                window.unbind(GUI_Defaults.KEYBIND_REDO2.value, bindings.pop(GUI_Defaults.KEYBIND_REDO2, None))
         
         ##
         separator = ttk.Separator(rightside_frame, orient="horizontal")
@@ -84,8 +90,13 @@ class GUI():
         selection_gui.frame.grid(row=3, rowspan=2, column=0, padx=1, pady=1, sticky="nsew")
         
         # key bindings
-        bindings[GUI_Defaults.KEYBIND_SELECT] = window.bind(GUI_Defaults.KEYBIND_SELECT.value, lambda _: image_gui.change_image_mode(selection_gui.toggle_select_on, selection_gui.toggle_select_off))
-        bindings[GUI_Defaults.KEYBIND_CLEAR_SELECTION] = window.bind(GUI_Defaults.KEYBIND_CLEAR_SELECTION.value, selection_gui.clear_selection)
+        def toggle_selection_keybinds(toggle_on: bool):
+            if toggle_on:
+                bindings[GUI_Defaults.KEYBIND_SELECT] = window.bind(GUI_Defaults.KEYBIND_SELECT.value, lambda _: image_gui.change_image_mode(selection_gui.toggle_select_on, selection_gui.toggle_select_off))
+                bindings[GUI_Defaults.KEYBIND_CLEAR_SELECTION] = window.bind(GUI_Defaults.KEYBIND_CLEAR_SELECTION.value, selection_gui.clear_selection)
+            else:
+                window.unbind(GUI_Defaults.KEYBIND_SELECT.value, bindings.pop(GUI_Defaults.KEYBIND_SELECT, None))
+                window.unbind(GUI_Defaults.KEYBIND_CLEAR_SELECTION.value, bindings.pop(GUI_Defaults.KEYBIND_CLEAR_SELECTION, None))
         
         ##
         separator = ttk.Separator(rightside_frame, orient="horizontal")
@@ -103,7 +114,11 @@ class GUI():
         )
         color_gui.frame.grid(row=7, rowspan=2, column=0, padx=1, pady=1, sticky="nsew")
 
-        bindings[GUI_Defaults.KEYBIND_EYEDROPPER] = window.bind(GUI_Defaults.KEYBIND_EYEDROPPER.value, lambda _: image_gui.change_image_mode(color_gui.toggle_eyedropper_on, color_gui.toggle_eyedropper_off))
+        def toggle_color_keybinds(toggle_on: bool):
+            if toggle_on:
+                bindings[GUI_Defaults.KEYBIND_EYEDROPPER] = window.bind(GUI_Defaults.KEYBIND_EYEDROPPER.value, lambda _: image_gui.change_image_mode(color_gui.toggle_eyedropper_on, color_gui.toggle_eyedropper_off))
+            else:
+                window.unbind(GUI_Defaults.KEYBIND_EYEDROPPER.value, bindings.pop(GUI_Defaults.KEYBIND_EYEDROPPER, None))
         
         ## DRAW MENU ##
         draw_gui = Draw_GUI(
@@ -121,34 +136,61 @@ class GUI():
         )
         draw_gui.frame.grid(row=9, rowspan=2, column=0, padx=1, pady=1, sticky="nsew")
         
-        bindings[GUI_Defaults.KEYBIND_DRAW] = window.bind(GUI_Defaults.KEYBIND_DRAW.value, lambda _: image_gui.change_image_mode(draw_gui.toggle_drawing_on, draw_gui.toggle_drawing_off))
+        def toggle_draw_keybinds(toggle_on: bool):
+            if toggle_on:
+                bindings[GUI_Defaults.KEYBIND_DRAW] = window.bind(GUI_Defaults.KEYBIND_DRAW.value, lambda _: image_gui.change_image_mode(draw_gui.toggle_drawing_on, draw_gui.toggle_drawing_off))
+            else:
+                window.unbind(GUI_Defaults.KEYBIND_DRAW.value, bindings.pop(GUI_Defaults.KEYBIND_DRAW, None))
         
         ##
         separator = ttk.Separator(rightside_frame, orient="horizontal")
         separator.grid(cnf=GUI_Defaults.SEPARATOR_CNF.value, row=12)
+        
+        def toggle_actions_while_zoomed(toggle_on: bool):
+            """Disable certain edits while zoomed in/out"""
+            menubar_gui.toggle_resize(toggle_on)
+            image_gui.change_image_mode()
+            selection_gui.toggle_buttons(toggle_on)
+            toggle_selection_keybinds(toggle_on)
+            selection_gui.clear_selection()
+            color_gui.toggle_buttons(toggle_on)
+            toggle_color_keybinds(toggle_on)
+            draw_gui.toggle_buttons(toggle_on)
+            toggle_draw_keybinds(toggle_on)
         
         ## ZOOM MENU ##
         zoom_gui = Zoom_GUI(
             rightside_frame,
             PANEL_TITLE_FONT,
             handler.zoom_change,
+            toggle_actions_while_zoomed,
             image_gui.refresh_image
         )
         zoom_gui.frame.grid(row=13, rowspan=2, column=0, padx=1, pady=1, sticky="nsew")
         
-        bindings[GUI_Defaults.KEYBIND_ZOOM_IN] = window.bind(GUI_Defaults.KEYBIND_ZOOM_IN.value, lambda _: zoom_gui.zoom_change(1))
-        bindings[GUI_Defaults.KEYBIND_ZOOM_OUT] = window.bind(GUI_Defaults.KEYBIND_ZOOM_OUT.value, lambda _: zoom_gui.zoom_change(-1))
-
+        def toggle_zoom_keybinds(toggle_on: bool):
+            if toggle_on:
+                bindings[GUI_Defaults.KEYBIND_ZOOM_IN] = window.bind(GUI_Defaults.KEYBIND_ZOOM_IN.value, lambda _: zoom_gui.zoom_change(1))
+                bindings[GUI_Defaults.KEYBIND_ZOOM_OUT] = window.bind(GUI_Defaults.KEYBIND_ZOOM_OUT.value, lambda _: zoom_gui.zoom_change(-1))
+            else:
+                window.unbind(GUI_Defaults.KEYBIND_ZOOM_IN.value, bindings.pop(GUI_Defaults.KEYBIND_ZOOM_IN, None))
+                window.unbind(GUI_Defaults.KEYBIND_ZOOM_OUT.value, bindings.pop(GUI_Defaults.KEYBIND_ZOOM_OUT, None))
+        
         ##
         # separator = ttk.Separator(rightside_frame, orient="horizontal")
         # separator.grid(cnf=GUI_Defaults.SEPARATOR_CNF.value, row=15)
         
         def global_toggle_buttons(toggle_on: bool):
             """Toggle buttons on/off based on whether an image is loaded"""
+            toggle_history_keybinds(toggle_on)
             selection_gui.toggle_buttons(toggle_on)
+            toggle_selection_keybinds(toggle_on)
             color_gui.toggle_buttons(toggle_on)
+            toggle_color_keybinds(toggle_on)
             draw_gui.toggle_buttons(toggle_on)
+            toggle_draw_keybinds(toggle_on)
             zoom_gui.toggle_buttons(toggle_on)
+            toggle_zoom_keybinds(toggle_on)
             # menu bar handles itself; it calls this
         
         #### MENU BAR ####
