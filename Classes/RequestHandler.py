@@ -190,6 +190,8 @@ class RequestHandler:
         return render_image.render_image()
     
     def get_color_at_pixel(self, x: int, y: int) -> tuple[int, int, int]:
+        if x < 0 or y < 0:
+            raise ValueError
         return self.get_current_actual_image().get_img_array()[y][x]
     
     def crop(self) -> bool:
