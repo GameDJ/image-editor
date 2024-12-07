@@ -19,8 +19,6 @@ class Image_GUI():
 
         # a label to hold the image
         self.image_preview = tk.Label(self.image_frame, borderwidth=0, cursor=GUI_Defaults.CURSOR.value)
-        # img_preview.pack(side=tk.TOP)
-        # img_preview.grid(sticky="nsew")
         self.image_preview.place(in_=self.image_frame, anchor="c", relx=.5, rely=.5)
 
         self.loaded_file_name = "image.png"
@@ -57,3 +55,7 @@ class Image_GUI():
             self.toggle_image_mode_off = toggle_off
             # change the cursor to the active style
             self.image_preview.config(cursor=GUI_Defaults.CURSOR_IMG_ACTION.value)
+
+    def get_image_preview_dimensions(self) -> tuple[int, int]:
+        img: tk.PhotoImage = self.image_preview.image
+        return (img.width(), img.height())

@@ -190,7 +190,7 @@ class RequestHandler:
         
         if self.zoom_level != 1:
             args.add_amount(self.zoom_level)
-            args.add_dimensions((GUI_Defaults.IMAGE_MAX_WIDTH.value, GUI_Defaults.IMAGE_MAX_HEIGHT.value))
+            args.add_size((GUI_Defaults.IMAGE_MAX_WIDTH.value, GUI_Defaults.IMAGE_MAX_HEIGHT.value))
             # zoom the render_image
             render_image = ZoomRenderer(render_image, args)
             # make a copy of selection and edit its coordinates based on zoom

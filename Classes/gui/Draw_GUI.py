@@ -8,11 +8,11 @@ from Classes.info.Selection import Selection
 from Classes.gui.GUI_Defaults import GUI_Defaults
 
 class Draw_GUI():
-    def __init__(self, parent_frame: tk.Frame, gui_title_font: font, gui_change_image_mode: Callable, handler_edit: Callable, handler_get_image_dimensions: Callable, _gui_get_color_codes: Callable, gui_bindings: dict, gui_image_preview: tk.Label, gui_refresh_image: Callable, gui_refresh_history: Callable):
+    def __init__(self, parent_frame: tk.Frame, gui_title_font: font, gui_change_image_mode: Callable, handler_edit: Callable, __gui_get_image_preview_dimensions: Callable, _gui_get_color_codes: Callable, gui_bindings: dict, gui_image_preview: tk.Label, gui_refresh_image: Callable, gui_refresh_history: Callable):
         # Outside refs
         self._gui_change_image_mode = gui_change_image_mode
         self._handler_edit = handler_edit
-        self._handler_get_image_dimensions = handler_get_image_dimensions
+        self._gui_get_image_preview_dimensions = __gui_get_image_preview_dimensions
         self._gui_bindings = gui_bindings
         self._gui_image_preview = gui_image_preview
         self._gui_refresh_image = gui_refresh_image
@@ -59,7 +59,7 @@ class Draw_GUI():
         self.start_coord = (event.x, event.y)
     
     def _making_shape(self, event: tk.Event):
-        image_dimensions = self._handler_get_image_dimensions()
+        image_dimensions = self._gui_get_image_preview_dimensions()
         x_clamped = min(max(0, event.x), image_dimensions[1]-1)
         y_clamped = min(max(0, event.y), image_dimensions[0]-1)
         self.shape_selection.set_bbox_from_coords(self.start_coord, (x_clamped, y_clamped))
