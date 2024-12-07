@@ -1,43 +1,25 @@
 import unittest
 import numpy as np
 import PIL
+import sys
 
-from Image import Image
-from ImageInitializer import ImageInitializer
-from PngImporter import PngImporter
-from JpegImporter import JpegImporter
+sys.path.append('../image-editor')
+
+from Classes.RequestHandler import RequestHandler
 
 class ImportImageTesting(unittest.TestCase):
-    def testing_png_import_with_png(self):
-        importer = PngImporter()
-        image = importer.import_image('./nyx.png')
-        self.assertIsNotNone(image)
+    def testing_import_with_png(self):
+        handler = RequestHandler()
+        self.assertEqual(handler.import_image('./nyx.png'), True)
 
-    def testing_jpeg_import_with_jpg(self):
-        importer = JpegImporter()
-        image = importer.import_image('./nyx_cyndaquil.jpg')
-        self.assertIsNotNone(image)
+    def testing_import_with_jpg(self):
+        handler = RequestHandler()
+        self.assertEqual(handler.import_image('./nyx_cyndaquil.jpg'), True)
 
 
-    #We expect the following two test cases to be not None because the code for each importer is the same
-    def testing_png_import_with_jpg(self):
-        importer = PngImporter()
-        image = importer.import_image('./nyx_cyndaquil.jpg')
-        self.assertIsNotNone(image)
-
-    def testing_jpeg_import_with_png(self):
-        importer = JpegImporter()
-        image = importer.import_image('./nyx.png')
-        self.assertIsNotNone(image)
-        
-
-    def testing_png_import_with_non_supported_file_type(self):
-        importer = PngImporter()
-        self.assertRaises(PIL.UnidentifiedImageError, importer.import_image('./words.txt'))
-
-    def testing_jpeg_import_with_non_supported_file_type(self):
-        importer = JpegImporter()
-        self.assertRaises(PIL.UnidentifiedImageError, importer.import_image('./words.txt'))
+    def testing_import_with_non_supported_file_type(self):
+        handler = RequestHandler()
+        self.assertEqual(handler.import_image('./words.txt'), False)
 
 
 if __name__ == '__main__':
