@@ -12,7 +12,6 @@ class SizeEditor(Edit):
     image: Image = args.get_args()[AT.IMAGE]
     image_array: np.ndarray = image.get_img_array()
     dimensions: tuple[int, int] = args.get_args()[AT.DIMENSIONS]
-    print(dimensions)
     if dimensions[0] == 0 or dimensions[1] == 0:
       raise ValueError
     else:

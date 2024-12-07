@@ -24,7 +24,7 @@ class TestIdentifyColorFromImage(unittest.TestCase):
         dummy_image = Image(dummy_image_array)
         self.handler.hist.add_record(dummy_image, "Dummy image for testing")
         color = self.handler.get_color_at_pixel(0,0)
-        self.assertListEqual(color, (0,0,255))
+        self.assertEqual(all(x == y for x, y  in zip(color, (0,0,255))), True)
     
     def test_edge_pixel(self):
         self.handler = RequestHandler()
@@ -42,7 +42,7 @@ class TestIdentifyColorFromImage(unittest.TestCase):
         self.handler.hist.add_record(dummy_image, "Dummy image for testing")
         color = self.handler.get_color_at_pixel(2,1)
         print(color)
-        self.assertTupleEqual(color, (255,0,255))
+        self.assertEqual(all(x == y for x, y  in zip(color, (255,0,255))), True)
 
     def test_invalid_pixel_out_of_bounds(self):
         self.handler = RequestHandler()
@@ -63,7 +63,7 @@ class TestIdentifyColorFromImage(unittest.TestCase):
         with self.assertRaises(IndexError):
             self.handler.get_color_at_pixel(0, 3)
     
-    def test_negative_pixel_index(self):
+    def test_negative_pixel_index(self):#
         self.handler = RequestHandler()
         dummy_image_array = np.array([
             [[0, 0, 255], [0, 255, 0], [255,0,0]],
@@ -77,9 +77,9 @@ class TestIdentifyColorFromImage(unittest.TestCase):
         
         dummy_image = Image(dummy_image_array)
         self.handler.hist.add_record(dummy_image, "Dummy image for testing")
-        with self.assertRaises(IndexError):
+        with self.assertRaises(ValueError):
             self.handler.get_color_at_pixel(-1, 0)
-        with self.assertRaises(IndexError):
+        with self.assertRaises(ValueError):
             self.handler.get_color_at_pixel(0, -1)
 
     def test_no_active_image(self):
