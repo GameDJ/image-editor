@@ -50,6 +50,8 @@ class RequestHandler:
             importer = PngImporter()
         elif file_type == "jpeg" or file_type == "jpg":
             importer = JpegImporter()
+        else:
+            return False
         image = importer.import_image(file_path)
         if not image:
             return False
@@ -80,7 +82,7 @@ class RequestHandler:
             # now shrink it
             args = Arguments()
             args.add_image(image)
-            args.add_dimensions((new_width, new_height))
+            args.add_size((new_width, new_height))
             size_editor = SizeEditor()
             image = size_editor.edit(args)
         
@@ -114,7 +116,7 @@ class RequestHandler:
         cleared = self.selection.clear()
         return cleared
     
-    def edit(self, args: Arguments):
+    def edit(self, args: Arguments) -> bool:
         # make a copy of the current image
         args.add_image(self.hist.get_current_img())
         # add selection, if there is one
@@ -134,19 +136,20 @@ class RequestHandler:
             desc = args.get_args()[AT.SHAPE].value
         # add the edited image to history, with the filter text as the change description
         if edited_image is not None:
-            self._create_history_entry(edited_image, desc)
+            return self._create_history_entry(edited_image, desc)
+        return False
     
-    def get_current_actual_image(self):
+    def get_current_actual_image(self) -> Image:
         return self.hist.get_current_img()
     
     def get_image_dimensions(self) -> tuple[int, int]:
         return self.hist.get_current_img().get_img_array().shape[0:2]
     
-    def history_undo(self):
-        self.hist.undo()
+    def history_undo(self) -> bool:
+        return self.hist.undo()
         
-    def history_redo(self):
-        self.hist.redo()
+    def history_redo(self) -> bool:
+        return self.hist.redo()
         
     def history_set_index(self, index: int):
         self.hist.set_index(index)
@@ -203,9 +206,11 @@ class RequestHandler:
         return render_image.render_image()
     
     def get_color_at_pixel(self, x: int, y: int) -> list[int, int, int]:
+        if x < 0 or y < 0:
+            raise ValueError
         return self.get_current_actual_image().get_img_array()[y][x]
     
-    def crop(self) -> None:
+    def crop(self) -> bool:
         args = Arguments()
         # make a copy of the current image
         args.add_image(self.hist.get_current_img())
@@ -216,13 +221,15 @@ class RequestHandler:
         crop = Crop()
         edited_image = crop.edit(args)
         if edited_image is not None:
-            self._create_history_entry(edited_image, "Crop")
+            return self._create_history_entry(edited_image, "Crop")
+        return False
 
-    def resize(self, dimensions: tuple[int, int]) -> None:
+    def resize(self, dimensions: tuple[int, int]) -> bool:
         args = Arguments()
         args.add_image(self.hist.get_current_img())
-        args.add_dimensions(dimensions)
+        args.add_size(dimensions)
         size_editor = SizeEditor()
         resized_image = size_editor.edit(args)
         if resized_image is not None:
-            self._create_history_entry(resized_image, "Resize")
+            return self._create_history_entry(resized_image, "Resize")
+        return False

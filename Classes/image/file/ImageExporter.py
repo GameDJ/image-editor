@@ -6,5 +6,5 @@ class ImageExporter:
     def __init__(self) -> None:
         pass
     
-    def export_image(image: Image, path: str) -> None:
+    def export_image(image: Image, path: str) -> bool:
         pass
