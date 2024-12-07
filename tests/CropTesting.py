@@ -29,6 +29,19 @@ class CropTesting(unittest.TestCase):
 
 
 
+  def testing_out_of_bounds(self):
+    orig = orig = np.full( (100,100,3), (80, 128, 40), dtype=np.uint8)
+    image = Image(orig)
+    the_args = Arguments(image)
+    sel = Selection( (-2,-2), (1000,500) )
+    the_args.add_selection(sel)
+    editor = Crop()
+    edited = editor.edit(the_args)
+
+    self.assertEqual(image, edited)    
+
+
+
   
 
     if __name__ == "__main__":
