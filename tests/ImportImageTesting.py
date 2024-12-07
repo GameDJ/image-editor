@@ -29,6 +29,7 @@ class ImportImageTesting(unittest.TestCase):
         importer = JpegImporter()
         image = importer.import_image('./nyx.png')
         self.assertIsNotNone(image)
+        
 
     def testing_png_import_with_non_supported_file_type(self):
         importer = PngImporter()

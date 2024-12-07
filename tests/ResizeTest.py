@@ -43,7 +43,7 @@ class ResizeTesting(unittest.TestCase):
     
     orig = np.full( (10,10,3), (80, 128, 40), dtype=np.uint8)
     image = Image(orig)
-    the_args = Arguments(orig)
+    the_args = Arguments(image)
     the_args.add_dimensions((0,0))
     editor = SizeEditor()
     self.assertRaises(ValueError, editor.edit(the_args))
