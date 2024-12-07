@@ -1,11 +1,11 @@
 #Will Verplaetse
+# MUST BE RUN FROM image-editor FOLDER AS: python .\tests\CropTesting.py
 
 import unittest
 import numpy as np
 
 import sys
 sys.path.append("../image-editor")
-
 
 from Classes.image.Image import Image
 from Classes.info.Arguments import Arguments
@@ -24,11 +24,9 @@ class CropTesting(unittest.TestCase):
     editor = Crop()
     edited = editor.edit(the_args)
 
-
     cropped = orig[0:10, 0:5]
     correct_im = Image(cropped)
     self.assertEqual(edited, correct_im)
-
 
 
   def testing_out_of_bounds(self):
@@ -40,11 +38,7 @@ class CropTesting(unittest.TestCase):
     editor = Crop()
     edited = editor.edit(the_args)
 
-    self.assertEqual(image, edited)    
-
-
-
-  
+    self.assertEqual(image, edited)
 
 if __name__ == "__main__":
   unittest.main()
