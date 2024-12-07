@@ -8,7 +8,7 @@ from Classes.info.ArgumentType import ArgumentType as AT
 from Classes.image.Image import Image
 
 class Crop(Edit):
-  def edit(self, args: Arguments):
+  def edit(self, args: Arguments) -> Image:
     image: Image = args.get_args()[AT.IMAGE]
     image_array = image.get_img_array()
     if AT.SELECTION in args.get_args():

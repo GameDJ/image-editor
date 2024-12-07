@@ -81,7 +81,7 @@ class RequestHandler:
             # now shrink it
             args = Arguments()
             args.add_image(image)
-            args.add_dimensions((new_width, new_height))
+            args.add_size((new_width, new_height))
             size_editor = SizeEditor()
             image = size_editor.edit(args)
         
@@ -209,7 +209,7 @@ class RequestHandler:
     def resize(self, dimensions: tuple[int, int]) -> bool:
         args = Arguments()
         args.add_image(self.hist.get_current_img())
-        args.add_dimensions(dimensions)
+        args.add_size(dimensions)
         size_editor = SizeEditor()
         resized_image = size_editor.edit(args)
         if resized_image is not None:

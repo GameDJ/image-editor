@@ -13,7 +13,7 @@ class SelectionRenderer(RenderAddon):
     def render_image(self) -> Image:
         return self.renderer.render_image()
         
-    def draw_selection_box(self, selection: Selection) -> None:
+    def draw_selection_box(self, selection: Selection) -> bool:
         """Draw a selection box onto an Image"""
         image_array = self.renderer.render_image().get_img_array()
         LEFT, TOP, RIGHT, BOT = selection.get_bbox()
@@ -40,6 +40,5 @@ class SelectionRenderer(RenderAddon):
                     image_array[i, RIGHT] = 255 - image_array[i, RIGHT]
                     
         self.renderer.render_image().set_img_array(image_array)
-        
-        
+        return True
         
