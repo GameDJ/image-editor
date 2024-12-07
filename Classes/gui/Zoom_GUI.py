@@ -4,9 +4,10 @@ from enum import Enum
 from tkinter import font
 
 class Zoom_GUI():
-    def __init__(self, parent_frame: tk.Frame, gui_title_font: font, handler_zoom_change: Callable, refresh_image: Callable):
+    def __init__(self, parent_frame: tk.Frame, gui_title_font: font, handler_zoom_change: Callable, gui_toggle_actions_while_zoomed: Callable, refresh_image: Callable):
         # Outside refs
         self._handler_zoom_change = handler_zoom_change
+        self._gui_toggle_actions_while_zoomed = gui_toggle_actions_while_zoomed
         self._gui_refresh_image = refresh_image
         
         # Zoom panel frame
@@ -40,6 +41,12 @@ class Zoom_GUI():
             zoom_text = f"{int(self.zoom_level)}x"
         self.zoom_level_label.config(text=zoom_text)
         self._gui_refresh_image()
+        
+        # disable certain actions while zoomed
+        if self.zoom_level != 1:
+            self._gui_toggle_actions_while_zoomed(False)
+        else:
+            self._gui_toggle_actions_while_zoomed(True)
         
     def toggle_buttons(self, toggle_on: bool):
         state = "active" if toggle_on else "disabled"
