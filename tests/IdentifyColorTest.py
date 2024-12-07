@@ -2,6 +2,8 @@
 
 import unittest
 import numpy as np
+import sys
+sys.path.append("../image-editor")
 from Classes.RequestHandler import RequestHandler
 from Classes.image.Image import Image
 
