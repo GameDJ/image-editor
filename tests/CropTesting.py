@@ -2,7 +2,10 @@
 
 import unittest
 import numpy as np
-import cv2
+
+import sys
+sys.path.append("../image-editor")
+
 
 from Image import Image
 from Arguments import Arguments
@@ -44,5 +47,5 @@ class CropTesting(unittest.TestCase):
 
   
 
-    if __name__ == "__main__":
-      unittest.main()
+if __name__ == "__main__":
+  unittest.main()
