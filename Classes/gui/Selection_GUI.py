@@ -4,7 +4,7 @@ from typing import Callable
 from Classes.gui.GUI_Defaults import GUI_Defaults
 
 class Selection_GUI():
-    def __init__(self, parent_frame: tk.Frame, gui_title_font: font, gui_change_image_mode: Callable, handler_make_selection: Callable, handler_get_selection_bbox: Callable, handler_clear_selection: Callable, handler_get_image_dimensions: Callable, handler_crop: Callable, gui_bindings: dict, gui_image_preview: tk.Label, gui_refresh_image: Callable, gui_refresh_history: Callable):
+    def __init__(self, parent_frame: tk.Frame, gui_title_font: font, gui_change_image_mode: Callable, handler_make_selection: Callable, handler_get_selection_bbox: Callable, handler_clear_selection: Callable, gui_get_image_preview_dimensions: Callable, handler_crop: Callable, gui_bindings: dict, gui_image_preview: tk.Label, gui_refresh_image: Callable, gui_refresh_history: Callable):
         # Constants
         self._SEL_COORD_1_DEFAULT_TEXT = "No selection"
         
@@ -13,7 +13,7 @@ class Selection_GUI():
         self._handler_make_selection = handler_make_selection
         self._handler_get_selection_bbox = handler_get_selection_bbox
         self._handler_clear_selection = handler_clear_selection
-        self._handler_get_image_dimensions = handler_get_image_dimensions
+        self._gui_get_image_preview_dimensions = gui_get_image_preview_dimensions
         self._handler_crop = handler_crop
         self._gui_bindings = gui_bindings
         self._gui_image_preview = gui_image_preview
@@ -65,7 +65,7 @@ class Selection_GUI():
     
     def _making_selection(self, event: tk.Event):
         # verify coord is within the image bounds
-        image_dimensions = self._handler_get_image_dimensions()
+        image_dimensions = self._gui_get_image_preview_dimensions()
         x_clamped = min(max(0, event.x), image_dimensions[1]-1)
         y_clamped = min(max(0, event.y), image_dimensions[0]-1)
         
