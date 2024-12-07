@@ -15,6 +15,7 @@ from Classes.image.render.ShapeRenderer import ShapeRenderer
 from Classes.image.render.ZoomRenderer import ZoomRenderer
 from Classes.edit.Crop import Crop
 from Classes.edit.SizeEditor import SizeEditor
+from Classes.edit.DuplicateSelection import DuplicateSelection
 from Classes.image.ImageInitializer import ImageInitializer
 from Classes.image.file.JpegImporter import JpegImporter
 from Classes.image.file.PngImporter import PngImporter
@@ -34,6 +35,7 @@ class RequestHandler:
         self.zoom_level = 1
     
     def create_canvas(self, width: int, height: int, color: tuple[int, int, int]) -> bool:
+        """Returns True if blank canvas initialization successful (else False)"""
         creator = ImageInitializer()
         new_image = creator.create_blank_canvas(width, height, color)
         return self.initialize_image(new_image)
@@ -236,7 +238,7 @@ class RequestHandler:
         args.add_image(self.hist.get_current_img())
         # add selection, if there is one
         if self.selection.get_bbox() is None:
-            return None
+            return False
         args.add_selection(self.selection)
         crop = Crop()
         edited_image = crop.edit(args)
@@ -253,3 +255,25 @@ class RequestHandler:
         if resized_image is not None:
             return self._create_history_entry(resized_image, "Resize")
         return False
+    
+    def duplicate_selection(self, start_coord: tuple[int, int]) -> bool:
+        args = Arguments()
+        # make a copy of the current image
+        args.add_image(self.hist.get_current_img())
+        # add selection, if there is one
+        if self.selection.get_bbox() is None:
+            return False
+        args.add_selection(self.selection)
+        
+        # add selection to duplicate to
+        orig_selection = self.selection.get_bbox()
+        height, width = self.hist.get_current_img().get_img_array().shape[0:2]
+        end_coord = (min(orig_selection[2] - orig_selection[0] + start_coord[0], width), min(orig_selection[3] - orig_selection[1] + start_coord[1], height))
+        args.add_selection2(Selection(start_coord, end_coord))
+        
+        duplicate = DuplicateSelection()
+        edited_image = duplicate.edit(args)
+        if edited_image is not None:
+            return self._create_history_entry(edited_image, "Duplicate Selection")
+        return False
+        
