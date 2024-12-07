@@ -7,38 +7,26 @@ import numpy as np
 import sys
 sys.path.append("../image-editor")
 
-from Classes.image.Image import Image
-from Classes.info.Arguments import Arguments
-from Classes.edit.Crop import Crop
-from Classes.info.Selection import Selection
+from Classes.RequestHandler import RequestHandler
 
 
 class CropTesting(unittest.TestCase):
 
   def testing_in_bounds(self):
-    orig = orig = np.full( (100,100,3), (80, 128, 40), dtype=np.uint8)
-    image = Image(orig)
-    the_args = Arguments(image)
-    sel = Selection( (0,0), (10,5) )
-    the_args.add_selection(sel)
-    editor = Crop()
-    edited = editor.edit(the_args)
 
-    cropped = orig[0:10, 0:5]
-    correct_im = Image(cropped)
-    self.assertEqual(edited, correct_im)
+    handler = RequestHandler()
+    handler.create_canvas(10, 10, (78, 62, 128))
+    handler.make_selection((0,0), (5,8))
+
+    self.assertEqual(handler.crop(), True)
 
 
   def testing_out_of_bounds(self):
-    orig = orig = np.full( (100,100,3), (80, 128, 40), dtype=np.uint8)
-    image = Image(orig)
-    the_args = Arguments(image)
-    sel = Selection( (-2,-2), (1000,500) )
-    the_args.add_selection(sel)
-    editor = Crop()
-    edited = editor.edit(the_args)
+    handler = RequestHandler()
+    handler.create_canvas(10, 10, (78, 62, 128))
+    handler.make_selection((-1,-1), (1000,5000))
 
-    self.assertEqual(image, edited)
+    self.assertEqual( handler.crop(), True)
 
 if __name__ == "__main__":
   unittest.main()
