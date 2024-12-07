@@ -20,5 +20,10 @@ class ImportImageTesting(unittest.TestCase):
         self.assertEqual(handler.import_image('./sample_images/words.txt'), False)
 
 
+    def testing_not_valid_file_path(self):
+        handler = RequestHandler()
+        self.assertRaises(FileNotFoundError, handler.import_image('dpcitures'))
+
+
 if __name__ == '__main__':
     unittest.main()
