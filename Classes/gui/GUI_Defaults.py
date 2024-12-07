@@ -18,5 +18,5 @@ class GUI_Defaults(Enum):
     KEYBIND_DRAW = "<d>"
     KEYBIND_ZOOM_IN = "<equal>"
     KEYBIND_ZOOM_OUT = "<minus>"
-    IMAGE_MAX_WIDTH = 1600
-    IMAGE_MAX_HEIGHT = 900
+    IMAGE_MAX_WIDTH = 1280
+    IMAGE_MAX_HEIGHT = 720

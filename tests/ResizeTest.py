@@ -1,8 +1,11 @@
 #Will Verplaetse
 
-
+import numpy as np
 import unittest
 import cv2
+
+import sys
+sys.path.append("../image-editor")
 
 
 from Image import Image
@@ -13,7 +16,9 @@ from SizeEditor import SizeEditor
 
 class ResizeTesting(unittest.TestCase):
   def testing_negative_size(self):
-    orig = cv2.imread('./grd.png')
+    
+    orig = np.full( (10,10,3), (80, 128, 40), dtype=np.uint8)
+
     image = Image(orig)
     the_args = Arguments(image)
     the_args.add_dimensions( (-100, -100))
@@ -25,7 +30,8 @@ class ResizeTesting(unittest.TestCase):
 
 
   def testing_positive_size(self):
-    orig = cv2.imread('./grd.png')
+    
+    orig = np.full( (10,10,3), (80, 128, 40), dtype=np.uint8)                  
     image = Image(orig)
     the_args = Arguments(image)
     the_args.add_new_size(50, 50)
@@ -37,8 +43,10 @@ class ResizeTesting(unittest.TestCase):
     self.assertEqual(edited, correct_im)
 
   def testing_zero_size(self):
-    orig = cv2.imread('./grd.png')
-    the_args = Arguments(orig)
+    
+    orig = np.full( (10,10,3), (80, 128, 40), dtype=np.uint8)
+    image = Image(orig)
+    the_args = Arguments(image)
     the_args.add_dimensions((0,0))
     editor = SizeEditor()
     self.assertRaises(ValueError, editor.edit(the_args))
@@ -48,5 +56,4 @@ class ResizeTesting(unittest.TestCase):
 
 
 if __name__ == '__main__':
-  
   unittest.main()

@@ -11,4 +11,6 @@ class ImageInitializer:
         pass
     
     def create_blank_canvas(self, width: int, height: int, color: tuple[int, int, int]) -> Image:
-        return Image(np.full((height, width, 3), color, dtype=np.uint8))
+        if width == 0 or height == 0:
+            raise ValueError
+        return Image(np.full((abs(height), abs(width), 3), color, dtype=np.uint8))

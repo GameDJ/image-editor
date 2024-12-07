@@ -8,7 +8,7 @@ from Classes.gui.CanvasDialog import CanvasDialog
 from Classes.gui.GUI_Defaults import GUI_Defaults
 
 class Menubar_GUI():
-    def __init__(self, root: tk.Tk, handler_create_canvas: Callable, handler_import_image: Callable, handler_export_image: Callable, handler_get_file_path: Callable, handler_is_active_image: Callable, handler_edit: Callable, handler_resize: Callable, gui_get_color_codes: Callable, gui_refresh_history: Callable, gui_refresh_image: Callable):
+    def __init__(self, root: tk.Tk, handler_create_canvas: Callable, handler_import_image: Callable, handler_export_image: Callable, handler_get_file_path: Callable, handler_is_active_image: Callable, handler_edit: Callable, handler_resize: Callable, gui_get_color_codes: Callable, gui_refresh_history: Callable, gui_refresh_image: Callable, gui_toggle_buttons: Callable):
         # outside refs
         self._root = root
         self._handler_create_canvas = handler_create_canvas
@@ -21,6 +21,7 @@ class Menubar_GUI():
         self._gui_get_color_codes = gui_get_color_codes
         self._gui_refresh_image = gui_refresh_image
         self._gui_refresh_history = gui_refresh_history
+        self._gui_toggle_buttons = gui_toggle_buttons
 
         self.menubar = tk.Menu(root, title="Menubar")
 
@@ -40,14 +41,18 @@ class Menubar_GUI():
             "About": lambda: self.display_help_message("SIMPLE v1.0.0", "SIMPLE: Simple IMage Processor for Lazy Editors\n\nContributors:\n\tAddison Casner\n\tDerek Jennings\n\tQuinn Pulley\n\tWill Verplaetse")
         }
 
+        # "File": (menu, {"Open": command}),
+        # "Edit": (menu, {"Filter": (menu, {"Blur": command})})
         self.menu_storage = {self.menubar: {}}
         for submenu in self.structure:
             self.generate_menu(self.menubar, self.menu_storage[self.menubar], submenu, self.structure[submenu])
-    
+        self.toggle_buttons(False)
+
 
     def generate_menu(self, parent_menu: tk.Menu, parent_obj: dict, cur_key: str, cur_level_obj):
         """Recursively generate a nested menu.
         Designed to store the menus in a nested dictionary, though it's not necessary.
+        Format: "Edit": (editmenu, {"Filter": (filtermenu, {"Blur": command})})
         
         Args:
         parent_menu -- parent menu (which can be a key)
@@ -58,18 +63,18 @@ class Menubar_GUI():
         if type(cur_level_obj) is dict:
             # add a submenu
             new_submenu = tk.Menu(parent_menu, tearoff=0)
-            parent_obj[new_submenu] = {}
             parent_menu.add_cascade(label=cur_key, menu=new_submenu)
+            parent_obj[cur_key] = (new_submenu, {})
             # generate each menu (or command) nested inside this one
             for next_level_key in cur_level_obj:
-                self.generate_menu(new_submenu, parent_obj[new_submenu], next_level_key, cur_level_obj[next_level_key])
+                self.generate_menu(new_submenu, parent_obj[cur_key][1], next_level_key, cur_level_obj[next_level_key])
         else:
             # add a command
             parent_menu.add_command(label=cur_key, command=cur_level_obj)
+            parent_obj[cur_key] = cur_level_obj
 
     def display_help_message(self, title: str, text: str):
         messagebox.showinfo(title=title, message=text)
-
 
     def create_canvas(self):
         if self._handler_is_active_image():
@@ -81,10 +86,15 @@ class Menubar_GUI():
         if not canvasDialog.width or not canvasDialog.height:
             messagebox.showerror(title="Operation cancelled", message="Failed to create canvas")
         else:
+            canvasDialog.width = min(canvasDialog.width, GUI_Defaults.IMAGE_MAX_WIDTH.value)
+            canvasDialog.height = min(canvasDialog.height, GUI_Defaults.IMAGE_MAX_HEIGHT.value)
+            messagebox.showwarning(title="Operation modified", message=f"Image shrunk to fit max bounds: {GUI_Defaults.IMAGE_MAX_WIDTH.value}x{GUI_Defaults.IMAGE_MAX_HEIGHT.value}")
+
             self._handler_create_canvas(canvasDialog.width, canvasDialog.height, canvasDialog.color_codes[0])
             self._gui_refresh_image()
             # activate_savebtn()
             self._gui_refresh_history()
+            self.toggle_buttons(True)
     
     def load_file(self):
         if self._handler_is_active_image():
@@ -101,6 +111,7 @@ class Menubar_GUI():
         self._gui_refresh_image()
         # activate_savebtn()
         self._gui_refresh_history()
+        self.toggle_buttons(True)
         
     def save_file(self):
         if self._handler_is_active_image() is not None:
@@ -148,3 +159,19 @@ class Menubar_GUI():
         self._gui_refresh_history()
         self._gui_refresh_image()
         
+    def toggle_buttons(self, toggle_on: bool):
+        """Enable buttons which are only usable when an image is loaded;
+        Also used for disabling them upon initialization"""
+        state = "active" if toggle_on else "disabled"
+        
+        filemenu: tk.Menu = self.menu_storage[self.menubar]["File"][0]
+        # toggle Save As command
+        filemenu.entryconfig(2, {"state": state})
+        
+        editmenu: tk.Menu = self.menu_storage[self.menubar]["Edit"][0]
+        # toggle Filters menu
+        editmenu.entryconfig(0, {"state": state})
+        # toggle Resize command
+        editmenu.entryconfig(1, {"state": state})
+        
+        self._gui_toggle_buttons(toggle_on)
