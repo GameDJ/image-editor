@@ -47,6 +47,8 @@ class RequestHandler:
             importer = PngImporter()
         elif file_type == "jpeg" or file_type == "jpg":
             importer = JpegImporter()
+        else:
+            return False
         image = importer.import_image(file_path)
         if not image:
             return False
