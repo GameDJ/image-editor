@@ -120,7 +120,7 @@ class RequestHandler:
             end_x_clamped = min(max(0, end_coord[0]), width)
             end_y_clamped = min(max(0, end_coord[1]), height)
 
-            self.selection.set_bbox_from_coords( (start_y_clamped, start_x_clamped), (end_y_clamped, end_x_clamped))
+            self.selection.set_bbox_from_coords((start_x_clamped, start_y_clamped), (end_x_clamped, end_y_clamped))
 
         return True
 

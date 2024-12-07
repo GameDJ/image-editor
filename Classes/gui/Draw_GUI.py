@@ -60,8 +60,8 @@ class Draw_GUI():
     
     def _making_shape(self, event: tk.Event):
         image_dimensions = self._gui_get_image_preview_dimensions()
-        x_clamped = min(max(0, event.x), image_dimensions[1]-1)
-        y_clamped = min(max(0, event.y), image_dimensions[0]-1)
+        x_clamped = min(max(0, event.x), image_dimensions[0]-1)
+        y_clamped = min(max(0, event.y), image_dimensions[1]-1)
         self.shape_selection.set_bbox_from_coords(self.start_coord, (x_clamped, y_clamped))
         self._args.add_selection2(self.shape_selection)
         self._gui_refresh_image(self._args)

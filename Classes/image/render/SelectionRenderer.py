@@ -17,7 +17,7 @@ class SelectionRenderer(RenderAddon):
         """Draw a selection box onto an Image"""
         image_array = self.renderer.render_image().get_img_array()
         LEFT, TOP, RIGHT, BOT = selection.get_bbox()
-        IMG_BOTRIGHT = (image_array.shape[0]-1, image_array.shape[1]-1)
+        IMG_BOTRIGHT = (image_array.shape[1]-1, image_array.shape[0]-1)
         
         # outline selection area with inverted pixels
         for i in range(LEFT, RIGHT):

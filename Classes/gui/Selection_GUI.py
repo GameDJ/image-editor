@@ -66,8 +66,8 @@ class Selection_GUI():
     def _making_selection(self, event: tk.Event):
         # verify coord is within the image bounds
         image_dimensions = self._gui_get_image_preview_dimensions()
-        x_clamped = min(max(0, event.x), image_dimensions[1]-1)
-        y_clamped = min(max(0, event.y), image_dimensions[0]-1)
+        x_clamped = min(max(0, event.x), image_dimensions[0]-1)
+        y_clamped = min(max(0, event.y), image_dimensions[1]-1)
         
         self._handler_make_selection(self.start_coord, (x_clamped, y_clamped))
         self._update_coord_display()
