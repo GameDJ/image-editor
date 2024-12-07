@@ -103,7 +103,7 @@ class RequestHandler:
         else:
             return False
     
-    def make_selection(self, start_coord: tuple[int, int], end_coord: tuple[int, int]):
+    def make_selection(self, start_coord: tuple[int, int], end_coord: tuple[int, int]) -> bool:
         # self.selection = Selection(start_coord, end_coord)
         if not (start_coord[0] < 0 or start_coord[0] > len(self.get_current_actual_image().get_img_array()) or
                 start_coord[1] < 0 or start_coord[1] > len(self.get_current_actual_image().get_img_array()[0]) or
