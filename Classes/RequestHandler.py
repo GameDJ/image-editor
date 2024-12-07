@@ -104,7 +104,25 @@ class RequestHandler:
     
     def make_selection(self, start_coord: tuple[int, int], end_coord: tuple[int, int]):
         # self.selection = Selection(start_coord, end_coord)
-        self.selection.set_bbox_from_coords(start_coord, end_coord)
+        if not (start_coord[0] < 0 or start_coord[0] > len(self.get_current_actual_image().get_img_array()) or
+                start_coord[1] < 0 or start_coord[1] > len(self.get_current_actual_image().get_img_array()[0]) or
+                end_coord[0] < 0 or end_coord[0] > len(self.get_current_actual_image().get_img_array()) or
+                 end_coord[1] < 0 or end_coord[1] > len(self.get_current_actual_image().get_img_array()[0])):        
+        
+            self.selection.set_bbox_from_coords(start_coord, end_coord)
+
+        else:
+            height, width = self.get_current_actual_image().get_img_array().shape[0:2]
+            start_x_clamped = min(max(0, start_coord[0]), width)
+            start_y_clamped = min(max(0, start_coord[1]), height)
+
+            end_x_clamped = min(max(0, end_coord[0]), width)
+            end_y_clamped = min(max(0, end_coord[1]), height)
+
+            self.selection.set_bbox_from_coords( (start_y_clamped, start_x_clamped), (end_y_clamped, end_x_clamped))
+
+        return True
+
 
     def get_selection_bbox(self) -> tuple[int, int, int, int]:
         """Returns None if no bbox is set"""
