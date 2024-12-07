@@ -35,9 +35,10 @@ class Zoom_GUI():
     def zoom_change(self, delta: int):
         self.zoom_level = self._handler_zoom_change(delta)
         if self.zoom_level < 0:
-            self.zoom_level_label.config(text=f"1/{2**(int(self.zoom_level)*-1)}x")
+            zoom_text = f"1/{abs(int(self.zoom_level)-1)}x"
         else:
-            self.zoom_level_label.config(text=f"{int(self.zoom_level)}x")
+            zoom_text = f"{int(self.zoom_level)}x"
+        self.zoom_level_label.config(text=zoom_text)
         self._gui_refresh_image()
         
     def toggle_buttons(self, toggle_on: bool):

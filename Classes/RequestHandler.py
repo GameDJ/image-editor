@@ -12,6 +12,7 @@ from Classes.image.render.ImageRenderer import ImageRenderer
 from Classes.image.render.BasicImageRenderer import BasicImageRenderer
 from Classes.image.render.SelectionRenderer import SelectionRenderer
 from Classes.image.render.ShapeRenderer import ShapeRenderer
+from Classes.image.render.ZoomRenderer import ZoomRenderer
 from Classes.edit.Crop import Crop
 from Classes.edit.SizeEditor import SizeEditor
 from Classes.image.ImageInitializer import ImageInitializer
@@ -157,6 +158,11 @@ class RequestHandler:
         return self.hist.get_entry_descriptions()
     
     def zoom_change(self, delta: int) -> int:
+        """Change the zoom level (cannot be 0), and return the new level
+        
+        Arguments:
+        delta -- +1 to zoom in, -1 to zoom out
+        """
         self.zoom_level += delta
         if self.zoom_level == 0:
             self.zoom_level += delta        
@@ -175,18 +181,28 @@ class RequestHandler:
     
     def get_render_image(self, args: Arguments = None) -> Image:
         render_image = BasicImageRenderer(self.hist.get_current_img())
+        if args is None:
+            args = Arguments()
+        args.add_image(render_image)
+        
         if self.zoom_level != 1:
-            pass
-        if args is not None:
-            args.add_image(render_image)
+            args.add_amount(self.zoom_level)
+            args.add_dimensions((GUI_Defaults.IMAGE_MAX_WIDTH.value, GUI_Defaults.IMAGE_MAX_HEIGHT.value))
+            # zoom the render_image
+            render_image = ZoomRenderer(render_image, args)
+            # make a copy of selection and edit its coordinates based on zoom
+
+
+        if AT.SHAPE in args.get_args():
             # render a shape while it's being dragged
             render_image = ShapeRenderer(render_image, args)
+            
         if self.selection.get_bbox() is not None:
             # render selection box
             render_image = SelectionRenderer(render_image, self.selection)
         return render_image.render_image()
     
-    def get_color_at_pixel(self, x: int, y: int) -> tuple[int, int, int]:
+    def get_color_at_pixel(self, x: int, y: int) -> list[int, int, int]:
         return self.get_current_actual_image().get_img_array()[y][x]
     
     def crop(self) -> None:
