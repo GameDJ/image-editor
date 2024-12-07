@@ -7,11 +7,10 @@ import sys
 sys.path.append("../image-editor")
 
 
-from Image import Image
-from Arguments import Arguments
-from Edit import Edit
-from Crop import Crop
-from Selection import Selection
+from Classes.image.Image import Image
+from Classes.info.Arguments import Arguments
+from Classes.edit.Crop import Crop
+from Classes.info.Selection import Selection
 
 
 class CropTesting(unittest.TestCase):

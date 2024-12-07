@@ -6,7 +6,11 @@ sys.path.append("../image-editor")
 from Classes.RequestHandler import RequestHandler
 
 class ImportImageTest(unittest.TestCase):
-    def test_valid_image_path(self):
+    def test_valid_png_image_path(self):
+        handler = RequestHandler()
+        self.assertEqual(handler.import_image(""), True)
+        
+    def test_valid_jpg_image_path(self):
         handler = RequestHandler()
         self.assertEqual(handler.import_image(""), True)
     
@@ -17,3 +21,6 @@ class ImportImageTest(unittest.TestCase):
     def test_not_image(self):
         handler = RequestHandler()
         self.assertEqual(handler.import_image(""), False)
+        
+if __name__ == '__main__':
+    unittest.main()
