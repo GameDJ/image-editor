@@ -16,7 +16,7 @@ class CreateBlankCanvasTest(unittest.TestCase):
     
     def test_zero_size(self):
         initializer = ImageInitializer()
-        self.assertRaises(ValueError, initializer.create_blank_canvas, (0, 0, (78, 62, 128)))
+        self.assertRaises(ValueError, initializer.create_blank_canvas (0, 0, (78, 62, 128)))
         
 if __name__ == '__main__':
     unittest.main()

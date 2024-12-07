@@ -1,22 +1,17 @@
 #Will Verplaetse
+# MUST BE RUN FROM image-editor FOLDER AS: python .\tests\ResizeTest.py
 
 import numpy as np
 import unittest
 import cv2
-
 import sys
 sys.path.append("../image-editor")
-
-
-from Image import Image
-from Arguments import Arguments
-from Edit import Edit
-from SizeEditor import SizeEditor
-
+from Classes.image.Image import Image
+from Classes.info.Arguments import Arguments
+from Classes.edit.SizeEditor import SizeEditor
 
 class ResizeTesting(unittest.TestCase):
   def testing_negative_size(self):
-    
     orig = np.full( (10,10,3), (80, 128, 40), dtype=np.uint8)
 
     image = Image(orig)
@@ -30,7 +25,6 @@ class ResizeTesting(unittest.TestCase):
 
 
   def testing_positive_size(self):
-    
     orig = np.full( (10,10,3), (80, 128, 40), dtype=np.uint8)                  
     image = Image(orig)
     the_args = Arguments(image)
@@ -43,7 +37,6 @@ class ResizeTesting(unittest.TestCase):
     self.assertEqual(edited, correct_im)
 
   def testing_zero_size(self):
-    
     orig = np.full( (10,10,3), (80, 128, 40), dtype=np.uint8)
     image = Image(orig)
     the_args = Arguments(image)
@@ -51,9 +44,6 @@ class ResizeTesting(unittest.TestCase):
     editor = SizeEditor()
     self.assertRaises(ValueError, editor.edit(the_args))
     
-
-
-
 
 if __name__ == '__main__':
   unittest.main()
