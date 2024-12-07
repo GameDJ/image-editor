@@ -19,6 +19,7 @@ from Classes.image.file.JpegImporter import JpegImporter
 from Classes.image.file.PngImporter import PngImporter
 from Classes.image.file.JpegExporter import JpegExporter
 from Classes.image.file.PngExporter import PngExporter
+from Classes.gui.GUI_Defaults import GUI_Defaults
 import numpy as np
 import PIL
 import os.path
@@ -29,6 +30,7 @@ class RequestHandler:
     def __init__(self):
         self.hist = History()
         self.selection = Selection()
+        self.zoom_level = 1
     
     def create_canvas(self, width: int, height: int, color: tuple[int, int, int]) -> bool:
         creator = ImageInitializer()
@@ -62,8 +64,28 @@ class RequestHandler:
             return None
     
     def initialize_image(self, image: Image) -> bool:
+        # shrink image if it's too big
+        height, width = image.get_img_array().shape[0:2]
+        max_width = GUI_Defaults.IMAGE_MAX_WIDTH.value
+        max_height = GUI_Defaults.IMAGE_MAX_HEIGHT.value
+        # determine ratio of actual width/height to the max allowed
+        maxwidth_ratio = width / max_width 
+        maxheight_ratio = height / max_height
+        # if at least one is greater, we must shrink
+        if maxwidth_ratio > 1 or maxheight_ratio > 1:
+            # determine which ratio is greater
+            bigger_ratio = max(maxwidth_ratio, maxheight_ratio)
+            # determine new dimensions
+            new_width = int(width / bigger_ratio)
+            new_height = int(height / bigger_ratio)
+            # now shrink it
+            args = Arguments()
+            args.add_image(image)
+            args.add_dimensions((new_width, new_height))
+            size_editor = SizeEditor()
+            image = size_editor.edit(args)
+        
         retVal = self._create_history_entry(image, "Create image")
-        self.zoom_level = 1
         return retVal
     
     def export_image(self, save_pathname: str):
