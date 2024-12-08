@@ -156,7 +156,7 @@ class Menubar_GUI():
         height = dimension_dialog.height
         
         if width < 1 or width >= GUI_Defaults.IMAGE_MAX_WIDTH.value or height < 1 or height >= GUI_Defaults.IMAGE_MAX_HEIGHT.value:
-            messagebox.showerror(title="Operation cancelled", message="Invalid value")
+            messagebox.showerror(title="Operation cancelled", message=f"Invalid value: Dimensions must be [1:{GUI_Defaults.IMAGE_MAX_WIDTH}]x[1:{GUI_Defaults.IMAGE_MAX_HEIGHT}]")
             return
         
         self._handler_resize((dimension_dialog.width, dimension_dialog.height))

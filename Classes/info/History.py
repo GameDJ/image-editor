@@ -6,14 +6,28 @@ class History:
     
     def __init__(self):
         self.array_history: list[Entry] = []
-        self.index = -1
+        # index of the current list (does not include deleted entries)
+        self.index = -1 
+        # total index of the current oldest value in the list (includes deleted)
+        self.oldest_index = 0
+        self.MAX_LENGTH = 10
 
     def add_record(self, image: Image, change_desc: str) -> bool:
-        if (len(self.array_history) > self.index+1):
+        history_len = len(self.array_history)
+        if history_len > self.index+1:
             # we are in the "past", so chop off any "future" entries
             self.array_history = self.array_history[0:self.index+1]
         new_entry = Entry(image, change_desc)
+        if history_len == self.MAX_LENGTH:
+            # reached max entries; delete the oldest
+            del self.array_history[0]
+            self.oldest_index += 1
+            # offset the index so it ends up staying in place
+            self.index -= 1
         self.array_history.append(new_entry)
+        if history_len == 1:
+            # first entry
+            self.oldest_index = 0
         self.index += 1
         return True
         
@@ -47,7 +61,7 @@ class History:
         """Returns list of entry descriptions in the format [(index, description), ...]"""
         entries = []
         for i in range(len(self.array_history)):
-            entries.append((i, self.array_history[i].change_desc))
+            entries.append((i, f"{i+self.oldest_index+1}: {self.array_history[i].change_desc}"))
         return entries
             
     def set_index(self, new_index: int) -> bool:
