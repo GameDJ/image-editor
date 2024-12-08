@@ -18,24 +18,25 @@ class SelectionRenderer(RenderAddon):
         image_array = self.renderer.render_image().get_img_array()
         LEFT, TOP, RIGHT, BOT = selection.get_bbox()
         IMG_BOTRIGHT = (image_array.shape[1]-1, image_array.shape[0]-1)
+        # print(LEFT, TOP, RIGHT, BOT)
         
         # outline selection area with inverted pixels
         for i in range(LEFT, RIGHT):
             # upper bound
-            if LEFT > 0 and TOP > 0:
+            if LEFT >= 0 and TOP > 0:
                 if (i - LEFT) % 8 < 4:
                     image_array[TOP, i] = 255 - image_array[TOP, i]
             # lower bound
-            if RIGHT < IMG_BOTRIGHT[0] and BOT < IMG_BOTRIGHT[1]-1:
+            if RIGHT <= IMG_BOTRIGHT[0] and BOT < IMG_BOTRIGHT[1]-1:
                 if (i - LEFT) % 8 < 4:
                     image_array[BOT, i] = 255 - image_array[BOT, i]
         for i in range(TOP+1, BOT+1):
             # left bound
-            if TOP > 0 and LEFT > 0:
+            if TOP >= 0 and LEFT > 0:
                 if (i - TOP+1) % 8 < 4:
                     image_array[i, LEFT] = 255 - image_array[i, LEFT]
             # right bound
-            if BOT < IMG_BOTRIGHT[1] and RIGHT < IMG_BOTRIGHT[0]-1:
+            if BOT <= IMG_BOTRIGHT[1] and RIGHT < IMG_BOTRIGHT[0]-1:
                 if (i - TOP+1) % 8 < 4:
                     image_array[i, RIGHT] = 255 - image_array[i, RIGHT]
                     
