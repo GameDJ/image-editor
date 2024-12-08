@@ -253,11 +253,13 @@ class RequestHandler:
         edited_image = crop.edit(args)
         if edited_image is not None:
             return self._create_history_entry(edited_image, "Crop")
+        self.clear_selection()
         return False
 
     def resize(self, dimensions: tuple[int, int]) -> bool:
         """This method invokes the edit method of the SizeEditor class and returns true after 
         creating a history entry if successful"""
+        self.clear_selection()
         args = Arguments()
         args.add_image(self.hist.get_current_img())
         args.add_size(dimensions)

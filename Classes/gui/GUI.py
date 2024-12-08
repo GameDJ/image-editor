@@ -205,6 +205,7 @@ class GUI():
             handler.is_active_image,
             handler.edit,
             handler.resize,
+            selection_gui.clear_selection,
             color_gui.get_color_codes,
             history_gui.refresh_history,
             image_gui.refresh_image,
