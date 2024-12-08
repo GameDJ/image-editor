@@ -48,7 +48,7 @@ class Arguments:
         return True
 
     def add_size(self, dimensions: tuple[int, int]) -> bool:
-        self.args[AT.DIMENSIONS] = dimensions
+        self.args[AT.SIZE] = dimensions
         return True
 
     def get_args(self) -> dict:

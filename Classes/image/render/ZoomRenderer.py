@@ -29,7 +29,7 @@ class ZoomRenderer(RenderAddon):
             # for negative factors, convert to fraction
             # (-1 becomes 1/2, -2 becomes 1/3)
             factor = 1 / abs((factor - 1))
-        dimensions: tuple[int, int] = args.get_args()[AT.DIMENSIONS]
+        dimensions: tuple[int, int] = args.get_args()[AT.SIZE]
         # validate dimensions
         if min(dimensions) <= 0:
             return

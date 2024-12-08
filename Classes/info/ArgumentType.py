@@ -12,4 +12,4 @@ class ArgumentType(Enum):
     AMOUNT = auto()
     SHAPE = auto()
     COLOR = auto()
-    DIMENSIONS = auto()
+    SIZE = auto()
