@@ -112,6 +112,7 @@ class RequestHandler:
             return False
     
     def make_selection(self, start_coord: tuple[int, int], end_coord: tuple[int, int]) -> bool:
+        """This method creates a selection and clamps it if it is out of bounds"""
         # self.selection = Selection(start_coord, end_coord)
 
         #Bounds checking
@@ -145,6 +146,8 @@ class RequestHandler:
         return cleared
     
     def edit(self, args: Arguments) -> bool:
+        """This method invokes the edit method of the Filter class and returns true after 
+        creating a history entry if successful"""
         # make a copy of the current image
         args.add_image(self.hist.get_current_img())
         # add selection, if there is one
@@ -171,7 +174,11 @@ class RequestHandler:
         return self.hist.get_current_img()
     
     def get_image_dimensions(self) -> tuple[int, int]:
-        height, width = self.hist.get_current_img().get_img_array().shape[0:2]
+        """Returns image dimensions as tuple: (width, height)"""
+        current_image = self.hist.get_current_img()
+        if current_image is None:
+            return None
+        height, width = current_image.get_img_array().shape[0:2]
         return (width, height)
     
     def history_undo(self) -> bool:
@@ -211,6 +218,7 @@ class RequestHandler:
         return self.hist.get_index()
     
     def get_render_image(self, args: Arguments = None) -> Image:
+        """This method applies the renderers"""
         render_image = BasicImageRenderer(self.hist.get_current_img())
         if args is None:
             args = Arguments()
@@ -221,8 +229,6 @@ class RequestHandler:
             args.add_size((GUI_Defaults.IMAGE_MAX_WIDTH.value, GUI_Defaults.IMAGE_MAX_HEIGHT.value))
             # zoom the render_image
             render_image = ZoomRenderer(render_image, args)
-            # make a copy of selection and edit its coordinates based on zoom
-
 
         if AT.SHAPE in args.get_args():
             # render a shape while it's being dragged
@@ -234,12 +240,15 @@ class RequestHandler:
         return render_image.render_image()
     
     def get_color_at_pixel(self, x: int, y: int) -> list[int, int, int]:
-        height, width = self.get_image_dimensions()
+        """This method receives a coordinate as input and returns the color of that pixel"""
+        width, height = self.get_image_dimensions()
         if x < 0 or x > width or y < 0 or y > height:
             raise ValueError
         return self.get_current_actual_image().get_img_array()[y][x]
     
     def crop(self) -> bool:
+        """This method invokes the edit method of the Crop class and returns true after 
+        creating a history entry if successful"""
         args = Arguments()
         # make a copy of the current image
         args.add_image(self.hist.get_current_img())
@@ -254,6 +263,8 @@ class RequestHandler:
         return False
 
     def resize(self, dimensions: tuple[int, int]) -> bool:
+        """This method invokes the edit method of the SizeEditor class and returns true after 
+        creating a history entry if successful"""
         args = Arguments()
         args.add_image(self.hist.get_current_img())
         args.add_size(dimensions)
@@ -264,6 +275,8 @@ class RequestHandler:
         return False
     
     def duplicate_selection(self, start_coord: tuple[int, int]) -> bool:
+        """This method invokes the edit method of the DuplicateSelection class and returns true after 
+        creating a history entry if successful"""
         args = Arguments()
         # make a copy of the current image
         args.add_image(self.hist.get_current_img())
