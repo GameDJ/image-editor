@@ -106,6 +106,7 @@ class RequestHandler:
             return False
     
     def make_selection(self, start_coord: tuple[int, int], end_coord: tuple[int, int]) -> bool:
+        """This method creates a selection and clamps it if it is out of bounds"""
         # self.selection = Selection(start_coord, end_coord)
 
         #Bounds checking
@@ -139,6 +140,8 @@ class RequestHandler:
         return cleared
     
     def edit(self, args: Arguments) -> bool:
+        """This method invokes the edit method of the Filter class and returns true after 
+        creating a history entry if successful"""
         # make a copy of the current image
         args.add_image(self.hist.get_current_img())
         # add selection, if there is one
@@ -205,6 +208,7 @@ class RequestHandler:
         return self.hist.get_index()
     
     def get_render_image(self, args: Arguments = None) -> Image:
+        """This method applies the renderers"""
         render_image = BasicImageRenderer(self.hist.get_current_img())
         if args is None:
             args = Arguments()
@@ -228,11 +232,14 @@ class RequestHandler:
         return render_image.render_image()
     
     def get_color_at_pixel(self, x: int, y: int) -> list[int, int, int]:
+        """This method receives a coordinate as input and returns the color of that pixel"""
         if x < 0 or y < 0:
             raise ValueError
         return self.get_current_actual_image().get_img_array()[y][x]
     
     def crop(self) -> bool:
+        """This method invokes the edit method of the Crop class and returns true after 
+        creating a history entry if successful"""
         args = Arguments()
         # make a copy of the current image
         args.add_image(self.hist.get_current_img())
@@ -247,6 +254,8 @@ class RequestHandler:
         return False
 
     def resize(self, dimensions: tuple[int, int]) -> bool:
+        """This method invokes the edit method of the SizeEditor class and returns true after 
+        creating a history entry if successful"""
         args = Arguments()
         args.add_image(self.hist.get_current_img())
         args.add_size(dimensions)
@@ -257,6 +266,8 @@ class RequestHandler:
         return False
     
     def duplicate_selection(self, start_coord: tuple[int, int]) -> bool:
+        """This method invokes the edit method of the DuplicateSelection class and returns true after 
+        creating a history entry if successful"""
         args = Arguments()
         # make a copy of the current image
         args.add_image(self.hist.get_current_img())
