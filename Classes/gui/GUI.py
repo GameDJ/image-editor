@@ -82,6 +82,7 @@ class GUI():
             handler.clear_selection,
             image_gui.get_image_preview_dimensions,
             handler.crop,
+            handler.duplicate_selection,
             bindings,
             image_gui.image_preview,
             image_gui.refresh_image,
