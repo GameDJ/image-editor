@@ -1,4 +1,5 @@
 # MUST BE RUN FROM image-editor FOLDER AS: python .\tests\RedoTest.py
+# Quinn Pulley
 
 import unittest
 import sys

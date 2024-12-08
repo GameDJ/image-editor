@@ -1,4 +1,5 @@
 # MUST BE RUN FROM image-editor FOLDER AS: python .\tests\CreateBlankCanvasTest.py
+# Derek Jennings
 
 import unittest
 import sys
