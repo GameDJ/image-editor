@@ -269,10 +269,10 @@ class RequestHandler:
         # copy the current selection
         source_selection = Selection()
         source_selection.set_bbox(self.selection.get_bbox())
-        SRC_LEFT, SRC_TOP, SRC_RIGHT, SRC_BOT = source_selection.get_bbox()
+        SRC_LEFT, SRC_TOP, src_right, src_bot = source_selection.get_bbox()
         # determine the end coord with which to make destination bounds
-        end_coord_x = start_coord[0] + SRC_RIGHT
-        end_coord_y = start_coord[1] + SRC_BOT
+        end_coord_x = start_coord[0] + (src_right - SRC_LEFT)
+        end_coord_y = start_coord[1] + (src_bot - SRC_TOP)
         # start with the dest selection as an offset copy of source
         destination_selection = Selection(start_coord, (end_coord_x, end_coord_y))
         DST_LEFT, DST_TOP, dst_right, dst_bot = destination_selection.get_bbox()
@@ -281,7 +281,9 @@ class RequestHandler:
         dst_bot = min(dst_bot, height)
         destination_selection.set_bbox((DST_LEFT, DST_TOP, dst_right, dst_bot))
         # crop source selection to match cropped dest selection
-        source_selection.set_bbox((SRC_LEFT, SRC_TOP, SRC_LEFT + (dst_right - DST_LEFT), SRC_BOT + (dst_bot - DST_TOP)))
+        src_right = SRC_LEFT + (dst_right - DST_LEFT)
+        src_bot = SRC_TOP + (dst_bot - DST_TOP)
+        source_selection.set_bbox((SRC_LEFT, SRC_TOP, src_right, src_bot))
         
         args.add_selection(source_selection)
         args.add_selection2(destination_selection)

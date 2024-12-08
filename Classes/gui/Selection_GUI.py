@@ -45,7 +45,7 @@ class Selection_GUI():
         # Crop & Duplicate buttons
         self.crop_btn = tk.Button(self.btn_frame_2, text="Crop", command=self.crop, state="disabled")
         self.crop_btn.grid(column=0, row=0, padx=3)
-        self.duplicate_btn = tk.Button(self.btn_frame_2, text="Duplicate", command=self.duplicate, state="disabled")
+        self.duplicate_btn = tk.Button(self.btn_frame_2, text="Duplicate", command=lambda: self._gui_change_image_mode(self.toggle_duplicate_on, self.toggle_duplicate_off), state="disabled")
         self.duplicate_btn.grid(column=1, row=0, padx=3)
 
     def toggle_select_on(self):
@@ -107,10 +107,19 @@ class Selection_GUI():
         self._gui_refresh_image()
         self._gui_refresh_history()
         
-    def duplicate(self, *_):
-        self._handler_duplicate_selection((200, 200))
+    def _duplicate(self, event: tk.Event):
+        self._handler_duplicate_selection((event.x, event.y))
+        # self._gui_change_image_mode()
         self._gui_refresh_image()
         self._gui_refresh_history()
+        
+    def toggle_duplicate_on(self):
+        self._gui_bindings[GUI_Defaults.CLICK_PRESS_BINDING] = self._gui_image_preview.bind(GUI_Defaults.CLICK_PRESS_BINDING.value, self._duplicate)
+        self.duplicate_btn.config(relief=GUI_Defaults.BUTTON_TOGGLED_RELIEF.value)
+        
+    def toggle_duplicate_off(self):
+        self._gui_image_preview.unbind(GUI_Defaults.CLICK_PRESS_BINDING.value, self._gui_bindings.pop(GUI_Defaults.CLICK_PRESS_BINDING))
+        self.duplicate_btn.config(relief=GUI_Defaults.BUTTON_RELIEF.value)
         
     def toggle_buttons(self, toggle_on: bool):
         state = "active" if toggle_on else "disabled"
