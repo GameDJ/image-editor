@@ -3,6 +3,7 @@ import tkinter as tk
 from tkinter import font, colorchooser
 from typing import Callable
 from Classes.gui.GUI_Defaults import GUI_Defaults
+from Classes.gui.assets.eyedropper import image_string
 
 class Color_GUI():
     def __init__(self, parent_frame: tk.Frame, gui_title_font: font, gui_change_image_mode: Callable, handler_get_color_at_pixel: Callable, gui_bindings: dict, gui_image_preview: tk.Label, gui_refresh_image: Callable):
@@ -31,7 +32,8 @@ class Color_GUI():
         self._update_color()
         
         # Eyedropper button
-        self.eyedrop_img = tk.PhotoImage(file=os.path.join(os.path.dirname(__file__), r"..\..\assets\icons8-color-dropper-24.png"))
+        # self.eyedrop_img = tk.PhotoImage(file=os.path.join(os.path.dirname(__file__), r"..\..\assets\icons8-color-dropper-24.png"))
+        self.eyedrop_img = tk.PhotoImage(data=image_string)
         self.eyedropper_btn = tk.Button(self.btn_frame, command=lambda: self._gui_change_image_mode(self.toggle_eyedropper_on, self.toggle_eyedropper_off), relief=GUI_Defaults.BUTTON_RELIEF.value, image=self.eyedrop_img)
         # eyedropper_btn.pack(side=tk.TOP)
         self.eyedropper_btn.grid(row=0, column=3, padx=3)
