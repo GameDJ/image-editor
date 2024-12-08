@@ -1,3 +1,4 @@
+# MUST BE RUN FROM image-editor FOLDER AS: python .\tests\IdentifyColorTest.py
 #Addison Casner
 
 import unittest
