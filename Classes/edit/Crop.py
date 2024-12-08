@@ -9,6 +9,8 @@ from Classes.image.Image import Image
 
 class Crop(Edit):
   def edit(self, args: Arguments) -> Image:
+    """This method crops an image to the specified dimensions. It returns the same image if any 
+    coordinate is out of bounds"""
     image: Image = args.get_args()[AT.IMAGE]
     image_array = image.get_img_array()
     if AT.SELECTION in args.get_args():
