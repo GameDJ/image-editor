@@ -5,13 +5,10 @@ from Classes.info.ArgumentType import ArgumentType as AT
 from Classes.edit.filter.FilterType import FilterType, FilterInfo
 from Classes.edit.filter.Filters import Filters
 from Classes.edit.draw.DrawShape import DrawShape
-from Classes.edit.draw.ShapeType import ShapeType
 from Classes.info.Selection import Selection
 from Classes.image.Image import Image
-from Classes.image.render.ImageRenderer import ImageRenderer
 from Classes.image.render.BasicImageRenderer import BasicImageRenderer
 from Classes.image.render.SelectionRenderer import SelectionRenderer
-from Classes.image.render.ShapeRenderer import ShapeRenderer
 from Classes.image.render.ZoomRenderer import ZoomRenderer
 from Classes.edit.Crop import Crop
 from Classes.edit.SizeEditor import SizeEditor
@@ -218,7 +215,7 @@ class RequestHandler:
         return self.hist.get_index()
     
     def get_render_image(self, args: Arguments = None) -> Image:
-        """This method applies the renderers"""
+        """This method applies the relevant renderers"""
         render_image = BasicImageRenderer(self.hist.get_current_img())
         if args is None:
             args = Arguments()
@@ -229,10 +226,6 @@ class RequestHandler:
             args.add_size((GUI_Defaults.IMAGE_MAX_WIDTH.value, GUI_Defaults.IMAGE_MAX_HEIGHT.value))
             # zoom the render_image
             render_image = ZoomRenderer(render_image, args)
-
-        if AT.SHAPE in args.get_args():
-            # render a shape while it's being dragged
-            render_image = ShapeRenderer(render_image, args)
             
         if self.selection.get_bbox() is not None:
             # render selection box

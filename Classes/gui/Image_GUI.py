@@ -5,6 +5,8 @@ from PIL import ImageTk
 from Classes.image.Image import Image
 from Classes.info.Arguments import Arguments
 from Classes.gui.GUI_Defaults import GUI_Defaults
+from Classes.image.render.BasicImageRenderer import BasicImageRenderer
+from Classes.gui.ShapeRenderer import ShapeRenderer
 
 class Image_GUI():
     def __init__(self, parent_frame: tk.Frame, handler_get_render_image: Callable[[], Image]):
@@ -27,7 +29,16 @@ class Image_GUI():
         """Regenerate the image preview from the render image provided by RequestHandler.  
         Arguments:
         args -- draw a temporary shape if one is provided"""
-        new_pil_image = PIL.Image.fromarray(self._handler_get_render_image(args).get_img_array())
+        image: Image = self._handler_get_render_image()
+        if args is not None:
+            # draw the shape, if args is provided
+            image_renderer = BasicImageRenderer(image)
+            args.add_image(image)
+            image_renderer = ShapeRenderer(image_renderer, args)
+            image = image_renderer.render_image()
+        
+        new_pil_image = PIL.Image.fromarray(image.get_img_array())
+        
         new_tk_image = ImageTk.PhotoImage(new_pil_image)
         # update the image label
         self.image_preview.config(image=new_tk_image)

@@ -7,6 +7,8 @@ from Classes.info.Arguments import Arguments
 from Classes.edit.draw.DrawShape import DrawShape
 
 class ShapeRenderer(RenderAddon):
+    """Render a shape which is not yet embedded in an image;
+    This is a class which is only really used by the gui"""
     def __init__(self, renderer: ImageRenderer, args: Arguments):
         """Store the renderer and draw onto its image"""
         super().__init__(renderer)

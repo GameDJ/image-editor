@@ -55,9 +55,9 @@ class Arguments:
         return self.args
     
     def __str__(self) -> str:
-        string = "Arguments:\n"
+        string = "Arguments:"
         for key in self.args:
-            string += f"\t{str(key)[str(key).index(".")+1:].lower()}: {self.args[key]}"
+            string += f"\n\t{str(key)[str(key).index(".")+1:].lower()}: {self.args[key]}"
         return string
             
     def __repr__(self) -> str:
