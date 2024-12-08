@@ -10,6 +10,15 @@ from Classes.edit.filter.FilterType import FilterType
 
 class Filters(Edit):
     def edit(self, args: Arguments) -> Image:
+        """Applys a filter either to the entire image or to the given selection.
+        Arguments:
+        image -- Image to edit
+        selection -- (optional) selection area in which to apply the filter
+        amount -- (optional) used for blur and bridghtness
+        
+        Returns:
+        The edited image.
+        """
         full_image: Image = args.get_args()[AT.IMAGE]
         full_image_array: np.ndarray = full_image.get_img_array()
         filter_type: FilterType = args.get_args()[AT.FILTER]

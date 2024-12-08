@@ -7,7 +7,7 @@ from Classes.image.Image import Image
 
 class DuplicateSelection(Edit):
   def edit(self, args: Arguments) -> Image:
-    '''This method will duplicate a selection into another area'''
+    """This method will duplicate a selection into another area"""
     image: Image = args.get_args()[AT.IMAGE]
     image_array: np.ndarray = image.get_img_array()
     sel1: Selection = args.get_args()[AT.SELECTION]
@@ -16,12 +16,6 @@ class DuplicateSelection(Edit):
     sel2_bbox: tuple[int, int, int, int] = sel2.get_bbox()
     
     image_array[sel2_bbox[1]:sel2_bbox[3], sel2_bbox[0]:sel2_bbox[2]] = image_array[sel1_bbox[1]:sel1_bbox[3], sel1_bbox[0]:sel1_bbox[2]]
-    
-    # im2 = image[args[AT.SELECTION].start_coordinate[0] : args[AT.SELECTION].end_coordinate[0], args[AT.SELECTION].start_coordinate[1] : args[AT.SELECTION]end_coordinate[1]]
-
-    # for row in im2:
-    #   for col in row:
-    #     image[args[AT.SELECTION2].start_coordinate[0] + row][args[AT.SELECTION2].start_coordinate[1] + col] = im2[row][col]
     
     image.set_img_array(image_array)
     return image
