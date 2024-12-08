@@ -33,12 +33,12 @@ class RequestHandler:
         self.hist = History()
         self.selection = Selection()
         self.zoom_level = 1
-        self.file_path = ""
+        self.file_path = None
     
     def create_canvas(self, width: int, height: int, color: tuple[int, int, int]) -> bool:
         """Returns True if blank canvas initialization successful (else False)"""
         # reset file path, in case it's left over
-        self.file_path = ""
+        self.file_path = None
         creator = ImageInitializer()
         new_image = creator.create_blank_canvas(width, height, color)
         return self.initialize_image(new_image)
@@ -65,10 +65,7 @@ class RequestHandler:
         return self.initialize_image(image)
     
     def get_file_path(self) -> str:
-        if self.file_path != "":
-            return self.file_path
-        else:
-            return None
+        return self.file_path
     
     def initialize_image(self, image: Image) -> bool:
         # reset variables
@@ -174,7 +171,8 @@ class RequestHandler:
         return self.hist.get_current_img()
     
     def get_image_dimensions(self) -> tuple[int, int]:
-        return self.hist.get_current_img().get_img_array().shape[0:2]
+        height, width = self.hist.get_current_img().get_img_array().shape[0:2]
+        return (width, height)
     
     def history_undo(self) -> bool:
         return self.hist.undo()
@@ -236,7 +234,8 @@ class RequestHandler:
         return render_image.render_image()
     
     def get_color_at_pixel(self, x: int, y: int) -> list[int, int, int]:
-        if x < 0 or y < 0:
+        height, width = self.get_image_dimensions()
+        if x < 0 or x > width or y < 0 or y > height:
             raise ValueError
         return self.get_current_actual_image().get_img_array()[y][x]
     
