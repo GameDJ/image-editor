@@ -13,6 +13,7 @@ class History:
         self.MAX_LENGTH = 10
 
     def add_record(self, image: Image, change_desc: str) -> bool:
+        """Adds an entry to the history."""
         history_len = len(self.array_history)
         if history_len > self.index+1:
             # we are in the "past", so chop off any "future" entries
@@ -43,15 +44,19 @@ class History:
             return None
         
     def is_active_image(self) -> bool:
+        """Checks if there is an active image"""
         return (self.index > -1)
     
+    
     def undo(self) -> bool:
+        """Undoes the recent history entry."""
         if (self.index > 0):
             self.index -= 1
             return True
         return False
     
     def redo(self) -> bool:
+        """Redoes the recent history entry."""
         if (self.index < len(self.array_history)-1):
             self.index += 1
             return True
@@ -63,8 +68,9 @@ class History:
         for i in range(len(self.array_history)):
             entries.append((i, f"{i+self.oldest_index+1}: {self.array_history[i].change_desc}"))
         return entries
-            
+  
     def set_index(self, new_index: int) -> bool:
+        """Sets the current index of the history"""  
         if new_index < 0 or new_index >= self.get_length():
             return False
         self.index = new_index

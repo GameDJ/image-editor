@@ -164,6 +164,7 @@ class GUI():
             rightside_frame,
             PANEL_TITLE_FONT,
             handler.zoom_change,
+            handler.get_zoom_level,
             toggle_actions_while_zoomed,
             image_gui.refresh_image
         )
@@ -207,6 +208,7 @@ class GUI():
             color_gui.get_color_codes,
             history_gui.refresh_history,
             image_gui.refresh_image,
+            zoom_gui.refresh_zoom,
             global_toggle_buttons
         )
         
