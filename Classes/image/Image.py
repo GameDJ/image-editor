@@ -1,6 +1,8 @@
 from numpy import ndarray
 
 class Image:
+    """Class to store an image as a 2D array of color pixels"""
+    
     def __init__(self, img_array: ndarray) -> None:
         self.img_array = img_array
         
