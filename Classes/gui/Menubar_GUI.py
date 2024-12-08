@@ -39,7 +39,10 @@ class Menubar_GUI():
                 },
                 "Resize": lambda: self.resize()
             },
-            "About": lambda: self.display_help_message("SIMPLE v1.0.0", "SIMPLE: Simple IMage Processor for Lazy Editors\n\nContributors:\n\tAddison Casner\n\tDerek Jennings\n\tQuinn Pulley\n\tWill Verplaetse")
+            "Help": {
+                "Keybinds": lambda: self.display_keybinds(),
+                "About": lambda: self.display_about_message()
+            }
         }
 
         # "File": (menu, {"Open": command}),
@@ -193,3 +196,22 @@ class Menubar_GUI():
         state = "active" if toggle_on else "disabled"
         editmenu: tk.Menu = self.menu_storage[self.menubar]["Edit"][0]
         editmenu.entryconfig(1, {"state": state})
+
+    def display_keybinds(self):
+        msg = f""
+        for item in GUI_Defaults:
+            if "KEYBIND" in item.name:
+                msg += f"{item.name[8:]}: {item.value[1:-1]}\n"
+        msg = msg[:-1] # chop off trailing newline
+        self.display_help_message("Keybinds", msg)
+        
+    def display_about_message(self):
+        title = f"SIMPLE v{GUI_Defaults.VERSION.value}"
+        msg = """SIMPLE: Simple IMage Processor for Lazy Editors
+        
+        Contributors:
+        \tAddison Casner
+        \tDerek Jennings
+        \tQuinn Pulley
+        \tWill Verplaetse"""
+        self.display_help_message(title, msg)

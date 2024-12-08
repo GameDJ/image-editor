@@ -1,6 +1,7 @@
 from enum import Enum, auto
 
 class GUI_Defaults(Enum):
+    VERSION = "1.0.0"
     BUTTON_RELIEF = "raised"
     BUTTON_TOGGLED_RELIEF = "solid"
     SEPARATOR_CNF = {"column":0, "columnspan":1, "rowspan":1, "sticky":"nsew"}

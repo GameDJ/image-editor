@@ -1,0 +1,1 @@
+pyinstaller --onefile .\SIMPLE.py --paths .\Classes\ --workpath .\dist\build\ --specpath .\dist\build\ --clean
