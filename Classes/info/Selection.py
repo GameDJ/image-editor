@@ -8,7 +8,7 @@ class Selection:
     
     def __init__(self, start_coord: tuple[int, int] = None, end_coord: tuple[int, int] = None):
         if start_coord and end_coord:
-            self.bbox = self.set_bbox_from_coords(start_coord, end_coord)
+            self.set_bbox_from_coords(start_coord, end_coord)
         
     def set_bbox_from_coords(self, start_coord: tuple[int, int], end_coord: tuple[int, int]) -> tuple[int, int, int, int]:
         """Takes two coordinates and returns a tuple representing the bounds
