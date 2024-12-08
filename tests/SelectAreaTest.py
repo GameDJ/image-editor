@@ -1,4 +1,5 @@
-#Addison Casner
+# MUST BE RUN FROM image-editor FOLDER AS: python .\tests\SelectAreaTest.py
+# Addison Casner
 
 import unittest
 import sys
