@@ -33,20 +33,23 @@ class RequestHandler:
         self.hist = History()
         self.selection = Selection()
         self.zoom_level = 1
+        self.file_path = ""
     
     def create_canvas(self, width: int, height: int, color: tuple[int, int, int]) -> bool:
         """Returns True if blank canvas initialization successful (else False)"""
+        # reset file path, in case it's left over
+        self.file_path = ""
         creator = ImageInitializer()
         new_image = creator.create_blank_canvas(width, height, color)
         return self.initialize_image(new_image)
     
     def import_image(self, file_path: str) -> bool:
         """Returns True if image initialization successful (else False)"""
-        # get just the file name from the whole path
-        # file_name = file_path.split("/")[-1]
         # open the file as a PIL Image
+        # split the file type from the rest of the path
         split_path = file_path.split(".")
         file_type = split_path[len(split_path) - 1].lower()
+        # set the relevant importer based on path, and import
         importer = None
         if file_type == "png":
             importer = PngImporter()
@@ -57,16 +60,22 @@ class RequestHandler:
         image = importer.import_image(file_path)
         if not image:
             return False
+        # record the file path (to use as default name when saving)
         self.file_path = file_path
         return self.initialize_image(image)
     
     def get_file_path(self) -> str:
-        if hasattr(self, "file_path"):
+        if self.file_path != "":
             return self.file_path
         else:
             return None
     
     def initialize_image(self, image: Image) -> bool:
+        # reset variables
+        self.hist = History()
+        self.selection = Selection()
+        self.zoom_level = 1
+        
         # shrink image if it's too big
         height, width = image.get_img_array().shape[0:2]
         max_width = GUI_Defaults.IMAGE_MAX_WIDTH.value
@@ -194,8 +203,7 @@ class RequestHandler:
         return self.zoom_level
         
     def get_zoom_level(self) -> int:
-        if hasattr(self, self.zoom_level):
-            return self.zoom_level
+        return self.zoom_level
     
     def is_active_image(self) -> bool:
         """Returns True if history has a current image"""

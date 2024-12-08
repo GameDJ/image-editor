@@ -8,7 +8,7 @@ from Classes.gui.CanvasDialog import CanvasDialog
 from Classes.gui.GUI_Defaults import GUI_Defaults
 
 class Menubar_GUI():
-    def __init__(self, root: tk.Tk, handler_create_canvas: Callable, handler_import_image: Callable, handler_export_image: Callable, handler_get_file_path: Callable, handler_is_active_image: Callable, handler_edit: Callable, handler_resize: Callable, gui_get_color_codes: Callable, gui_refresh_history: Callable, gui_refresh_image: Callable, gui_toggle_buttons: Callable):
+    def __init__(self, root: tk.Tk, handler_create_canvas: Callable, handler_import_image: Callable, handler_export_image: Callable, handler_get_file_path: Callable, handler_is_active_image: Callable, handler_edit: Callable, handler_resize: Callable, gui_get_color_codes: Callable, gui_refresh_history: Callable, gui_refresh_image: Callable, gui_refresh_zoom: Callable, gui_toggle_buttons: Callable):
         # outside refs
         self._root = root
         self._handler_create_canvas = handler_create_canvas
@@ -21,6 +21,7 @@ class Menubar_GUI():
         self._gui_get_color_codes = gui_get_color_codes
         self._gui_refresh_image = gui_refresh_image
         self._gui_refresh_history = gui_refresh_history
+        self._gui_refresh_zoom = gui_refresh_zoom
         self._gui_toggle_buttons = gui_toggle_buttons
 
         self.menubar = tk.Menu(root, title="Menubar")
@@ -86,9 +87,19 @@ class Menubar_GUI():
         if not canvasDialog.width or not canvasDialog.height:
             messagebox.showerror(title="Operation cancelled", message="Failed to create canvas")
         else:
-            canvasDialog.width = min(canvasDialog.width, GUI_Defaults.IMAGE_MAX_WIDTH.value)
-            canvasDialog.height = min(canvasDialog.height, GUI_Defaults.IMAGE_MAX_HEIGHT.value)
-            messagebox.showwarning(title="Operation modified", message=f"Image shrunk to fit max bounds: {GUI_Defaults.IMAGE_MAX_WIDTH.value}x{GUI_Defaults.IMAGE_MAX_HEIGHT.value}")
+            shrunk = False
+            if canvasDialog.width > GUI_Defaults.IMAGE_MAX_WIDTH.value:
+                canvas_width = GUI_Defaults.IMAGE_MAX_WIDTH.value
+                shrunk = True
+            else:
+                canvas_width = canvasDialog.width
+            if canvasDialog.height > GUI_Defaults.IMAGE_MAX_HEIGHT.value:
+                canvas_height = GUI_Defaults.IMAGE_MAX_HEIGHT.value
+                shrunk = True
+            else:
+                canvas_height = canvasDialog.height
+            if shrunk:
+                messagebox.showwarning(title="Operation modified", message=f"Image shrunk to fit max bounds of {GUI_Defaults.IMAGE_MAX_WIDTH.value}x{GUI_Defaults.IMAGE_MAX_HEIGHT.value}.\nNew dimensions: {canvas_width}x{canvas_height}")
 
             try:
                 self._handler_create_canvas(canvasDialog.width, canvasDialog.height, canvasDialog.color_codes[0])
@@ -96,8 +107,8 @@ class Menubar_GUI():
                 messagebox.showerror(title="Operation cancelled", message="Invalid value entered")
                 return
             self._gui_refresh_image()
-            # activate_savebtn()
             self._gui_refresh_history()
+            self._gui_refresh_zoom()
             self.toggle_buttons(True)
     
     def load_file(self):
@@ -113,8 +124,8 @@ class Menubar_GUI():
             messagebox.showerror(title="Operation cancelled", message="Failed to load image")
             return
         self._gui_refresh_image()
-        # activate_savebtn()
         self._gui_refresh_history()
+        self._gui_refresh_zoom()
         self.toggle_buttons(True)
         
     def save_file(self):
@@ -127,8 +138,6 @@ class Menubar_GUI():
             path = filedialog.asksaveasfilename(title="Save as:", initialdir=file_dir, initialfile=file_name, defaultextension=".png", filetypes=[("PNG", "*.png"), ("JPEG", "*.jpg")])
             if path is not None:
                 self._handler_export_image(path)
-            # should check to see if the file exists now, to verify it saved
-            #
         else:
             messagebox.showerror(title="Error", message="No image loaded")
 

@@ -4,9 +4,10 @@ from enum import Enum
 from tkinter import font
 
 class Zoom_GUI():
-    def __init__(self, parent_frame: tk.Frame, gui_title_font: font, handler_zoom_change: Callable, gui_toggle_actions_while_zoomed: Callable, refresh_image: Callable):
+    def __init__(self, parent_frame: tk.Frame, gui_title_font: font, handler_zoom_change: Callable, handler_get_zoom_level: Callable, gui_toggle_actions_while_zoomed: Callable, refresh_image: Callable):
         # Outside refs
         self._handler_zoom_change = handler_zoom_change
+        self._handler_get_zoom_level = handler_get_zoom_level
         self._gui_toggle_actions_while_zoomed = gui_toggle_actions_while_zoomed
         self._gui_refresh_image = refresh_image
         
@@ -34,7 +35,17 @@ class Zoom_GUI():
         self.zoom_in_btn.pack(side=tk.LEFT, padx=1)
 
     def zoom_change(self, delta: int):
-        self.zoom_level = self._handler_zoom_change(delta)
+        self._handler_zoom_change(delta)
+        self.refresh_zoom()
+        
+    def toggle_buttons(self, toggle_on: bool):
+        state = "active" if toggle_on else "disabled"
+        self.zoom_out_btn.config(state=state)
+        self.zoom_in_btn.config(state=state)
+        
+    def refresh_zoom(self):
+        self.zoom_level = self._handler_get_zoom_level()
+        
         if self.zoom_level < 0:
             zoom_text = f"1/{abs(int(self.zoom_level)-1)}x"
         else:
@@ -47,8 +58,3 @@ class Zoom_GUI():
             self._gui_toggle_actions_while_zoomed(False)
         else:
             self._gui_toggle_actions_while_zoomed(True)
-        
-    def toggle_buttons(self, toggle_on: bool):
-        state = "active" if toggle_on else "disabled"
-        self.zoom_out_btn.config(state=state)
-        self.zoom_in_btn.config(state=state)
