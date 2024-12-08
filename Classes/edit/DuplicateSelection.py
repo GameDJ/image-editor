@@ -13,7 +13,6 @@ class DuplicateSelection(Edit):
     sel1: Selection = args.get_args()[AT.SELECTION]
     sel1_bbox: tuple[int, int, int, int] = sel1.get_bbox()
     sel2: Selection = args.get_args()[AT.SELECTION2]
-    print(sel2)
     sel2_bbox: tuple[int, int, int, int] = sel2.get_bbox()
     
     image_array[sel2_bbox[1]:sel2_bbox[3], sel2_bbox[0]:sel2_bbox[2]] = image_array[sel1_bbox[1]:sel1_bbox[3], sel1_bbox[0]:sel1_bbox[2]]
