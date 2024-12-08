@@ -3,7 +3,6 @@
 
 import numpy as np
 import unittest
-import cv2
 import sys
 sys.path.append("../image-editor")
 from Classes.RequestHandler import RequestHandler

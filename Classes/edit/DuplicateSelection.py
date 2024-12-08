@@ -7,6 +7,7 @@ from Classes.image.Image import Image
 
 class DuplicateSelection(Edit):
   def edit(self, args: Arguments) -> Image:
+    '''This method will duplicate a selection into another area'''
     image: Image = args.get_args()[AT.IMAGE]
     image_array: np.ndarray = image.get_img_array()
     sel1: Selection = args.get_args()[AT.SELECTION]

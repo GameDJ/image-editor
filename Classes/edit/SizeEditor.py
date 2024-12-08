@@ -9,6 +9,7 @@ from Classes.image.Image import Image
 import numpy as np
 class SizeEditor(Edit):  
   def edit(self, args: Arguments) -> Image:
+    '''This method will resize the image'''
     image: Image = args.get_args()[AT.IMAGE]
     image_array: np.ndarray = image.get_img_array()
     dimensions: tuple[int, int] = args.get_args()[AT.DIMENSIONS]
