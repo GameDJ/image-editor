@@ -88,9 +88,7 @@ class Menubar_GUI():
                 return
             
         canvasDialog = CanvasDialog(self._root, title="Initialize Canvas", color_codes=self._gui_get_color_codes())
-        if not canvasDialog.width or not canvasDialog.height:
-            messagebox.showerror(title="Operation cancelled", message="Failed to create canvas")
-        else:
+        if canvasDialog.width and canvasDialog.height:
             shrunk = False
             if canvasDialog.width > GUI_Defaults.IMAGE_MAX_WIDTH.value:
                 canvas_width = GUI_Defaults.IMAGE_MAX_WIDTH.value
@@ -122,7 +120,6 @@ class Menubar_GUI():
                 return
         loaded_file_name = filedialog.askopenfilename(title="Select a file")
         if not loaded_file_name:
-            messagebox.showerror(title="Operation cancelled", message="No file selected")
             return
         if not self._handler_import_image(loaded_file_name):
             messagebox.showerror(title="Operation cancelled", message="Failed to load image")
@@ -139,10 +136,17 @@ class Menubar_GUI():
             if file_path is None:
                 file_path = ""
             file_name = file_path.split("/")[-1]
+            file_ext = file_name.split(".")[-1].upper()
+            if file_ext == "JPG":
+                file_ext = "JPEG"
             file_dir = file_path[len(file_name):]
-            path = filedialog.asksaveasfilename(title="Save as:", initialdir=file_dir, initialfile=file_name, defaultextension=".png", filetypes=[("PNG", "*.png"), ("JPEG", "*.jpg")])
-            if path is not None:
-                self._handler_export_image(path)
+            path = filedialog.asksaveasfilename(title="Save as:", initialdir=file_dir, initialfile=file_name, defaultextension=file_ext, filetypes=[("PNG", "*.png"), ("JPEG", "*.jpg")])
+            if path is not None and path != "":
+                success = self._handler_export_image(path)
+                if success:
+                    messagebox.showinfo("Save Success", "File saved successfully.")
+                else:
+                    messagebox.showerror("Save Error", "Error saving image.")
         else:
             messagebox.showerror(title="Error", message="No image loaded")
 
@@ -163,7 +167,7 @@ class Menubar_GUI():
             messagebox.showerror("Error", "Invalid value")
 
     def resize(self):
-        dimension_dialog = CanvasDialog(self._root, title="Initialize Canvas", color_codes=self._gui_get_color_codes(), use_color=False)
+        dimension_dialog = CanvasDialog(self._root, title="Resize Image", color_codes=self._gui_get_color_codes(), use_color=False)
         if dimension_dialog.width is None or dimension_dialog.height is None:
             return
         width = dimension_dialog.width

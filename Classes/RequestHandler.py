@@ -102,7 +102,8 @@ class RequestHandler:
             exporter = PngExporter()
         elif file_type == "jpeg" or file_type == "jpg":
             exporter = JpegExporter()
-        exporter.export_image(self.get_current_actual_image(), save_pathname)
+        if exporter is not None:
+            exporter.export_image(self.get_current_actual_image(), save_pathname)
         if os.path.isfile(save_pathname):
             return True
         else:
