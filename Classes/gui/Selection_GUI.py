@@ -94,12 +94,13 @@ class Selection_GUI():
             del self.start_coord
         if hasattr(self, "end_coord"):
             del self.end_coord
-        cleared = self._handler_clear_selection()
-        if cleared:
-            self.clear_btn.config(state="disabled")
-            self.sel_coord_1.config(text=self._SEL_COORD_1_DEFAULT_TEXT)
-            self.sel_coord_2.config(text="")
-            self._gui_refresh_image()
+        self._handler_clear_selection()
+        self.clear_btn.config(state="disabled")
+        self.sel_coord_1.config(text=self._SEL_COORD_1_DEFAULT_TEXT)
+        self.sel_coord_2.config(text="")
+        self.crop_btn.config(state="disabled")
+        self.duplicate_btn.config(state="disabled")
+        self._gui_refresh_image()
             
     def crop(self, *_):
         self._handler_crop()

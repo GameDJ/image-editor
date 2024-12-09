@@ -127,6 +127,7 @@ class Menubar_GUI():
         if not self._handler_import_image(loaded_file_name):
             messagebox.showerror(title="Operation cancelled", message="Failed to load image")
             return
+        self._gui_clear_selection()
         self._gui_refresh_image()
         self._gui_refresh_history()
         self._gui_refresh_zoom()
