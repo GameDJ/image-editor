@@ -85,9 +85,9 @@ class RequestHandler:
             new_width = int(width / bigger_ratio)
             new_height = int(height / bigger_ratio)
             # now shrink it
-            args = Arguments()
-            args.add_image(image)
-            args.add_size((new_width, new_height))
+            args = Arguments()\
+                .add_image(image)\
+                .add_size((new_width, new_height))
             size_editor = SizeEditor()
             image = size_editor.edit(args)
         
@@ -261,9 +261,9 @@ class RequestHandler:
         """This method invokes the edit method of the SizeEditor class and returns true after 
         creating a history entry if successful"""
         self.clear_selection()
-        args = Arguments()
-        args.add_image(self.hist.get_current_img())
-        args.add_size(dimensions)
+        args = Arguments()\
+            .add_image(self.hist.get_current_img())\
+            .add_size(dimensions)
         size_editor = SizeEditor()
         resized_image = size_editor.edit(args)
         if resized_image is not None:

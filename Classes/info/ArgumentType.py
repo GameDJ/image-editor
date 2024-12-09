@@ -13,3 +13,4 @@ class ArgumentType(Enum):
     SHAPE = auto()
     COLOR = auto()
     SIZE = auto()
+    COORD = auto()
