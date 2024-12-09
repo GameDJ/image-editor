@@ -132,15 +132,32 @@ class Menubar_GUI():
         
     def save_file(self):
         if self._handler_is_active_image() is not None:
-            file_path = self._handler_get_file_path()
+            # get the saved file path, if any
+            file_path: str = self._handler_get_file_path()
+            # initialize the list of available file types
+            file_types = [("PNG", "*.png"), ("JPEG", "*.jpg")]
+            
             if file_path is None:
+                # no loaded image; use default values
                 file_path = ""
-            file_name = file_path.split("/")[-1]
-            file_ext = file_name.split(".")[-1].upper()
-            if file_ext == "JPG":
-                file_ext = "JPEG"
-            file_dir = file_path[len(file_name):]
-            path = filedialog.asksaveasfilename(title="Save as:", initialdir=file_dir, initialfile=file_name, defaultextension=file_ext, filetypes=[("PNG", "*.png"), ("JPEG", "*.jpg")])
+                file_name = "image"
+                file_type = "png"
+                file_dir = file_path
+            else:
+                # determine values from the loaded image's saved info
+                file_name = file_path.split("/")[-1]
+                # determine the filetype name, eg "JPEG"
+                file_type = file_name.split(".")[-1].upper()
+                if file_type == "JPG":
+                    file_type = "JPEG"
+                # move the loaded filetype to the front of the file_types list
+                for i in range(len(file_types)):
+                    if file_types[i][0] == file_type:
+                        file_types.insert(0, file_types.pop(i))
+                        break
+                file_dir = file_path[len(file_name):]
+            
+            path = filedialog.asksaveasfilename(title="Save as:", initialdir=file_dir, initialfile=file_name, defaultextension=file_type, filetypes=file_types)
             if path is not None and path != "":
                 success = self._handler_export_image(path)
                 if success:
